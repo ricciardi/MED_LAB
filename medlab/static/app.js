@@ -110,6 +110,9 @@
   const chatForm = $('#chat-form');
   let busy = false;
   let retryRequest = null;
+  let pendingVoiceToken = null;
+  let activeVoiceSend = null;
+  const pendingVoiceReplies = new Map();
   const formSubmit = $('#diagnosis-form button[type=submit]');
   function scrollChat() { chat.scrollTop = chat.scrollHeight; }
   function activateTab(name, focus = false) {
@@ -142,18 +145,47 @@
     error.textContent = message;
     error.hidden = !message;
   }
-  async function api(path, data) {
+  async function api(path, data, signal) {
     const response = await fetch(`/sessao/${encodeURIComponent(sessionId)}/${path}`, {
-      method: 'POST', credentials: 'same-origin',
+      method: 'POST', credentials: 'same-origin', signal,
       headers: {'Content-Type':'application/json','Accept':'application/json','X-CSRFToken':csrf},
       body: JSON.stringify(data)
     });
     let payload;
     try { payload = await response.json(); }
-    catch { throw new Error('Não foi possível concluir agora. Atualize a página e tente novamente.'); }
+    catch (error) {
+      if (error.name === 'AbortError') throw error;
+      throw new Error('Não foi possível concluir agora. Atualize a página e tente novamente.');
+    }
     if (!response.ok) throw new Error(payload.error || 'Não foi possível concluir. Tente novamente.');
     return payload;
   }
+  app.addEventListener('medlab:voice-submit', event => {
+    const {text, token} = event.detail || {};
+    if (busy || app.dataset.voiceBusy === 'true' || typeof token !== 'string' || typeof text !== 'string' || text.trim().length < 2 || text.length > 2000) {
+      app.dispatchEvent(new CustomEvent('medlab:message-error', {detail:{voiceToken:token, message:'A pergunta não pôde ser enviada. O modo contínuo foi pausado.'}}));
+      return;
+    }
+    questionInput.value = text.trim();
+    pendingVoiceToken = token;
+    chatForm.requestSubmit();
+    pendingVoiceToken = null;
+  });
+  app.addEventListener('medlab:cancel-voice-send', event => {
+    if (activeVoiceSend?.token === event.detail?.token) activeVoiceSend.controller.abort();
+    revealVoiceReply(event.detail?.token);
+  });
+  function revealVoiceReply(token) {
+    const reply = pendingVoiceReplies.get(token);
+    if (!reply) return;
+    const bubble = $('.message-bubble', reply.node);
+    bubble.textContent = reply.text;
+    bubble.removeAttribute('aria-busy');
+    pendingVoiceReplies.delete(token);
+    scrollChat();
+  }
+  app.addEventListener('medlab:voice-response-start',event => revealVoiceReply(event.detail?.token));
+  app.addEventListener('medlab:message-error',event => revealVoiceReply(event.detail?.voiceToken));
   function messageNode(text, fromPatient, loading = false) {
     const wrapper = document.createElement('div');
     wrapper.className = `chat-message ${fromPatient ? 'patient-message' : 'doctor-message'}`;
@@ -184,8 +216,11 @@
     if (app.dataset.voiceBusy === 'true') { showError('chat-error','Conclua ou descarte a gravação antes de enviar sua pergunta.'); return; }
     const question = questionInput.value.trim();
     if (question.length < 2) { showError('chat-error','Escreva uma pergunta com pelo menos 2 caracteres.'); questionInput.focus(); return; }
+    const voiceToken = pendingVoiceToken;
+    const controller = new AbortController();
+    if (voiceToken) activeVoiceSend = {token:voiceToken, controller};
     busy = true;
-    app.dispatchEvent(new CustomEvent('medlab:conversation-busy', {detail:{busy:true}}));
+    app.dispatchEvent(new CustomEvent('medlab:conversation-busy', {detail:{busy:true, voiceToken}}));
     showError('chat-error','');
     const sendButton = $('button[type=submit]', chatForm);
     sendButton.disabled = true;
@@ -197,20 +232,34 @@
     questionInput.value = '';
     const loading = messageNode('',true,true);
     try {
-      const result = await api('mensagem', retryRequest);
+      const result = await api('mensagem', retryRequest, controller.signal);
+      if (controller.signal.aborted) throw new DOMException('Envio interrompido.', 'AbortError');
       loading.remove();
-      const answerNode = messageNode(result.answer,true);
+      $('#chat-opening')?.remove();
+      const synchronizedVoice = voiceToken && app.dataset.continuousState === 'waiting';
+      const answerNode = messageNode(synchronizedVoice ? 'Preparando voz do paciente…' : result.answer,true);
+      if (synchronizedVoice) {
+        $('.message-bubble',answerNode).setAttribute('aria-busy','true');
+        pendingVoiceReplies.set(voiceToken,{node:answerNode,text:result.answer});
+      }
       if (result.turn_id !== undefined && result.turn_id !== null) {
         answerNode.dataset.turnId = String(result.turn_id);
-        app.dispatchEvent(new CustomEvent('medlab:turn-saved', {detail:{turnId:result.turn_id, element:answerNode}}));
+        app.dispatchEvent(new CustomEvent('medlab:turn-saved', {detail:{turnId:result.turn_id, element:answerNode, voiceToken}}));
+      } else if (voiceToken) {
+        app.dispatchEvent(new CustomEvent('medlab:message-error', {detail:{voiceToken, message:'A resposta apareceu em texto, mas não ficou disponível para voz. Continue por texto.'}}));
       }
       $('#turn-count').textContent = result.turn_count;
       retryRequest = null;
     } catch (error) {
       loading.remove(); doctorNode.remove();
       questionInput.value = question;
-      showError('chat-error', error instanceof TypeError ? 'A conexão foi interrompida. Sua pergunta está preservada; tente enviar novamente.' : error.message);
+      const message = error.name === 'AbortError'
+        ? 'O modo contínuo foi interrompido. Sua pergunta está preservada. O servidor pode ter concluído o envio; confira a conversa antes de tentar novamente.'
+        : error instanceof TypeError ? 'A conexão foi interrompida. Sua pergunta está preservada; tente enviar novamente.' : error.message;
+      showError('chat-error', message);
+      app.dispatchEvent(new CustomEvent('medlab:message-error', {detail:{voiceToken, message}}));
     } finally {
+      if (activeVoiceSend?.controller === controller) activeVoiceSend = null;
       busy = false;
       app.dispatchEvent(new CustomEvent('medlab:conversation-busy', {detail:{busy:false}}));
       sendButton.disabled = false; questionInput.disabled = false; formSubmit.disabled = false;

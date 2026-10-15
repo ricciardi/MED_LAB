@@ -48,6 +48,7 @@ def create_app(config=None):
         MAX_SESSION_TURNS=40,
         MAX_DAILY_AI_REQUESTS=int(os.getenv("MAX_DAILY_AI_REQUESTS", "120")),
         LOCAL_VOICE_ENABLED=env_bool("LOCAL_VOICE_ENABLED", True),
+        LOCAL_VOICE_ISOLATION=env_bool("LOCAL_VOICE_ISOLATION", True),
         MAX_CONTENT_LENGTH=128 * 1024,
         MAX_FORM_MEMORY_SIZE=128 * 1024,
         MAX_FORM_PARTS=10,
@@ -95,7 +96,7 @@ def create_app(config=None):
     @app.context_processor
     def shared_context():
         return {"ai_available": bool(app.config["DEEPSEEK_API_KEY"]) or app.config["DEMO_MODE"],
-                "demo_mode": app.config["DEMO_MODE"], "brand_name": "MED LAB"}
+                "demo_mode": app.config["DEMO_MODE"], "brand_name": "BayesCore MedRounds"}
 
     @app.template_filter("date_br")
     def date_br(value, fmt="%d/%m/%Y"):
@@ -107,6 +108,11 @@ def create_app(config=None):
 
     @app.after_request
     def secure_headers(response):
+        if app.config["LOCAL_VOICE_ISOLATION"]:
+            # Apply to pages and worker scripts alike. If the web server serves
+            # static files directly, it must provide the same worker headers.
+            response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+            response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"

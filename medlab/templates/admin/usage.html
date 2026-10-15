@@ -1,6 +1,6 @@
 {% extends 'admin/base.html' %}
 {% macro amount(value) -%}{{ '{:,}'.format(value|int)|replace(',', '.') }}{%- endmacro %}
-{% block title %}Consumo e cache da IA — MED LAB{% endblock %}
+{% block title %}Consumo e cache da IA — BayesCore MedRounds{% endblock %}
 {% block admin_content %}
 <div class="source-page-heading"><div><p class="eyebrow">CADA CHAMADA, EM PERSPECTIVA</p><h1>Uso da IA. <br><em>Dados à vista.</em></h1><p class="admin-muted">Acompanhe as solicitações e os tokens informados pela API nas operações do site.</p></div><span class="source-private-label">{{ icon('shield',15) }} ADMINISTRAÇÃO PRIVADA</span></div>
 <form method="get" action="{{ url_for('admin.ai_usage') }}" class="admin-card usage-filters">

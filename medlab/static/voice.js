@@ -14,6 +14,14 @@
   const auto = $('#voice-autoplay');
   const settings = $('#voice-settings');
   const settingsToggle = $('#voice-settings-toggle');
+  const continuousButton = $('#voice-continuous-toggle');
+  let continuousActive = false;
+  let continuousState = 'idle';
+  let continuousGeneration = 0;
+  let continuousSequence = 0;
+  let continuousTurnToken = null;
+  let continuousContext = null;
+  let continuousTimer = null;
   const storageKey = `medlab-voz-${app.dataset.sessionId}`;
   let config = null;
   let loadingConfig = true;
@@ -32,6 +40,7 @@
   let playbackCursor = 0;
   let playbackChunks = 0;
   let playbackFinished = false;
+  let playbackRevealTimer = null;
   const playbackSources = new Set();
   let preferences = {voice_id:'', gender:'', autoplay:false};
   try {
@@ -99,6 +108,7 @@
       this.sequence = 0;
       this.revision = 0;
       this.device = '';
+      this.activation = null;
     }
     render() {
       const loading = this.state === 'loading';
@@ -153,12 +163,14 @@
         if (this.worker !== worker) return;
         const message = 'Não foi possível executar a voz local neste navegador. Tente novamente ou continue por texto.';
         this.terminate(message,'error');
+        if (continuousActive) stopContinuous(message,true);
         notice(message,true);
       });
       worker.addEventListener('messageerror',() => {
         if (this.worker !== worker) return;
         const message = 'O navegador não conseguiu ler o resultado da voz. Tente novamente.';
         this.terminate(message,'error');
+        if (continuousActive) stopContinuous(message,true);
         notice(message,true);
       });
     }
@@ -172,26 +184,31 @@
       });
     }
     async activate() {
-      if (!availableOrExplain() || ['loading','ready'].includes(this.state)) return;
+      if (!availableOrExplain()) return false;
+      if (this.state === 'ready') return true;
+      if (this.state === 'loading') return this.activation;
       const revision = ++this.revision;
       this.state = 'loading';
       this.render();
       this.updateProgress({message:'Preparando o download. Os arquivos em cache serão reutilizados.'});
       notice('');
-      try {
+      this.activation = (async () => { try {
         const result = await this.request('load');
-        if (revision !== this.revision) return;
+        if (revision !== this.revision) return false;
         this.device = result.device || '';
         this.state = 'ready';
         this.render();
         notice(this.name === 'asr'
           ? 'Transcrição pronta. Clique em “Ditar pergunta” quando quiser usar o microfone.'
           : 'Voz pronta. Use “Ouvir resposta” abaixo de uma fala do paciente.');
+        return true;
       } catch (error) {
-        if (revision !== this.revision || error.name === 'AbortError') return;
+        if (revision !== this.revision || error.name === 'AbortError') return false;
         this.terminate(error.message,'error');
         notice(error.message,true);
-      }
+        return false;
+      } })();
+      return this.activation;
     }
     terminate(message = 'Operação de voz cancelada.', state = 'idle') {
       this.revision++;
@@ -220,6 +237,7 @@
   [asr,tts].forEach(engine => {
     $(`#${engine.name}-model-activate`).addEventListener('click',() => engine.activate());
     $(`#${engine.name}-model-cancel`).addEventListener('click',() => {
+      if (continuousActive) stopContinuous('Preparo cancelado. O modo contínuo foi pausado.');
       engine.terminate();
       notice('Preparo cancelado. Os arquivos já baixados podem permanecer no cache do navegador.');
     });
@@ -251,7 +269,7 @@
         const info = config[`models_${engine.name}`] || {};
         if (typeof info.worker_url === 'string') engine.path = info.worker_url;
         const megabytes = Number(info.download_mb);
-        const size = Number.isFinite(megabytes) && megabytes > 0 ? `aproximadamente ${Math.round(megabytes)} MB` : engine.name === 'asr' ? 'aproximadamente 100 MB' : 'mais de 100 MB';
+        const size = Number.isFinite(megabytes) && megabytes > 0 ? `aproximadamente ${Math.round(megabytes)} MB` : engine.name === 'asr' ? 'aproximadamente 175 MB' : 'mais de 100 MB';
         $(`#${engine.name}-model-description`).textContent = `${engine.name === 'asr' ? 'Transcrição em português com Whisper.' : 'Voz em português gerada no seu dispositivo.'} Download inicial de ${size}.`;
         engine.render();
       }
@@ -278,11 +296,11 @@
       notice(config.reason);
     } finally { loadingConfig = false; }
   }
-  gender.addEventListener('change',() => { stopPlayback(); fillVariants(); savePreferences(); notice(''); });
-  variant.addEventListener('change',() => { stopPlayback(); savePreferences(); notice(''); });
+  gender.addEventListener('change',() => { if (continuousActive) stopContinuous('Voz alterada. Inicie a conversa contínua novamente quando quiser.'); stopPlayback(); fillVariants(); savePreferences(); });
+  variant.addEventListener('change',() => { if (continuousActive) stopContinuous('Timbre alterado. Inicie a conversa contínua novamente quando quiser.'); stopPlayback(); savePreferences(); });
   auto.addEventListener('change',() => {
     savePreferences();
-    if (!auto.checked) stopPlayback();
+    if (!auto.checked && !continuousActive) stopPlayback();
     else if (tts.state !== 'ready') notice('A reprodução automática começará depois que você ativar a voz do paciente e enviar uma nova pergunta.');
   });
   function listenLabel(button,text) {
@@ -292,12 +310,14 @@
   }
   function stopPlayback() {
     playbackGeneration++;
+    clearTimeout(playbackRevealTimer);
+    playbackRevealTimer = null;
     playbackController?.abort();
     playbackController = null;
     if (synthesizing) { synthesizing = false; tts.terminate(); }
     for (const source of playbackSources) { try { source.stop(); } catch { /* Already ended. */ } }
     playbackSources.clear();
-    if (playbackContext) playbackContext.close().catch(() => {});
+    if (playbackContext && playbackContext !== continuousContext) playbackContext.close().catch(() => {});
     playbackContext = null;
     playbackCursor = 0;
     playbackChunks = 0;
@@ -315,7 +335,22 @@
     playbackButton = null;
     $('#voice-player').hidden = true;
   }
-  $('#voice-stop-playback').addEventListener('click',stopPlayback);
+  $('#voice-stop-playback').addEventListener('click',() => {
+    if (continuousActive) stopContinuous('Conversa contínua pausada. Microfone desligado.');
+    else stopPlayback();
+  });
+  function playbackEnded() {
+    if (continuousActive && continuousTurnToken) app.dispatchEvent(new CustomEvent('medlab:voice-response-start',{detail:{token:continuousTurnToken}}));
+    stopPlayback();
+    if (!continuousActive || continuousState !== 'speaking') return;
+    continuousTurnToken = null;
+    const generation = continuousGeneration;
+    // Let the last sound and room reverberation finish before opening a new
+    // stream. A worker's final result alone never reopens the microphone.
+    continuousTimer = setTimeout(() => {
+      if (continuousActive && generation === continuousGeneration && !document.hidden) startRecording(generation);
+    },350);
+  }
   function samplesWav(samples, sampleRate) {
     if (!(samples instanceof Float32Array) || !samples.length || !Number.isSafeInteger(sampleRate) || sampleRate < 8000 || sampleRate > 48000 || samples.length > sampleRate * 600) {
       throw new Error('O modelo local não retornou um áudio válido. Tente novamente.');
@@ -335,7 +370,7 @@
     return new Blob([output],{type:'audio/wav'});
   }
   async function playTurn(turnId, button, automatic = false) {
-    if (button === playbackButton) { stopPlayback(); return; }
+    if (button === playbackButton) { if (continuousActive) stopContinuous('Conversa contínua pausada. Microfone desligado.'); else stopPlayback(); return; }
     if (!availableOrExplain()) return;
     if (recording || pendingPermission || transcription) { notice('Conclua sua gravação antes de ouvir o paciente.'); return; }
     const voice = currentVoice();
@@ -358,7 +393,7 @@
       // immediately. Browsers may require a fresh click for automatic playback.
       const PlaybackContext = window.AudioContext || window.webkitAudioContext;
       if (PlaybackContext) {
-        playbackContext = new PlaybackContext();
+        playbackContext = continuousContext || new PlaybackContext();
         let resumeTimeout;
         try {
           await Promise.race([
@@ -408,7 +443,7 @@
           playbackSources.delete(source);
           source.disconnect();
           if (generation === playbackGeneration && !playbackSources.size) {
-            if (playbackFinished) stopPlayback();
+            if (playbackFinished) playbackEnded();
             else $('#voice-player-label').textContent = 'Gerando o próximo trecho neste dispositivo…';
           }
         },{once:true});
@@ -416,6 +451,12 @@
         source.start(start);
         playbackCursor = start + buffer.duration;
         playbackChunks++;
+        if (playbackChunks === 1 && continuousActive) {
+          const token = continuousTurnToken;
+          playbackRevealTimer = setTimeout(() => {
+            if (generation === playbackGeneration && continuousActive && playbackContext?.state === 'running') app.dispatchEvent(new CustomEvent('medlab:voice-response-start',{detail:{token}}));
+          },Math.max(0,(start-playbackContext.currentTime)*1000));
+        }
         button.removeAttribute('aria-busy');
         button.setAttribute('aria-label','Parar áudio da resposta');
         listenLabel(button,'Parar áudio');
@@ -426,25 +467,27 @@
       if (result.streamed) {
         playbackFinished = true;
         if (!playbackChunks) throw new Error('O modelo local não retornou um áudio. Tente novamente.');
-        if (!playbackSources.size) stopPlayback();
+        if (!playbackSources.size) playbackEnded();
         return;
       }
       playbackUrl = URL.createObjectURL(samplesWav(result.samples,result.sampleRate));
       playbackAudio = new Audio(playbackUrl);
       playbackAudio.preload = 'auto';
-      playbackAudio.addEventListener('ended',() => { if (generation === playbackGeneration) stopPlayback(); },{once:true});
+      playbackAudio.addEventListener('ended',() => { if (generation === playbackGeneration) playbackEnded(); },{once:true});
       playbackAudio.addEventListener('error',() => {
-        if (generation === playbackGeneration) { stopPlayback(); notice('Seu navegador não conseguiu reproduzir este áudio. Você pode continuar por texto.',true); }
+        if (generation === playbackGeneration) { if (continuousActive) stopContinuous('O áudio foi interrompido. O modo contínuo foi pausado.',true); else stopPlayback(); notice('Seu navegador não conseguiu reproduzir este áudio. Você pode continuar por texto.',true); }
       },{once:true});
       await playbackAudio.play();
       if (generation !== playbackGeneration) return;
+      if (continuousActive) app.dispatchEvent(new CustomEvent('medlab:voice-response-start',{detail:{token:continuousTurnToken}}));
       button.removeAttribute('aria-busy');
       button.setAttribute('aria-label','Parar áudio da resposta');
       listenLabel(button,'Parar áudio');
       $('#voice-player-label').textContent = `Ouvindo o paciente · ${voice.label || 'Português do Brasil'}`;
     } catch (error) {
       if (generation !== playbackGeneration || error.name === 'AbortError') return;
-      stopPlayback();
+      if (continuousActive) stopContinuous('O áudio não pôde ser reproduzido. O modo contínuo foi pausado.',true);
+      else stopPlayback();
       if (error.name === 'NotAllowedError') notice(automatic ? 'O navegador pausou a reprodução automática. Clique em “Ouvir resposta” para escutar.' : 'O navegador bloqueou a reprodução. Tente novamente pelo botão “Ouvir resposta”.');
       else notice(error instanceof TypeError ? 'Não foi possível preparar o áudio. Verifique a conexão ou continue por texto.' : error.message,true);
     }
@@ -462,25 +505,139 @@
       const label = document.createElement('span'); label.textContent = 'Ouvir resposta'; button.append(label);
       node.querySelector('.message-bubble')?.parentElement.append(button);
     }
-    button.addEventListener('click',() => playTurn(turnId,button));
+    button.addEventListener('click',() => {
+      if (continuousActive) { stopContinuous('Conversa contínua pausada. Clique em “Ouvir resposta” para ouvir este trecho.'); return; }
+      playTurn(turnId,button);
+    });
     return button;
   }
   document.querySelectorAll('.patient-message[data-turn-id]').forEach(node => addListenButton(node,node.dataset.turnId));
   app.addEventListener('medlab:turn-saved',event => {
-    const {turnId,element} = event.detail;
+    const {turnId,element,voiceToken} = event.detail;
     const button = addListenButton(element,turnId);
+    if (voiceToken) {
+      if (continuousActive && voiceToken === continuousTurnToken) { setContinuousState('speaking'); playTurn(turnId,button,true); }
+      return;
+    }
     if (auto.checked && config?.available && tts.state === 'ready') playTurn(turnId,button,true);
+  });
+  app.addEventListener('medlab:message-error',event => {
+    if (continuousActive && event.detail?.voiceToken === continuousTurnToken) stopContinuous(event.detail.message || 'A conversa foi pausada. Confira o texto antes de continuar.',true);
   });
   app.addEventListener('medlab:conversation-busy',event => {
     conversationBusy = event.detail.busy;
-    recordButton.disabled = conversationBusy || app.dataset.voiceBusy === 'true';
+    recordButton.disabled = continuousActive || conversationBusy || app.dataset.voiceBusy === 'true';
     if (conversationBusy) stopPlayback();
   });
   function setRecordingBusy(value) {
     app.dataset.voiceBusy = String(value);
-    recordButton.disabled = value || conversationBusy;
-    $('#question').readOnly = value;
+    recordButton.disabled = continuousActive || value || conversationBusy;
+    $('#question').readOnly = continuousActive || value;
     $('#chat-form button[type=submit]').disabled = value || conversationBusy;
+  }
+  function setContinuousState(state) {
+    continuousState = state;
+    app.dataset.continuousState = state;
+    continuousButton.setAttribute('aria-pressed',String(continuousActive));
+    continuousButton.textContent = continuousActive ? 'Parar conversa contínua' : 'Iniciar conversa contínua';
+    const labels = {idle:'Desligada',preparing:'Preparando voz e microfone…',listening:'Escutando — faça sua pergunta',transcribing:'Transcrevendo sua fala…',waiting:'Aguardando o paciente…',speaking:'Voz do paciente — microfone desligado'};
+    $('#voice-continuous-state').textContent = labels[state];
+    app.dispatchEvent(new CustomEvent('medlab:continuous-state',{detail:{active:continuousActive,state}}));
+  }
+  function stopContinuous(message = 'Conversa contínua pausada. Microfone desligado.', error = false) {
+    continuousActive = false;
+    continuousGeneration++;
+    clearTimeout(continuousTimer);
+    continuousTimer = null;
+    pendingPermission = false;
+    permissionGeneration++;
+    if (recording) stopRecording(true);
+    cancelTranscription();
+    if (continuousTurnToken) app.dispatchEvent(new CustomEvent('medlab:cancel-voice-send',{detail:{token:continuousTurnToken}}));
+    continuousTurnToken = null;
+    for (const engine of [asr,tts]) if (engine.state === 'loading') engine.terminate();
+    stopPlayback();
+    continuousContext?.close().catch(() => {});
+    continuousContext = null;
+    resetRecordingUi();
+    setContinuousState('idle');
+    if (message) notice(message,error);
+  }
+  continuousButton.addEventListener('click',async () => {
+    if (continuousActive) { stopContinuous(); return; }
+    if (!availableOrExplain()) return;
+    if (conversationBusy || recording || pendingPermission || transcription) { notice('Conclua a operação atual antes de iniciar a conversa contínua.'); return; }
+    if ($('#question').value.trim() || !$('#voice-review').hidden) { notice('Envie ou descarte o texto que está em revisão antes de iniciar a conversa contínua.'); return; }
+    if (!currentVoice()) { settingsOpen(true); notice('Escolha uma voz feminina ou masculina antes de iniciar.'); gender.focus(); return; }
+    const Context = window.AudioContext || window.webkitAudioContext;
+    if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined' || !Context) { notice('O modo contínuo precisa de microfone e áudio em um navegador compatível com conexão segura.',true); return; }
+    stopPlayback();
+    continuousActive = true;
+    const generation = ++continuousGeneration;
+    setContinuousState('preparing');
+    setRecordingBusy(true);
+    try {
+      // Unlock playback synchronously in this explicit user gesture. Keeping
+      // the context alive avoids a new autoplay permission after STT/API waits.
+      continuousContext = new Context();
+      const context = continuousContext;
+      context.addEventListener('statechange',() => {
+        if (continuousActive && continuousContext === context && continuousState !== 'preparing' && context.state !== 'running') stopContinuous('O navegador suspendeu o áudio. A conversa contínua foi pausada.',true);
+      });
+      const resumed = continuousContext.resume();
+      let timer;
+      try { await Promise.race([resumed,new Promise((_,reject) => { timer = setTimeout(() => reject(new Error('O navegador não liberou o áudio. Inicie novamente ou use o modo manual.')),1500); })]); }
+      finally { clearTimeout(timer); }
+      if (!continuousActive || generation !== continuousGeneration) return;
+      const ready = await Promise.all([asr.activate(),tts.activate()]);
+      if (!continuousActive || generation !== continuousGeneration) return;
+      if (ready.some(value => !value)) throw new Error('Não foi possível preparar todos os modelos. O modo contínuo foi pausado.');
+      if (document.hidden) { stopContinuous('A página ficou oculta. Inicie novamente quando voltar.'); return; }
+      await startRecording(generation);
+    } catch (error) {
+      if (generation === continuousGeneration) stopContinuous(error.message || 'Não foi possível iniciar a conversa contínua.',true);
+    }
+  });
+
+  // Energy-based endpointing, not speech recognition. Short clicks and silence
+  // never reach ASR. Background noise may still require the manual mode.
+  class VoiceActivity {
+    constructor(started) { this.started = started; this.last = started; this.lastVoice = null; this.voicedMs = 0; this.noise = .003; this.calibrationMinimum = Infinity; }
+    sample(rms, now) {
+      const elapsed = Math.max(0,Math.min(now-this.last,100));
+      this.last = now;
+      if (now-this.started <= 250) {
+        this.calibrationMinimum = Math.min(this.calibrationMinimum,rms);
+        this.noise = Math.max(.001,Math.min(.03,this.calibrationMinimum));
+        return 'listening';
+      }
+      const threshold = Math.max(.012,this.noise*3);
+      if (rms >= threshold) { this.voicedMs += elapsed; this.lastVoice = now; }
+      else if (this.lastVoice === null) this.noise = Math.min(.02,this.noise*.95+rms*.05);
+      if (this.voicedMs >= 350 && now-this.started >= 900 && this.lastVoice !== null && now-this.lastVoice >= 1100) return 'complete';
+      if (this.voicedMs < 350 && now-this.started >= 15000) return 'silent';
+      return 'listening';
+    }
+  }
+  function attachVoiceActivity(item) {
+    const context = continuousContext;
+    if (!context || context.state !== 'running') throw new Error('O áudio do navegador foi suspenso. Inicie a conversa contínua novamente.');
+    item.vad = new VoiceActivity(Date.now());
+    item.input = context.createMediaStreamSource(item.stream);
+    item.analyser = context.createAnalyser();
+    item.analyser.fftSize = 2048;
+    item.input.connect(item.analyser); // No connection to speakers: no mic monitoring.
+    const samples = new Float32Array(item.analyser.fftSize);
+    item.vadInterval = setInterval(() => {
+      if (recording !== item || item.stopping) return;
+      if (context.state !== 'running') { stopContinuous('O áudio do navegador foi suspenso. A conversa contínua foi pausada.',true); return; }
+      item.analyser.getFloatTimeDomainData(samples);
+      let energy = 0;
+      for (const value of samples) energy += value*value;
+      const decision = item.vad.sample(Math.sqrt(energy/samples.length),Date.now());
+      if (decision === 'complete') stopRecording(false);
+      if (decision === 'silent') stopContinuous('Não identificamos fala. O microfone foi desligado; inicie novamente quando quiser.');
+    },50);
   }
   function releaseStream(stream) { stream?.getTracks().forEach(track => track.stop()); }
   function resetRecordingUi() {
@@ -493,16 +650,22 @@
   function stopRecording(discard = false) {
     if (!recording) return;
     const item = recording;
+    if (item.stopping) { if (discard) item.discard = true; return; }
+    if (!discard && item.continuousGeneration !== null && item.vad?.voicedMs < 350) { stopContinuous('A gravação não teve fala suficiente. O microfone foi desligado.'); return; }
+    item.stopping = true;
     item.discard = discard;
     clearInterval(item.interval);
+    clearInterval(item.vadInterval);
     clearTimeout(item.timeout);
+    item.input?.disconnect();
+    item.analyser?.disconnect();
     if (item.recorder.state !== 'inactive') item.recorder.stop();
     releaseStream(item.stream);
     $('#voice-recording').hidden = true;
     $('#microphone-status').textContent = discard ? 'Microfone desligado' : 'Transcrevendo localmente…';
     if (discard) { notice('Gravação descartada. O áudio permaneceu no navegador.'); resetRecordingUi(); }
   }
-  $('#voice-cancel-recording').addEventListener('click',() => stopRecording(true));
+  $('#voice-cancel-recording').addEventListener('click',() => { if (continuousActive) stopContinuous(); else stopRecording(true); });
   $('#voice-finish-recording').addEventListener('click',() => stopRecording(false));
   async function pcmSamples(blob) {
     const DecodeContext = window.AudioContext || window.webkitAudioContext;
@@ -534,17 +697,20 @@
     resetRecordingUi();
     notice('Transcrição cancelada. O áudio permaneceu no navegador.');
   }
-  $('#voice-cancel-transcription').addEventListener('click',cancelTranscription);
+  $('#voice-cancel-transcription').addEventListener('click',() => { if (continuousActive) stopContinuous(); else cancelTranscription(); });
   async function transcribe(item) {
     if (recording === item) recording = null;
+    if (item.continuousGeneration !== null && (!continuousActive || item.continuousGeneration !== continuousGeneration)) item.discard = true;
     if (item.discard) return;
     const blob = new Blob(item.chunks,{type:item.mimeType});
     item.chunks = [];
-    if (!blob.size) { resetRecordingUi(); notice('A gravação ficou vazia. Tente novamente.',true); return; }
+    if (!blob.size) { if (continuousActive) stopContinuous('A gravação ficou vazia. O modo contínuo foi pausado.',true); else { resetRecordingUi(); notice('A gravação ficou vazia. Tente novamente.',true); } return; }
     const operation = {cancelled:false,sent:false};
     transcription = operation;
     $('#voice-transcribing').hidden = false;
-    notice('Transcrevendo neste dispositivo. Você poderá revisar o texto antes de enviar.');
+    const continuous = item.continuousGeneration !== null;
+    if (continuous) setContinuousState('transcribing');
+    notice(continuous ? 'Transcrevendo localmente. A pergunta será enviada automaticamente.' : 'Transcrevendo neste dispositivo. Você poderá revisar o texto antes de enviar.');
     try {
       const audio = await pcmSamples(blob);
       if (operation.cancelled) return;
@@ -555,6 +721,21 @@
       if (operation.cancelled) return;
       if (typeof data.text !== 'string' || !data.text.trim()) throw new Error('Não identificamos uma fala. Tente novamente, perto do microfone.');
       if (data.text.length > 2000) throw new Error('A transcrição ultrapassou o limite da pergunta. Grave um trecho mais curto.');
+      if (continuous) {
+        if (!continuousActive || item.continuousGeneration !== continuousGeneration || document.hidden) return;
+        const text = data.text.trim();
+        if (text.length < 2) throw new Error('A transcrição ficou curta demais. Grave novamente ou use o texto.');
+        $('#question').value = text;
+        $('#voice-continuous-transcript').textContent = text;
+        $('#voice-continuous-last').hidden = false;
+        transcription = null;
+        resetRecordingUi();
+        continuousTurnToken = `continuous-${continuousGeneration}-${++continuousSequence}`;
+        setContinuousState('waiting');
+        notice('Pergunta enviada a partir da transcrição. Se houver um erro, pare e esclareça a pergunta por texto.');
+        app.dispatchEvent(new CustomEvent('medlab:voice-submit',{detail:{text,token:continuousTurnToken}}));
+        return;
+      }
       $('#voice-transcript').value = data.text.trim();
       $('#voice-review').hidden = false;
       $('#voice-transcript').focus();
@@ -562,13 +743,16 @@
     } catch (error) {
       if (!operation.cancelled && error.name !== 'AbortError') {
         if (['NOT_READY','MODEL_LOAD_FAILED'].includes(error.code)) asr.terminate();
-        notice(error.message || 'Não foi possível transcrever. Grave novamente ou continue por texto.',true);
+        if (continuousActive && continuous) stopContinuous(error.message || 'A transcrição falhou. O modo contínuo foi pausado.',true);
+        else notice(error.message || 'Não foi possível transcrever. Grave novamente ou continue por texto.',true);
       }
     } finally {
       if (transcription === operation) { transcription = null; resetRecordingUi(); }
     }
   }
-  recordButton.addEventListener('click',async () => {
+  async function startRecording(continuousToken = null) {
+    if (continuousToken !== null && (!continuousActive || continuousToken !== continuousGeneration)) return;
+    if (continuousToken === null && continuousActive) return;
     if (!availableOrExplain() || conversationBusy || pendingPermission || recording || transcription || !asr.requireReady()) return;
     if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
       notice('A gravação requer um navegador compatível e uma conexão segura. Você pode continuar por texto.',true); return;
@@ -586,12 +770,22 @@
       const types = ['audio/webm;codecs=opus','audio/ogg;codecs=opus','audio/mp4','audio/webm'];
       const mimeType = types.find(type => MediaRecorder.isTypeSupported(type)) || '';
       const recorder = mimeType ? new MediaRecorder(stream,{mimeType,audioBitsPerSecond:96000}) : new MediaRecorder(stream);
-      const item = {recorder,stream,chunks:[],mimeType:recorder.mimeType || mimeType || 'audio/webm',discard:false,started:Date.now(),interval:null,timeout:null};
+      const item = {recorder,stream,chunks:[],mimeType:recorder.mimeType || mimeType || 'audio/webm',discard:false,stopping:false,started:Date.now(),interval:null,timeout:null,continuousGeneration:continuousToken};
       recording = item;
       recorder.addEventListener('dataavailable',event => { if (event.data.size) item.chunks.push(event.data); });
       recorder.addEventListener('stop',() => transcribe(item),{once:true});
-      recorder.addEventListener('error',() => { item.discard = true; stopRecording(true); recording = null; notice('O navegador interrompeu a gravação. Tente novamente ou continue por texto.',true); });
+      recorder.addEventListener('error',() => {
+        if (recording !== item || item.stopping) return;
+        if (continuousActive && continuousToken !== null) stopContinuous('O navegador interrompeu a gravação. A conversa contínua foi pausada.',true);
+        else { item.discard = true; stopRecording(true); recording = null; notice('O navegador interrompeu a gravação. Tente novamente ou continue por texto.',true); }
+      });
+      for (const track of stream.getTracks()) track.addEventListener('ended',() => {
+        if (recording !== item || item.stopping) return;
+        if (continuousActive) stopContinuous('O microfone foi desconectado ou interrompido. A conversa contínua foi pausada.',true);
+        else { stopRecording(true); notice('O microfone foi interrompido. Grave novamente ou continue por texto.',true); }
+      },{once:true});
       recorder.start(250);
+      if (continuousToken !== null) { attachVoiceActivity(item); setContinuousState('listening'); }
       $('#voice-recording').hidden = false;
       $('#voice-recording-time').textContent = '0:00';
       $('#microphone-status').textContent = 'Microfone ligado';
@@ -602,17 +796,21 @@
         $('#voice-recording-time').textContent = `${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')}`;
       },500);
       item.timeout = setTimeout(() => { if (recording === item) stopRecording(false); },maxSeconds*1000);
-      notice(`Grave uma pergunta de até ${maxSeconds} segundos. O áudio será transcrito neste navegador.`);
+      notice(continuousToken !== null
+        ? `Faça uma pergunta e pause por um instante. Ela será enviada após cerca de um segundo de silêncio (máximo ${maxSeconds}s).`
+        : `Grave uma pergunta de até ${maxSeconds} segundos. O áudio será transcrito neste navegador.`);
     } catch (error) {
       releaseStream(stream);
       if (permissionToken !== permissionGeneration) return;
-      if (recording) { clearInterval(recording.interval); clearTimeout(recording.timeout); recording.discard = true; recording = null; }
+      if (recording) { stopRecording(true); recording = null; }
       resetRecordingUi();
+      if (continuousToken !== null && continuousActive) stopContinuous('Não foi possível iniciar o microfone. A conversa contínua foi pausada.',true);
       if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') notice('O acesso ao microfone não foi permitido. Você pode habilitá-lo nas permissões do navegador ou continuar por texto.');
       else if (error.name === 'NotFoundError') notice('Não encontramos um microfone disponível. Conecte um microfone ou continue por texto.',true);
       else notice('Não foi possível iniciar o microfone. Verifique se outro aplicativo está usando o dispositivo e tente novamente.',true);
     } finally { if (permissionToken === permissionGeneration) pendingPermission = false; }
-  });
+  }
+  recordButton.addEventListener('click',() => startRecording());
   $('#voice-discard-transcript').addEventListener('click',() => {
     $('#voice-transcript').value = '';
     $('#voice-review').hidden = true;
@@ -635,6 +833,7 @@
   });
   app.addEventListener('medlab:tab-change',event => {
     if (event.detail.name !== 'chat') {
+      if (continuousActive) stopContinuous('Conversa contínua pausada ao mudar de etapa.');
       stopPlayback();
       if (recording) stopRecording(true);
       cancelTranscription();
@@ -642,6 +841,7 @@
     }
   });
   window.addEventListener('pagehide',() => {
+    if (continuousActive) stopContinuous('');
     pendingPermission = false;
     permissionGeneration++;
     if (recording) stopRecording(true);
@@ -650,5 +850,9 @@
     asr.terminate();
     tts.terminate();
   });
+  document.addEventListener('visibilitychange',() => {
+    if (document.hidden && continuousActive) stopContinuous('A página ficou oculta. O modo contínuo foi pausado e o microfone foi desligado.');
+  });
+  setContinuousState('idle');
   loadConfig();
 })();

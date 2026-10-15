@@ -83,6 +83,7 @@ O primeiro comando solicita a chave com **entrada oculta**, preserva as demais v
 | `SECRET_KEY` | Segredo aleatório próprio da instalação; não reutilizar exemplos. |
 | `DEEPSEEK_API_KEY` | Chave do projeto DeepSeek, armazenada somente no servidor. |
 | `LOCAL_VOICE_ENABLED` | `true` para oferecer a voz local; exige os runtimes estáticos preparados. |
+| `LOCAL_VOICE_ISOLATION` | `true` por padrão: emite COOP/COEP para permitir paralelismo no navegador. `false` desativa esses cabeçalhos do Flask. |
 | `DEMO_MODE` | `false`. O modo demonstrativo local é explicitamente separado. |
 | `CASE_REUSE_SCOPE` | `noncommercial` nesta instalação educacional privada; define quais licenças de fontes podem seguir para adaptação. |
 | `CASE_ALLOW_CLINICAL_FACTS` | `false` por padrão; `true` somente quando se deseja o fluxo separado de fatos clínicos, com fonte verificada e redação independente. |
@@ -102,13 +103,28 @@ python scripts/prepare_voice_assets.py
 
 O script usa Python padrão, baixa versões fixadas em `scripts/voice_assets.json`, confere tamanho e SHA256 e prepara `medlab/static/voice-local/`. Não compila modelos nem instala um servidor de inferência. Para essa preparação, o computador que executa o script precisa alcançar os endereços oficiais indicados no manifesto; isso pode ser feito antes do envio ao cPanel.
 
-O estudante ativa a voz antes do download dos modelos: cerca de **100 MB para Whisper tiny multilíngue** e **140 MB adicionais para Kokoro**, contando arquivos auxiliares. Os pesos vêm do Hugging Face, por HTTPS, diretamente ao navegador; as requisições de download não incluem o áudio. O cache local pode reutilizar os arquivos, mas pode ser apagado pelo navegador. Em redes institucionais, verifique o acesso ao Hugging Face e aos endereços de entrega usados pelo serviço. O download inicial e o consumo de memória não desaparecem por a inferência ser gratuita.
+O estudante ativa a voz antes do download dos modelos: cerca de **175 MB para Whisper base multilíngue** e **140 MB adicionais para Kokoro**, contando arquivos auxiliares. Os pesos vêm do Hugging Face, por HTTPS, diretamente ao navegador; as requisições de download não incluem o áudio. O cache local pode reutilizar os arquivos, mas pode ser apagado pelo navegador. Em redes institucionais, verifique o acesso ao Hugging Face e aos endereços de entrega usados pelo serviço. O download inicial e o consumo de memória não desaparecem por a inferência ser gratuita.
 
-Whisper transcreve perguntas de até **45 segundos**, convertidas localmente para mono a 16 kHz. O estudante pode corrigir a transcrição antes de enviá-la como texto. O áudio não é enviado ao Flask e não é armazenado no banco; a pergunta enviada passa a integrar o histórico textual. Kokoro lê respostas já salvas, usando Dora (`pf_dora`, feminina), Alex (`pm_alex`) ou Santa (`pm_santa`, masculinas), com opções limitadas ao gênero documentado no caso. O microfone exige HTTPS e permissão do navegador.
+Whisper transcreve perguntas de até **45 segundos**, convertidas localmente para mono a 16 kHz. No modo manual, o estudante pode corrigir a transcrição antes de enviá-la. Na [conversa contínua](CONVERSA_CONTINUA.md), a pausa ao terminar de falar inicia a transcrição e o envio automático; o microfone fica desligado durante a espera e a fala do paciente e volta a escutar ao final. O áudio não é enviado ao Flask e não é armazenado no banco; a pergunta enviada passa a integrar o histórico textual. Kokoro lê respostas já salvas, usando Dora (`pf_dora`, feminina), Alex (`pm_alex`) ou Santa (`pm_santa`, masculinas), com opções limitadas ao gênero documentado no caso. O microfone exige HTTPS e permissão do navegador.
 
-Whisper tenta WebGPU quando disponível, com alternativa WebAssembly em uma thread. **A síntese Kokoro usa sempre WebAssembly em uma thread**, no processador do computador ou celular. Não é necessário habilitar COOP/COEP para a aplicação; não remova a política CSP fornecida. Confira no domínio publicado se os arquivos `.js`, `.mjs`, `.wasm` e dados auxiliares em `/static/voice-local/` retornam HTTP 200 com tipo de conteúdo correto; um erro de MIME, CSP ou permissão pode impedir o carregamento. Nesses casos, a consulta por texto continua disponível.
+Whisper tenta WebGPU quando disponível, com alternativa WebAssembly em uma thread. **A síntese Kokoro usa sempre WebAssembly**, com até quatro threads quando o navegador oferece isolamento de origem, `SharedArrayBuffer` e capacidade de hardware. Com dois ou três processadores lógicos, usa duas threads; sem os requisitos, usa uma. Uma falha de inicialização paralela permite uma tentativa em uma thread. Não remova nem amplie a CSP fornecida: o runtime testado cria seus workers na mesma origem e funciona com `worker-src 'self'`.
 
-A voz não usa chave nem créditos de um provedor de fala; a conversa e a adaptação de casos continuam usando a DeepSeek paga. `DEMO_MODE=true` desativa DeepSeek, mas permite voz local sobre respostas demonstrativas. Voz sintética pode errar pronúncia, números e termos médicos; a transcrição precisa ser conferida pelo estudante. O teste em Samsung real ainda está pendente, e o desempenho deve ser verificado nos aparelhos da instituição. Consulte [créditos, fontes e licenças](CREDITOS_VOZ.md).
+O Flask emite `Cross-Origin-Opener-Policy: same-origin` e `Cross-Origin-Embedder-Policy: require-corp` quando `LOCAL_VOICE_ISOLATION=true`. Se Apache servir `/static/` diretamente, esses arquivos não passam pelo Flask: os cabeçalhos devem alcançar também os workers e seus recursos. No domínio dedicado, com `mod_headers` e permissão `AllowOverride FileInfo`, o `.htaccess` da raiz pública pode conter:
+
+```apache
+<IfModule mod_headers.c>
+    Header onsuccess unset Cross-Origin-Opener-Policy
+    Header always set Cross-Origin-Opener-Policy "same-origin"
+    Header onsuccess unset Cross-Origin-Embedder-Policy
+    Header always set Cross-Origin-Embedder-Policy "require-corp"
+</IfModule>
+```
+
+Preserve as regras Passenger existentes. Esse padrão evita duplicação entre cabeçalhos do aplicativo e do Apache; consulte [mod_headers](https://httpd.apache.org/docs/2.4/mod/mod_headers.html). Confira no navegador `crossOriginIsolated` e, na aba de rede, os cabeçalhos do documento e de `/static/voice-local/kokoro-worker.js`. As regras de isolamento estão no [guia de COOP/COEP](https://web.dev/articles/cross-origin-isolation-guide). Recursos externos acrescentados posteriormente precisam atender às regras de CORS/CORP. Para desabilitar o isolamento, configure `LOCAL_VOICE_ISOLATION=false` e retire também as diretivas equivalentes do Apache. Cabeçalhos inconsistentes podem impedir o carregamento do worker; a alternativa de uma thread depende de ele conseguir iniciar.
+
+Confira no domínio publicado se `.js`, `.mjs`, `.wasm` e dados auxiliares em `/static/voice-local/` retornam HTTP 200 com tipo de conteúdo correto. Falhas de MIME, CSP ou permissões podem impedir a voz; a consulta por texto continua disponível. O teste local sob CSP confirmou a execução paralela, mas não configura nem valida o Apache do provedor.
+
+A voz não usa chave nem créditos de um provedor de fala; a conversa e a adaptação de casos continuam usando a DeepSeek paga. `DEMO_MODE=true` desativa DeepSeek, mas permite voz local sobre respostas demonstrativas. Voz sintética pode errar pronúncia, números e termos médicos; a transcrição pode conter erros; o modo manual permite conferência antes de enviar e o modo contínuo permite interromper a alternância automática. O teste em Samsung real ainda está pendente, e o desempenho deve ser verificado nos aparelhos da instituição. Consulte [créditos, fontes e licenças](CREDITOS_VOZ.md).
 
 ### Banco de dados
 
@@ -373,7 +389,7 @@ Durante a preparação, `processed/ai-stages/` conserva respostas de etapas da I
 
 A DeepSeek habilita o cache automaticamente, sem uma flag de ativação. O acerto exige correspondência exata com uma unidade de prefixo já persistida; conteúdo comum entre duas chamadas não garante acerto imediato. A construção leva segundos e entradas sem uso podem ser removidas após horas ou dias. O serviço é de melhor esforço, sem taxa garantida ou permanência. [Guia oficial de cache](https://api-docs.deepseek.com/guides/kv_cache/).
 
-O MED LAB serializa mapas de forma determinística e coloca instruções, formatos e listas estáveis antes do caso, histórico e pergunta variáveis. Isso favorece reaproveitamento sem ampliar os dados clínicos enviados ao paciente. Não há chamadas de aquecimento nem repetição paga automática para criar cache. Os valores `prompt_cache_hit_tokens` e `prompt_cache_miss_tokens` informam o uso observado; armazenamento em cache não elimina a geração da saída nem garante custo zero.
+O BayesCore MedRounds serializa mapas de forma determinística e coloca instruções, formatos e listas estáveis antes do caso, histórico e pergunta variáveis. Isso favorece reaproveitamento sem ampliar os dados clínicos enviados ao paciente. Não há chamadas de aquecimento nem repetição paga automática para criar cache. Os valores `prompt_cache_hit_tokens` e `prompt_cache_miss_tokens` informam o uso observado; armazenamento em cache não elimina a geração da saída nem garante custo zero.
 
 Na administração, **Uso da IA** (`ADMIN_PATH/uso-ia`, por padrão `/gestao-medlab/uso-ia`) mostra conversas, avaliações e geração de casos pelo site, com filtros de 7 dias, 30 dias ou todo o período registrado. Uma operação pode fazer várias solicitações. O painel cobre chamadas desde a ativação deste registro, incluindo operações não concluídas; importações pelo Terminal continuam nos relatórios `aiUsage`/`aiUsageThisRun`.
 

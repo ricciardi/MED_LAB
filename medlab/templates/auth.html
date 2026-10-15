@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% set registering = mode == 'register' %}
-{% block title %}{{ 'Criar conta' if registering else 'Entrar' }} — MED LAB{% endblock %}
+{% block title %}{{ 'Criar conta' if registering else 'Entrar' }} — BayesCore MedRounds{% endblock %}
 {% block body_class %}auth-page{% endblock %}
 {% block content %}
 <main id="main" class="auth-layout container">
@@ -13,10 +13,10 @@
       <div class="form-field"><label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" placeholder="voce@exemplo.com" value="{{ request.form.get('email', '') }}" required {% if errors and errors.get('email') %}aria-invalid="true" aria-describedby="email-error"{% endif %}><span class="field-error" id="email-error">{{ errors.get('email', '') if errors else '' }}</span></div>
       <div class="form-field"><label for="password">Senha</label><div class="password-wrap"><input id="password" name="password" type="password" autocomplete="{{ 'new-password' if registering else 'current-password' }}" placeholder="{{ 'Pelo menos 10 caracteres' if registering else 'Sua senha' }}" required {% if registering %}minlength="10" maxlength="128"{% endif %} {% if errors and errors.get('password') %}aria-invalid="true" aria-describedby="password-error"{% endif %}><button type="button" data-toggle-password="password" aria-label="Mostrar senha">{{ icon('eye',19) }}</button></div><span class="field-error" id="password-error">{{ errors.get('password', '') if errors else '' }}</span></div>
       {% if registering %}<div class="form-field"><label for="password_confirm">Confirme sua senha</label><div class="password-wrap"><input id="password_confirm" name="password_confirm" type="password" autocomplete="new-password" placeholder="Digite a senha novamente" required><button type="button" data-toggle-password="password_confirm" aria-label="Mostrar confirmação de senha">{{ icon('eye',19) }}</button></div><span class="field-error" id="password_confirm-error">{{ errors.get('password_confirm', '') if errors else '' }}</span></div>{% endif %}
-      <button type="submit" class="button button-primary button-full">{{ 'Criar minha conta' if registering else 'Entrar no MED LAB' }} {{ icon('arrow',19) }}</button>
+      <button type="submit" class="button button-primary button-full">{{ 'Criar minha conta' if registering else 'Entrar no BayesCore MedRounds' }} {{ icon('arrow',19) }}</button>
     </form>
     <p class="auth-switch">{{ 'Já tem uma conta?' if registering else 'Sua jornada começa por aqui.' }} <a href="{{ url_for('web.login') if registering else url_for('web.register') }}">{{ 'Entrar' if registering else 'Criar conta' }} {{ icon('arrow',14) }}</a></p>
-    <div class="auth-disclaimer">{{ icon('info',16) }}<p>O MED LAB é uma ferramenta de aprendizado. As simulações não substituem orientação profissional ou atendimento médico. <a href="/privacidade">Conheça nossa política de privacidade.</a></p></div>
+    <div class="auth-disclaimer">{{ icon('info',16) }}<p>O BayesCore MedRounds é uma ferramenta de aprendizado. As simulações não substituem orientação profissional ou atendimento médico. <a href="/privacidade">Conheça nossa política de privacidade.</a></p></div>
   </section>
 </main>
 {% endblock %}

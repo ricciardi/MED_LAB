@@ -50,7 +50,7 @@ class SpeechService:
                     "A voz está desativada pela equipe. Você pode continuar por texto." if not self.enabled else
                     "Os recursos de voz ainda estão sendo preparados. Você pode continuar por texto."),
             models_asr={"worker_url": "/static/voice-local/whisper-worker.js",
-                        "download_mb": 100, "label": "Whisper · português"},
+                        "download_mb": 175, "label": "Whisper base · português"},
             models_tts={"worker_url": "/static/voice-local/kokoro-worker.js",
                         "download_mb": 140, "label": "Kokoro · português brasileiro"})
         return result

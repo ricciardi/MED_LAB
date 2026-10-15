@@ -1,7 +1,7 @@
 {% extends 'admin/base.html' %}
 {% set noncommercial_scope = config.get('CASE_REUSE_SCOPE', 'noncommercial') == 'noncommercial' %}
 {% macro amount(value) -%}{{ '{:,}'.format(value|int)|replace(',', '.') }}{%- endmacro %}
-{% block title %}Acervo de fontes — MED LAB{% endblock %}
+{% block title %}Acervo de fontes — BayesCore MedRounds{% endblock %}
 {% block admin_content %}
 <div class="source-page-heading"><div><p class="eyebrow">DA FONTE AO APRENDIZADO</p><h1>Um acervo.<br><em>Muitas possibilidades.</em></h1><p class="admin-muted">Acompanhe o caminho de cada relato, do registro original à prática em português.</p></div><span class="source-private-label">{{ icon('shield',15) }} CURADORIA PRIVADA</span></div>
 <section class="source-totals" aria-label="Contagens reais do acervo completo">

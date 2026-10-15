@@ -13,6 +13,7 @@ from .extensions import db
 from .models import ClinicalCase, Consultation, PerformedExam, Turn, User, utcnow
 from .security import api_login_required, consume_limit, login_rate_allowed, safe_next
 from .catalogue import filtered_cases, public_summary, public_title
+from .case_schema import UNKNOWN_FACT
 from .usage import capture_usage
 from .exam_media import exam_media_items, read_exam_media
 
@@ -225,6 +226,12 @@ def consultation(session_id):
         return redirect(url_for("web.result", session_id=training.id))
     case = training.case_snapshot
     profile = case.get("patientProfile", {})
+    occupation = profile.get("occupation", "")
+    if not occupation or not occupation.strip() or occupation.strip() == UNKNOWN_FACT:
+        occupation = ""
+    respondent = profile.get("respondent", "")
+    if not respondent or not respondent.strip() or respondent.strip() == UNKNOWN_FACT:
+        respondent = ""
     performed = {(e.exam_type, e.name): e.result for e in training.exams}
     catalog = lambda key, kind: [{"name": name, "type": kind, "result": performed.get((kind, name)),
         "media": exam_media_items(training, exam_name=name, exam_type=kind) if (kind, name) in performed else []}
@@ -232,7 +239,7 @@ def consultation(session_id):
     return render_template("consultation.html", training=public_session(training), patient={
         "name": profile.get("name", "Paciente"), "age": profile.get("age_value", ""),
         "age_unit": profile.get("age_unit", "anos"),
-        "gender": profile.get("gender", ""), "occupation": profile.get("occupation", ""),
+        "gender": profile.get("gender", ""), "occupation": occupation, "respondent": respondent,
         "chief_complaint": profile.get("chief_complaint", ""),
         "initials": "".join(w[0] for w in profile.get("name", "Paciente").split()[:2])},
         turns=[{"id": t.id, "question": t.question, "answer": t.answer, "intent": t.intent} for t in training.turns],
@@ -451,4 +458,4 @@ def privacy():
 
 @bp.get("/saude")
 def health():
-    return jsonify(status="ok", service="MED LAB")
+    return jsonify(status="ok", service="BayesCore MedRounds")

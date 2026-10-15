@@ -38,3 +38,60 @@ for (const type of ['load', 'synthesize']) {
     });
   }
 }
+
+for (const [name, isolated, shared, cores, expected] of [
+  ['not isolated', false, true, 10, 1],
+  ['SharedArrayBuffer unavailable', true, false, 10, 1],
+  ['unknown hardware', true, true, undefined, 1],
+  ['one core', true, true, 1, 1],
+  ['two cores', true, true, 2, 2],
+  ['three cores', true, true, 3, 2],
+  ['four cores', true, true, 4, 4],
+  ['many cores capped', true, true, 32, 4],
+]) {
+  test(`thread selection: ${name}`, () => {
+    const scope = { self: {}, URL, AbortController, Float32Array,
+      crossOriginIsolated: isolated, SharedArrayBuffer: shared ? SharedArrayBuffer : undefined,
+      navigator: { hardwareConcurrency: cores },
+    };
+    vm.runInNewContext(source + '; globalThis.observedThreads = chooseWasmThreads();', scope);
+    assert.equal(scope.observedThreads, expected);
+  });
+}
+
+test('a threaded load failure retries once in single-thread mode and reports its effective configuration', async () => {
+  const messages = []; let attempts = 0;
+  const scope = { self: {}, URL, AbortController, Float32Array,
+    crossOriginIsolated: true, SharedArrayBuffer, navigator: { hardwareConcurrency: 10 },
+    createPhonemizer: () => {}, LocalVoiceError: class extends Error {},
+    createKokoroPt: async () => { attempts++; if (attempts === 1) throw new Error('thread initialization failed'); return { device: 'wasm' }; },
+    postMessage: message => messages.push(message),
+  };
+  vm.runInNewContext(source, scope);
+  scope.self.onmessage({ data: { type: 'load', id: 'load' } });
+  await new Promise(setImmediate);
+  assert.equal(attempts, 2);
+  assert.equal(messages.at(-1).type, 'ready');
+  assert.equal(messages.at(-1).threads, 1);
+  assert.equal(messages.filter(x => x.stage === 'thread_fallback').length, 1);
+  scope.self.onmessage({ data: { type: 'load', id: 'reuse' } });
+  await new Promise(setImmediate);
+  assert.equal(attempts, 2);
+});
+
+test('both initialization failures produce one safe error without an unbounded retry loop', async () => {
+  const messages = []; let attempts = 0;
+  const scope = { self: {}, URL, AbortController, Float32Array,
+    crossOriginIsolated: true, SharedArrayBuffer, navigator: { hardwareConcurrency: 10 },
+    createPhonemizer: () => {}, LocalVoiceError: class extends Error {},
+    createKokoroPt: async () => { attempts++; throw new Error('private runtime details'); },
+    postMessage: message => messages.push(message),
+  };
+  vm.runInNewContext(source, scope);
+  scope.self.onmessage({ data: { type: 'load', id: 'load' } });
+  await new Promise(setImmediate);
+  assert.equal(attempts, 2);
+  assert.equal(messages.at(-1).type, 'error');
+  assert.equal(messages.at(-1).code, 'TTS_UNAVAILABLE');
+  assert.ok(!messages.at(-1).message.includes('private runtime details'));
+});

@@ -1,5 +1,5 @@
 {% extends 'app_base.html' %}
-{% block title %}Casos clínicos — MED LAB{% endblock %}
+{% block title %}Casos clínicos — BayesCore MedRounds{% endblock %}
 {% block app_content %}
 <section class="page-heading"><div><p class="eyebrow">CADA PACIENTE, UMA HISTÓRIA</p><h1>Seu próximo <em>encontro.</em></h1><p>Escolha uma área, explore um cenário ou deixe o próximo caso surpreender você.</p></div></section>
 <section class="random-banner"><div class="random-icon">{{ icon('shuffle',29) }}</div><div><h2>Deixe a curiosidade escolher.</h2><p>{% if selected_specialty or selected_case_type or selected_difficulty or search_query %}Um caso surpresa dentro dos filtros que você escolheu.{% else %}Receba um caso surpresa e pratique com um novo desafio.{% endif %}</p></div><form method="post" action="/casos/iniciar"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="specialty" value="{{ selected_specialty or '' }}"><input type="hidden" name="case_type" value="{{ selected_case_type or '' }}"><input type="hidden" name="difficulty" value="{{ selected_difficulty or '' }}"><input type="hidden" name="q" value="{{ search_query or '' }}"><button type="submit" class="button button-primary">Sortear um caso {{ icon('arrow',18) }}</button></form></section>

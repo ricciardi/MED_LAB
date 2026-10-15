@@ -17,8 +17,8 @@
  */
 import { env, pipeline } from '/static/voice-local/vendor/transformers.js';
 
-export const WHISPER_MODEL = 'onnx-community/whisper-tiny';
-export const WHISPER_REVISION = 'ff4177021cc41f7db950912b73ea4fdf7d01d8e7';
+export const WHISPER_MODEL = 'onnx-community/whisper-base';
+export const WHISPER_REVISION = '1846881b6b3a3024392c1eea3ad983695bc23925';
 export const SAMPLE_RATE = 16000;
 export const MAX_SECONDS = 45;
 export const WHISPER_DTYPE = Object.freeze({ encoder_model: 'fp32', decoder_model_merged: 'q8' });
@@ -31,7 +31,7 @@ env.useBrowserCache = typeof self.caches !== 'undefined';
 env.useFS = false;
 env.useFSCache = false;
 env.useWasmCache = false;
-env.cacheKey = 'medlab-whisper-tiny-v1';
+env.cacheKey = 'medlab-whisper-base-v1';
 env.backends.onnx.wasm.numThreads = 1;
 env.backends.onnx.wasm.proxy = false;
 env.backends.onnx.wasm.wasmPaths = '/static/voice-local/ort/';

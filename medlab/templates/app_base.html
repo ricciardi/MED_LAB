@@ -2,7 +2,7 @@
 {% block body_class %}app-page{% endblock %}
 {% block navigation %}
 <aside class="sidebar" id="sidebar">
-  <a class="brand" href="{{ url_for('web.dashboard') }}" aria-label="MED LAB, meu painel"><span class="brand-symbol">{{ icon('pulse',24) }}</span><span>MED<span class="brand-lab">LAB</span></span></a>
+  {{ brand(url_for('web.dashboard'), 'meu painel') }}
   <div class="workspace-label">SEU ESPAÇO DE PRÁTICA</div>
   <nav class="side-nav" aria-label="Navegação principal">
     <a href="{{ url_for('web.dashboard') }}" class="{{ 'active' if request.endpoint == 'web.dashboard' else '' }}" {% if request.endpoint == 'web.dashboard' %}aria-current="page"{% endif %}>{{ icon('grid',20) }}<span>Visão geral</span></a>
@@ -16,4 +16,4 @@
   <header class="app-topbar"><div class="topbar-left"><button class="mobile-menu icon-button" type="button" data-sidebar-toggle aria-controls="sidebar" aria-expanded="false" aria-label="Abrir menu">{{ icon('menu',22) }}</button><span>APRENDER É UMA PRÁTICA CONTÍNUA.</span></div><div class="topbar-status"><span class="live-dot"></span> Ambiente de simulação <span class="small-avatar">{{ current_user.name[:1]|upper if current_user.name else 'M' }}</span></div></header>
 {% endblock %}
 {% block content %}<main id="main" class="app-main">{% block app_content %}{% endblock %}</main>{% endblock %}
-{% block footer %}<footer class="app-footer"><span>MED LAB <span class="footer-divider">/</span> Conhecimento em cuidado.</span><span>Uso exclusivamente educacional. <a href="/privacidade">Privacidade</a></span></footer></div><button type="button" class="sidebar-scrim" data-sidebar-toggle aria-label="Fechar menu"></button>{% endblock %}
+{% block footer %}<footer class="app-footer"><span>BayesCore MedRounds <span class="footer-divider">/</span> Conhecimento em cuidado.</span><span>Uso exclusivamente educacional. <a href="/privacidade">Privacidade</a></span></footer></div><button type="button" class="sidebar-scrim" data-sidebar-toggle aria-label="Fechar menu"></button>{% endblock %}

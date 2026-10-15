@@ -33,8 +33,8 @@ test('only the explicit load request downloads model assets, with pinned multili
   assert.equal(h.messages.at(-1).code,'NOT_READY'); assert.equal(h.calls.length,0);
   await h.send({id:'load',type:'load'});
   assert.equal(h.calls.length,1);
-  assert.equal(h.calls[0].model,'onnx-community/whisper-tiny');
-  assert.equal(h.calls[0].options.revision,'ff4177021cc41f7db950912b73ea4fdf7d01d8e7');
+  assert.equal(h.calls[0].model,'onnx-community/whisper-base');
+  assert.equal(h.calls[0].options.revision,'1846881b6b3a3024392c1eea3ad983695bc23925');
   assert.equal(h.calls[0].options.dtype.encoder_model,'fp32');
   assert.equal(h.calls[0].options.dtype.decoder_model_merged,'q8');
   assert.equal(h.messages.at(-1).type,'ready');

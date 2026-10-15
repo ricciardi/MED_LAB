@@ -1,6 +1,6 @@
 {% extends 'app_base.html' %}
 {% from 'exam_media.html' import media_card %}
-{% block title %}Seu feedback — MED LAB{% endblock %}
+{% block title %}Seu feedback — BayesCore MedRounds{% endblock %}
 {% block app_content %}
 <section class="page-heading"><div><p class="eyebrow">CADA EXPERIÊNCIA DEIXA UM APRENDIZADO</p><h1>Um novo passo na<br><em>sua evolução.</em></h1><p>Consulta com {{ training.patient_name }} <span class="inline-dot">·</span> {{ training.specialty }}</p></div><a class="button button-secondary" href="{{ url_for('web.history') }}">{{ icon('history',17) }} Minha trajetória</a></section>
 {% if evaluation.verification %}<div class="educational-note" data-evaluation-verification>{{ icon('shield',18) }}<div><strong>Conferência das evidências</strong><p>{{ evaluation.verification.message }}</p></div></div>{% endif %}
