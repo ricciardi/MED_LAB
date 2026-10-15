@@ -266,11 +266,11 @@ def translated_units(path):
                     raise ValueError("O lote mistura configurações de tradução.")
                 metadata = identity
                 priority = 2 if edited else int(isinstance(item.get("recoverySource"), dict))
+                if item["id"] in values and priorities[item["id"]] > priority:
+                    continue
                 if item["id"] in values and values[item["id"]] != item["textPt"]:
                     if priorities[item["id"]] == priority:
                         raise ValueError("Traduções conflitantes da mesma unidade.")
-                    if priorities[item["id"]] > priority:
-                        continue
                 values[item["id"]] = item["textPt"]
                 priorities[item["id"]] = priority
                 if edited:

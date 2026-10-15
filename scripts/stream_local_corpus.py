@@ -31,7 +31,7 @@ class TranslationTail:
         self.failed = set()
 
     def read(self, path):
-        """Read complete appended records; follow atomic partial→final rename."""
+        """Return new or amended units; follow atomic partial→final rename."""
         path = Path(path)
         partial = path.with_name(path.stem + ".partial" + path.suffix)
         actual = path if path.exists() else partial
@@ -84,13 +84,14 @@ class TranslationTail:
                 if self.metadata is not None and self.metadata != identity:
                     raise ValueError("Diários misturam configurações de tradução.")
                 priority = 2 if edited else int(isinstance(item.get("recoverySource"), dict))
+                if identifier in self.values and self.priorities[identifier] > priority:
+                    continue
                 if identifier in self.values and self.values[identifier] != translated:
                     if self.priorities[identifier] == priority:
                         raise ValueError("Traduções conflitantes da mesma unidade.")
-                    if self.priorities[identifier] > priority:
-                        continue
                 self.metadata = identity
-                if identifier not in self.values:
+                if (identifier not in self.values or self.values[identifier] != translated
+                        or (edited is not None and self.post_edits.get(identifier) != edited)):
                     added.add(identifier)
                 self.values[identifier] = translated
                 self.priorities[identifier] = priority
@@ -103,7 +104,8 @@ class TranslationTail:
 
 class ReadyCases:
     def __init__(self, output):
-        self.waiting = defaultdict(set)
+        self.dependents = defaultdict(set)
+        self.available = set()
         self.remaining = {}
         self.package_hashes = {}
         self.ready = set()
@@ -117,12 +119,15 @@ class ReadyCases:
             self.remaining[path.stem] = len(units)
             self.package_hashes[path.stem] = checksum(path)
             for unit in units:
-                self.waiting[unit].add(path.stem)
+                self.dependents[unit].add(path.stem)
 
     def accept(self, units):
         for unit in units:
-            for pmcid in self.waiting.pop(unit, ()):
-                self.remaining[pmcid] -= 1
+            first_translation = unit not in self.available
+            self.available.add(unit)
+            for pmcid in self.dependents.get(unit, ()):
+                if first_translation:
+                    self.remaining[pmcid] -= 1
                 if self.remaining[pmcid] == 0:
                     self.ready.add(pmcid)
 
@@ -182,6 +187,8 @@ def stream(output, processed, journals, *, authorization_reference, apply=False,
             if completed:
                 latest = integrate(completed)
                 integrated.update(completed)
+                for pmcid in completed:
+                    rejected.pop(pmcid, None)
             for error in result["errors"]:
                 rejected[error["pmcid"]] = error
             index.ready.difference_update(identifiers)

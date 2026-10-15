@@ -162,6 +162,47 @@ def test_assistant_post_edit_has_hash_bound_provenance_scoped_to_each_case(tmp_p
         stream.TranslationTail().read(second)
 
 
+@pytest.mark.parametrize("same_text", [False, True])
+def test_post_edit_rebuilds_completed_dependents_without_releasing_incomplete_case(tmp_path, same_text):
+    source = "Upper limb weakness."
+    corpus(tmp_path, {"PMC1": [source], "PMC2": [source, "Pending examination."]})
+    original = record(source, "Fraqueza do membro superior." if same_text else "Fraqueza da perna.")
+    edited = record(source, "Fraqueza do membro superior.")
+    edited["translation"]["postEditing"] = {
+        "method": "assistant_post_edit", "actor": "Codex", "sourceSha256": original["id"],
+        "translationSha256": stream.text_id(edited["textPt"]), "numbersAndUnitsChecked": True}
+    primary, correction = tmp_path / "primary.jsonl", tmp_path / "correction.jsonl"
+    primary.write_bytes(line(original)); correction.write_bytes(line(edited))
+    tail, index = stream.TranslationTail(), stream.ReadyCases(tmp_path)
+    index.accept(tail.read(primary))
+    assert index.ready == {"PMC1"}
+    index.ready.clear()  # First version has already been assembled.
+    index.accept(tail.read(correction))
+    assert index.ready == {"PMC1"} and index.remaining == {"PMC1": 0, "PMC2": 1}
+    assert tail.values[original["id"]] == edited["textPt"]
+    index.ready.clear()
+    index.accept(tail.read(correction))
+    assert not index.ready  # Reading the same append twice creates no rebuild loop.
+
+
+def test_equal_older_translation_cannot_demote_post_edit_priority(tmp_path):
+    from scripts.local_corpus import translated_units
+    source = "Pain."
+    edited, primary = record(source, "Dor."), record(source, "Dor.")
+    edited["translation"]["postEditing"] = {
+        "method": "assistant_post_edit", "actor": "Codex", "sourceSha256": edited["id"],
+        "translationSha256": stream.text_id(edited["textPt"]), "numbersAndUnitsChecked": True}
+    recovery = record(source, "Dor referida.", recoverySource={"sourceSha256": edited["id"]})
+    paths = [tmp_path / (str(i) + ".jsonl") for i in range(3)]
+    for path, row in zip(paths, [edited, primary, recovery]):
+        path.write_bytes(line(row))
+    tail = stream.TranslationTail()
+    assert tail.read(paths[0]) == {edited["id"]}
+    assert tail.read(paths[1]) == tail.read(paths[2]) == set()
+    assert tail.priorities[edited["id"]] == 2
+    assert translated_units(paths)[0] == tail.values == {edited["id"]: "Dor."}
+
+
 @pytest.mark.parametrize("mutation,message", [
     (lambda row: row.update(text="Different original."), "Identidade"),
     (lambda row: row.update(textPt="Conflicting translation."), "conflitantes"),
