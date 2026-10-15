@@ -43,12 +43,13 @@ def restore_bundled_inventory():
 
 
 def restore_bundled_drafts(bundle_path=None):
-    """Restore reviewed package content as private drafts, without XML claims.
+    """Restore drafts and explicitly authorized provisional cases, without XML claims.
 
     The complete batch is validated against the local inventory before any
-    draft or source is changed. Existing cases retain their data and review.
+    draft or source is changed. Existing cases retain their data and review;
+    exact untouched private drafts may receive a new provisional authorization.
     """
-    from .case_schema import CaseValidationError, source_license_allowed, validate_case
+    from .case_schema import CaseValidationError, is_provisionally_accepted, source_license_allowed, validate_case
     from .catalogue import case_type_for
     from .models import SourceExclusion, SourceRecord
     from .source_registry import _BASE_PROVENANCE
@@ -57,7 +58,7 @@ def restore_bundled_drafts(bundle_path=None):
     sharded = Path(__file__).parent / "data" / "real_case_drafts"
     if bundle_path is None and sharded.is_dir():
         bundle = sharded
-    report = {"new": 0, "unchanged": 0, "skipped_policy": 0, "skipped_excluded": 0}
+    report = {"new": 0, "unchanged": 0, "skipped_policy": 0, "skipped_excluded": 0, "provisional": 0, "promoted": 0}
     if bundle.is_dir():
         from .draft_bundle import bundle_shards
         try:
@@ -79,7 +80,7 @@ def restore_bundled_drafts(bundle_path=None):
         payloads = json.loads(bundle.read_text(encoding="utf-8"))
         if not isinstance(payloads, list):
             raise ValueError("draft bundle must be a list")
-        planned, identities = [], set()
+        planned, promotions, identities = [], [], set()
         with db.session.no_autoflush:
             for payload in payloads:
                 data = validate_case(payload)
@@ -113,16 +114,29 @@ def restore_bundled_drafts(bundle_path=None):
                     continue
                 existing = db.session.scalar(select(ClinicalCase).where(ClinicalCase.slug == data["caseId"]))
                 if existing is not None:
-                    report["unchanged"] += 1
+                    # A package can newly authorize an untouched old draft.
+                    # Historical authorization on a private case means deliberate
+                    # suspension and must never be used to republish it here.
+                    previous = existing.data
+                    if (is_provisionally_accepted(data) and not existing.is_published
+                            and isinstance(previous, dict) and previous.get("reviewStatus") == "review_required"
+                            and "useAuthorization" not in previous
+                            and previous == {key: value for key, value in data.items() if key != "useAuthorization"}):
+                        if source.clinical_case_id not in {None, existing.id}:
+                            raise ValueError("source already linked to a different case")
+                        promotions.append((existing, data["useAuthorization"], source))
+                    else:
+                        report["unchanged"] += 1
                     continue
                 if source.clinical_case_id is not None:
                     raise ValueError("source already linked to a different case")
                 data["reviewStatus"] = "review_required"
                 planned.append((data, source))
         for data, source in planned:
+            provisional = is_provisionally_accepted(data)
             case = ClinicalCase(slug=data["caseId"], title=data["caseTitle"], specialty=data["specialty"],
                 case_type=case_type_for(data), difficulty=data["difficulty"], summary=data["summary"],
-                data=data, is_generated=False, is_published=False)
+                data=data, is_generated=False, is_published=provisional)
             db.session.add(case)
             db.session.flush()
             source.clinical_case_id = case.id
@@ -136,13 +150,24 @@ def restore_bundled_drafts(bundle_path=None):
             # verified and checkpoint hashes describe local source verification;
             # a portable draft alone must never establish or overwrite them.
             report["new"] += 1
+            report["provisional"] += int(provisional)
+        for existing, authorization, source in promotions:
+            existing.data = {**existing.data, "useAuthorization": authorization}
+            existing.is_published = True
+            source.clinical_case_id = existing.id
+            source.translated = True
+            source.import_status = "draft"
+            report["promoted"] += 1
+            report["provisional"] += 1
         db.session.commit()
     except (OSError, UnicodeError, ValueError, TypeError, KeyError, CaseValidationError, SQLAlchemyError):
         db.session.rollback()
         raise click.ClickException("O pacote de rascunhos reais é inválido ou não corresponde ao acervo. Nenhum rascunho deste lote foi alterado.") from None
     click.echo(f"Rascunhos reais: {report['new']} novos; {report['unchanged']} já existentes; "
+        f"{report['promoted']} rascunhos anteriores disponibilizados por nova autorização; "
         f"{report['skipped_policy']} ignorados pela política atual; {report['skipped_excluded']} fontes excluídas. "
-        "Os novos rascunhos permanecem privados; a verificação local das fontes é contada separadamente.")
+        f"{report['provisional']} disponibilizados por autorização provisória, com revisão clínica pendente. "
+        "Os demais rascunhos permanecem privados; a verificação local das fontes é contada separadamente.")
     return report
 
 
@@ -151,22 +176,30 @@ def register_commands(app):
     @click.option("--output", type=click.Path(file_okay=False, path_type=Path), required=True)
     @click.option("--shard-size", type=click.IntRange(1, 500), default=100, show_default=True)
     def export_real_drafts(output, shard_size):
-        """Exporta fichas reais privadas em lotes pequenos, sem usuários ou conversas."""
+        """Exporta fichas reais pendentes, incluindo autorização provisória explícita."""
         from .draft_bundle import write_bundle
+        from .case_schema import is_provisionally_accepted
         from .source_registry import excluded_pmcids
         excluded = excluded_pmcids()
         def cases():
-            query = select(ClinicalCase).where(ClinicalCase.is_published.is_(False)).order_by(ClinicalCase.slug)
+            query = select(ClinicalCase).order_by(ClinicalCase.slug)
             for case in db.session.scalars(query).yield_per(50):
                 data = case.data
                 if (data.get("catalogType") == "published_case" and data.get("reviewStatus") == "review_required"
-                        and data.get("provenance", {}).get("pmcid") not in excluded):
+                        and data.get("provenance", {}).get("pmcid") not in excluded
+                        and (not case.is_published or is_provisionally_accepted(data))):
+                    # A deliberately suspended case must remain private when
+                    # reinstalled, even if its historical JSON kept authorization.
+                    if not case.is_published and "useAuthorization" in data:
+                        import copy
+                        data = copy.deepcopy(data)
+                        data.pop("useAuthorization")
                     yield data
         try:
             manifest = write_bundle(cases(), output, shard_size=shard_size)
         except (OSError, ValueError, TypeError, KeyError):
             raise click.ClickException("Não foi possível exportar os rascunhos. Use um diretório vazio e confira as fichas; um manifesto só é criado após concluir todos os lotes.") from None
-        click.echo(f"Exportados {manifest['cases']} rascunhos privados em {len(manifest['shards'])} lotes; nenhum caso foi publicado.")
+        click.echo(f"Exportados {manifest['cases']} rascunhos em {len(manifest['shards'])} lotes privados; autorizações provisórias ativas foram preservadas. Nenhum estado local foi alterado.")
 
     @app.cli.command("init-db")
     def init_db():
@@ -198,11 +231,25 @@ def register_commands(app):
         from .catalog import SEED_CASE_TYPES, SPECIALTY_ALIASES
         from .catalogue import case_type_for
         upgrade_database()
-        for case in db.session.execute(select(ClinicalCase)).scalars().yield_per(100):
-            data = dict(case.data)
-            data.setdefault("caseType", SEED_CASE_TYPES.get(case.slug, "Primeira consulta"))
-            data["specialty"] = SPECIALTY_ALIASES.get(case.specialty, case.specialty)
-            case.data, case.specialty, case.case_type = data, data["specialty"], case_type_for(data)
+        last_id = 0
+        final_id = db.session.scalar(select(ClinicalCase.id).order_by(ClinicalCase.id.desc()).limit(1)) or 0
+        while last_id < final_id:
+            # Bound the SQL result itself: MySQL's default buffered cursor would
+            # otherwise hold every JSON document before ORM yield_per applies.
+            batch = db.session.execute(select(ClinicalCase).where(
+                ClinicalCase.id > last_id, ClinicalCase.id <= final_id
+            ).order_by(ClinicalCase.id).limit(100)).scalars().all()
+            if not batch:
+                break
+            for case in batch:
+                data = dict(case.data)
+                data.setdefault("caseType", SEED_CASE_TYPES.get(case.slug, "Primeira consulta"))
+                data["specialty"] = SPECIALTY_ALIASES.get(case.specialty, case.specialty)
+                if data != case.data:
+                    case.data = data
+                case.specialty, case.case_type = data["specialty"], case_type_for(data)
+            last_id = batch[-1].id
+            db.session.flush()
         db.session.commit()
         restore_bundled_inventory()
         restore_bundled_drafts()

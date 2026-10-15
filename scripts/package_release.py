@@ -140,7 +140,7 @@ def write_archive(output: Path, root: Path = ROOT, source_registry: Path | None 
                 for payload in payloads:
                     data = validate_case(payload)
                     if data["catalogType"] != "published_case" or payload.get("reviewStatus") != "review_required":
-                        raise ValueError("Only private real drafts may be bundled")
+                        raise ValueError("Real cases must retain their pending-review state")
                     origin = data["provenance"]
                     identity = (origin["dataset"], origin["pmcid"])
                     record = registry_records.get(identity)
@@ -157,7 +157,7 @@ def write_archive(output: Path, root: Path = ROOT, source_registry: Path | None 
                 draft_files.append((case_drafts / "manifest.json", "medlab/data/real_case_drafts/manifest.json",
                                     hashlib.sha256(manifest_bytes).hexdigest()))
         except Exception:
-            raise SystemExit("Os rascunhos devem ser casos reais válidos, privados, únicos e vinculados ao inventário incluído, sem fontes excluídas.") from None
+            raise SystemExit("As fichas devem ser casos reais válidos, únicos, com revisão pendente e vinculados ao inventário incluído, sem fontes excluídas. O uso provisório exige autorização explícita válida.") from None
     paths = release_files(root)
     output.parent.mkdir(parents=True, exist_ok=True)
     manifest = []
@@ -211,7 +211,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / "dist" / "medlab-cpanel.zip")
     parser.add_argument("--source-registry", type=Path, help="Exportação privada metadata-only a incluir e registrar no init-db/upgrade-db.")
-    parser.add_argument("--case-drafts", type=Path, help="Lista JSON ou diretório de lotes privados com manifesto, vinculados ao inventário; restauração sem publicar.")
+    parser.add_argument("--case-drafts", type=Path, help="Lista JSON ou lotes com manifesto, vinculados ao inventário. Preserva revisão pendente; restauração disponibiliza apenas fichas com autorização provisória explícita válida.")
     arguments = parser.parse_args()
     count, digest = write_archive(arguments.output, source_registry=arguments.source_registry, case_drafts=arguments.case_drafts)
     print(f"Pacote: {arguments.output.resolve()}")

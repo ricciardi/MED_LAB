@@ -1,4 +1,8 @@
-"""Bounded, checksummed shards for restoring a large private case library."""
+"""Private release shards, including explicit provisional-use authorizations.
+
+All cases retain pending clinical review. Only useAuthorization may request
+availability on restore; the container's name never confers approval.
+"""
 import hashlib
 import json
 from pathlib import Path
@@ -45,7 +49,7 @@ def bundle_shards(directory):
             identity = (origin.get("dataset"), origin.get("pmcid"))
             if (case["catalogType"] != "published_case" or case["reviewStatus"] != "review_required"
                     or case["caseId"] in case_ids or identity in sources):
-                raise ValueError("Duplicate or nonprivate case in bundle")
+                raise ValueError("Duplicate case or case without pending review in bundle")
             case_ids.add(case["caseId"])
             sources.add(identity)
         count += len(payload)
@@ -87,7 +91,7 @@ def write_bundle(cases, directory, *, shard_size=100):
         identity = (data["provenance"]["dataset"], data["provenance"]["pmcid"])
         if (data["catalogType"] != "published_case" or data["reviewStatus"] != "review_required"
                 or data["caseId"] in identities or identity in sources):
-            raise ValueError("Only unique, private real drafts may be exported")
+            raise ValueError("Only unique real cases with pending review may be exported")
         identities.add(data["caseId"])
         sources.add(identity)
         pending.append(data)

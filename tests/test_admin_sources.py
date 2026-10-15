@@ -170,3 +170,29 @@ def test_checked_restrictions_and_failed_verification_are_not_presented_as_pendi
     assert "Verificação com falha" in body
     assert "Verificação pendente" not in body
     assert "tradução proibida" not in body
+
+
+def test_source_page_loads_case_review_state_in_one_page_query(app, login, case_data):
+    from copy import deepcopy
+    from sqlalchemy import event
+    with app.app_context():
+        for index in range(1,26):
+            data = deepcopy(case_data); data['reviewStatus'] = 'review_required'
+            row = ClinicalCase(slug=f'page-benchmark-{index}',title='Synthetic case',specialty='Clínica médica',
+                summary='Synthetic case',difficulty='Iniciante',data=data,is_published=True,is_generated=False)
+            db.session.add(row);db.session.flush()
+            add_source(index,clinical_case_id=row.id)
+        db.session.commit()
+    client = login('admin@example.invalid',admin=True)
+    deferred = []
+    def refreshed(value, context, attributes):
+        if attributes is None or 'data' in attributes: deferred.append(value.id)
+    event.listen(ClinicalCase,'refresh',refreshed)
+    try:
+        response = client.get('/gestao-teste/acervo')
+    finally:
+        event.remove(ClinicalCase,'refresh',refreshed)
+    assert response.status_code == 200
+    assert len(source_ids(response.text)) == 25
+    assert response.text.count('Disponível · revisão pendente') == 25
+    assert deferred == []

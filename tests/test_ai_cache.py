@@ -115,6 +115,18 @@ def test_evaluator_omits_provenance_but_preserves_missing_facts_and_clinical_mom
     assert "PRIVATE_" not in content
 
 
+def test_reference_reasoning_is_private_grading_context_only(seed, service, monkeypatch):
+    from medlab.ai import _evaluation_case
+    seed["referenceReasoning"] = "Referência exclusiva: os achados sustentam o diagnóstico final."
+    assert _evaluation_case(seed)["referenceReasoning"] == seed["referenceReasoning"]
+    post = Mock(side_effect=[reply({"intents": ["Alergias"]}), reply({"answer": "Não tenho alergias conhecidas."})])
+    monkeypatch.setattr("medlab.ai.requests.post", post)
+    service.respond(seed, "Você tem alergias?", [])
+    assert post.call_count == 2
+    assert all("Referência exclusiva" not in json.dumps(call.kwargs, ensure_ascii=False)
+               for call in post.call_args_list)
+
+
 def test_source_preparation_template_is_identical_across_articles(service, monkeypatch):
     post = Mock(side_effect=[reply(adaptation()), reply(AUDIT_RESPONSE), reply(adaptation()), reply(AUDIT_RESPONSE)])
     monkeypatch.setattr("medlab.ai.requests.post", post)

@@ -144,7 +144,7 @@ def sources():
     if import_status not in SOURCE_STATUS_LABELS:
         import_status = ""
     query = select(SourceRecord).options(
-        selectinload(SourceRecord.clinical_case).load_only(ClinicalCase.id, ClinicalCase.title, ClinicalCase.is_published)
+        selectinload(SourceRecord.clinical_case).load_only(ClinicalCase.id, ClinicalCase.title, ClinicalCase.is_published, ClinicalCase.data)
     )
     if search:
         # Wildcards typed by an editor are literal search characters.
@@ -236,6 +236,7 @@ def edit_case(case_id):
                         section[field] = [s.strip() for s in request.form[form_key].splitlines() if s.strip()]
         try:
             data = validate_case(data)
+            data.pop("useAuthorization", None)
             case.data, case.title, case.summary = data, data["caseTitle"], data["summary"]
             case.case_type = case_type_for(data)
             case.is_published = False
@@ -250,7 +251,7 @@ def edit_case(case_id):
 @bp.post("/casos/<int:case_id>/publicar")
 @admin_required
 def publish_case(case_id):
-    from .case_schema import CaseValidationError, source_license_allowed, validate_case
+    from .case_schema import CaseValidationError, is_nonhuman_case, source_license_allowed, validate_case
     case = db.get_or_404(ClinicalCase, case_id)
     if case.is_published:
         case.is_published = False
@@ -265,17 +266,46 @@ def publish_case(case_id):
         except CaseValidationError as exc:
             flash(str(exc), "error")
             return redirect(url_for("admin.edit_case", case_id=case.id))
+        if is_nonhuman_case(data):
+            flash("Relatos de animais permanecem no acervo privado, separados da prática clínica humana.", "error")
+            return redirect(url_for("admin.edit_case", case_id=case.id))
         if data.get("catalogType") == "published_case" and not source_license_allowed(
             data.get("provenance"), current_app.config.get("CASE_REUSE_SCOPE", "commercial"),
             current_app.config.get("CASE_ALLOW_CLINICAL_FACTS", False)
         ):
             flash("A origem deste caso não atende à política de reutilização atual. Confira a licença e a configuração de preparação factual antes de publicar.", "error")
             return redirect(url_for("admin.edit_case", case_id=case.id))
+        data.pop("useAuthorization", None)
         data["reviewStatus"] = "reviewed"
         case.data, case.is_published = data, True
         case.case_type = case_type_for(data)
         db.session.commit()
         flash("Caso publicado e disponível para os alunos.", "success")
+    return redirect(url_for("admin.edit_case", case_id=case.id))
+
+
+@bp.post("/casos/<int:case_id>/uso-provisorio")
+@admin_required
+def provisional_case(case_id):
+    """Availability authorized by the owner, separately from clinical approval."""
+    from .case_schema import CaseValidationError, source_license_allowed
+    from .local_case_integration import authorize_provisional_use
+    case = db.get_or_404(ClinicalCase, case_id)
+    if request.form.get("provisional_confirmed") != "yes":
+        flash("Confirme a disponibilização com revisão clínica pendente.", "error")
+        return redirect(url_for("admin.edit_case", case_id=case.id))
+    try:
+        data = authorize_provisional_use(case.data,
+            "Autorização explícita do administrador para disponibilização antes da revisão clínica.")
+        if not source_license_allowed(data["provenance"], current_app.config.get("CASE_REUSE_SCOPE", "commercial"),
+                                     current_app.config.get("CASE_ALLOW_CLINICAL_FACTS", False)):
+            raise ValueError("A fonte não atende à política de reutilização atual.")
+        case.data, case.is_published = data, True
+        db.session.commit()
+        flash("Caso disponível por autorização provisória. A revisão clínica continua pendente.", "success")
+    except (CaseValidationError, ValueError) as exc:
+        db.session.rollback()
+        flash(str(exc), "error")
     return redirect(url_for("admin.edit_case", case_id=case.id))
 
 @bp.get("/usuarios")

@@ -159,3 +159,58 @@ def test_conflicting_local_provenance_cannot_be_overwritten(corpus_apps, tmp_pat
         assert source.verified is True and source.provenance["xmlSha256"] == "f" * 64
         assert source.translated is False and source.clinical_case_id is None
         assert db.session.scalar(db.select(db.func.count(ClinicalCase.id))) == 0
+
+
+@pytest.mark.parametrize("state,expected", [("untouched", True), ("suspended", False),
+                                           ("edited", False), ("reviewed", False)])
+def test_upgrade_only_promotes_identical_unauthorized_private_draft(corpus_apps, tmp_path, monkeypatch, state, expected):
+    from medlab.local_case_integration import authorize_provisional_use
+    payload = real_case()
+    data_dir = create_bundle(tmp_path, monkeypatch, [payload])
+    app = corpus_apps()
+    invoke(app, "init-db")
+    incoming = authorize_provisional_use(payload, "Synthetic owner authorization for pending review.")
+    with app.app_context():
+        current = db.session.scalar(db.select(ClinicalCase).where(ClinicalCase.slug == payload["caseId"]))
+        stored = deepcopy(current.data)
+        if state == "suspended":
+            stored = authorize_provisional_use(stored, "Historical authorization, later suspended.")
+        elif state == "edited":
+            stored["patientProfile"]["chief_complaint"] = "Local edited complaint must remain untouched."
+        elif state == "reviewed":
+            stored["reviewStatus"] = "reviewed"
+        current.data, current.is_published = stored, False
+        db.session.commit()
+        previous, case_id = deepcopy(current.data), current.id
+    (data_dir / "real_case_drafts.json").write_text(json.dumps([incoming], ensure_ascii=False))
+    invoke(app, "upgrade-db")
+    with app.app_context():
+        current = db.session.get(ClinicalCase, case_id)
+        assert current.is_published is expected
+        assert current.data["reviewStatus"] == previous["reviewStatus"]
+        if expected:
+            assert current.data == {**previous, "useAuthorization": incoming["useAuthorization"]}
+        else:
+            assert current.data == previous
+        source = db.session.scalar(db.select(SourceRecord))
+        assert source.verified is False and source.clinical_case_id == case_id
+        assert source_counts()["published"] == int(expected)
+        again = cli.restore_bundled_drafts()
+        assert again["promoted"] == again["provisional"] == again["new"] == 0
+        assert again["unchanged"] == 1
+
+
+def test_new_authorization_is_not_applied_if_later_bundle_record_is_invalid(corpus_apps, tmp_path, monkeypatch):
+    from medlab.local_case_integration import authorize_provisional_use
+    first, second = real_case(), real_case("PMC456")
+    data_dir = create_bundle(tmp_path, monkeypatch, [first], inventory_cases=[first, second])
+    app = corpus_apps()
+    invoke(app, "init-db")
+    authorized = authorize_provisional_use(first, "Synthetic new authorization.")
+    second.pop("diagnoses")
+    (data_dir / "real_case_drafts.json").write_text(json.dumps([authorized, second], ensure_ascii=False))
+    with app.app_context():
+        with pytest.raises(click.ClickException):
+            cli.restore_bundled_drafts()
+        current = db.session.scalar(db.select(ClinicalCase).where(ClinicalCase.slug == first["caseId"]))
+        assert not current.is_published and "useAuthorization" not in current.data

@@ -6,7 +6,7 @@ from uuid import uuid4
 
 from flask import Blueprint, Response, abort, current_app, flash, jsonify, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required, login_user, logout_user
-from sqlalchemy import func, or_, select, update
+from sqlalchemy import case as sql_case, func, or_, select, update
 from sqlalchemy.exc import IntegrityError
 
 from .extensions import db
@@ -152,14 +152,19 @@ def logout():
 @bp.get("/painel")
 @login_required
 def dashboard():
+    scored = (Consultation.status == "completed") & Consultation.score.is_not(None)
+    total, completed, active, average = db.session.execute(select(
+        func.count(Consultation.id), func.sum(sql_case((scored, 1), else_=0)),
+        func.sum(sql_case((Consultation.status == "active", 1), else_=0)),
+        func.avg(sql_case((scored, Consultation.score), else_=None))
+    ).where(Consultation.user_id == current_user.id)).one()
     trainings = db.session.execute(select(Consultation).where(Consultation.user_id == current_user.id)
-                                  .order_by(Consultation.created_at.desc())).scalars().all()
-    scores = [t.score for t in trainings if t.status == "completed" and t.score is not None]
+                                  .order_by(Consultation.created_at.desc(), Consultation.id.desc()).limit(5)).scalars().all()
     cases = db.session.execute(select(ClinicalCase).where(ClinicalCase.is_published.is_(True)).limit(3)).scalars().all()
-    return render_template("dashboard.html", stats={"completed": len(scores),
-        "active": sum(t.status == "active" for t in trainings), "total": len(trainings),
-        "average_score": round(sum(scores) / len(scores)) if scores else None},
-        recent_sessions=[public_session(t) for t in trainings[:5]], recommended_cases=[public_case(c) for c in cases])
+    return render_template("dashboard.html", stats={"completed": completed or 0,
+        "active": active or 0, "total": total,
+        "average_score": round(average) if average is not None else None},
+        recent_sessions=[public_session(t) for t in trainings], recommended_cases=[public_case(c) for c in cases])
 
 
 @bp.get("/casos")
@@ -226,10 +231,12 @@ def consultation(session_id):
         for name in case.get(key, {})]
     return render_template("consultation.html", training=public_session(training), patient={
         "name": profile.get("name", "Paciente"), "age": profile.get("age_value", ""),
+        "age_unit": profile.get("age_unit", "anos"),
         "gender": profile.get("gender", ""), "occupation": profile.get("occupation", ""),
         "chief_complaint": profile.get("chief_complaint", ""),
         "initials": "".join(w[0] for w in profile.get("name", "Paciente").split()[:2])},
         turns=[{"id": t.id, "question": t.question, "answer": t.answer, "intent": t.intent} for t in training.turns],
+        review_pending=case.get("reviewStatus") == "review_required",
         physical_exams=catalog("physicalExams", "physical_exam"), auxiliary_exams=catalog("auxiliaryLabs", "auxiliary_exam"),
         performed_exams=[{"name": e.name, "result": e.result, "type": e.exam_type} for e in training.exams])
 

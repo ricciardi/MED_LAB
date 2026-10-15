@@ -173,3 +173,64 @@ def test_upgrade_sqlite_previous_schema_preserves_users_and_completed_history(tm
         assert training.exams[0].result == "Resultado antigo."
         db.session.remove()
         db.engine.dispose()
+
+
+def test_dashboard_aggregates_all_scores_but_loads_only_five_recent_snapshots(app, login, case_data):
+    from datetime import timedelta
+    from flask import template_rendered
+    from sqlalchemy import event
+    from medlab.models import utcnow
+    with app.app_context():
+        student = db.session.scalar(db.select(User).where(User.email == 'aluna@example.invalid'))
+        other = db.session.scalar(db.select(User).where(User.email == 'colega@example.invalid'))
+        case = db.session.scalar(db.select(ClinicalCase))
+        for index in range(37):
+            db.session.add(Consultation(id=f'dashboard-{index:03d}',user_id=student.id,case_id=case.id,
+                case_snapshot=case_data,status='completed' if index < 13 else 'active',
+                score=55 if index < 12 else None,created_at=utcnow()-timedelta(minutes=index)))
+        db.session.add(Consultation(user_id=other.id,case_id=case.id,case_snapshot=case_data,status='completed',score=100))
+        db.session.commit()
+    client = login()
+    loaded, rendered = [], []
+    def record_load(training, context): loaded.append(training.id)
+    def record_context(sender, template, context, **extra): rendered.append(context)
+    event.listen(Consultation,'load',record_load)
+    template_rendered.connect(record_context, app)
+    try:
+        response = client.get('/painel')
+    finally:
+        event.remove(Consultation,'load',record_load)
+        template_rendered.disconnect(record_context, app)
+    assert response.status_code == 200
+    assert loaded == [f'dashboard-{index:03d}' for index in range(5)]
+    assert rendered[0]['stats'] == {'completed':12,'active':24,'total':37,'average_score':55}
+    assert len(rendered[0]['recent_sessions']) == 5
+
+
+def test_upgrade_limits_database_results_to_pages_and_preserves_transaction(app, case_data, monkeypatch):
+    from sqlalchemy import event
+    import medlab.cli as commands
+    monkeypatch.setattr(commands, 'restore_bundled_inventory', lambda: None)
+    monkeypatch.setattr(commands, 'restore_bundled_drafts', lambda: None)
+    with app.app_context():
+        for index in range(205):
+            data = deepcopy(case_data); data.pop('caseType', None)
+            db.session.add(ClinicalCase(id=1000+index*2,slug=f'upgrade-bounded-{index}',title='Synthetic upgrade',
+                specialty='Clínica médica',case_type='Outros sintomas',difficulty='Iniciante',summary='Synthetic',
+                data=data,is_published=False,is_generated=False))
+        db.session.commit(); engine=db.engine
+    queries=[]
+    def observe(connection,cursor,statement,parameters,context,executemany):
+        if statement.startswith('SELECT') and 'clinical_case.data' in statement and 'FROM clinical_case' in statement:
+            queries.append(statement)
+    event.listen(engine,'before_cursor_execute',observe)
+    try:
+        result=app.test_cli_runner().invoke(args=['upgrade-db'])
+    finally:
+        event.remove(engine,'before_cursor_execute',observe)
+    assert result.exit_code == 0, result.output
+    assert len(queries)==3 and all('LIMIT' in statement for statement in queries)
+    with app.app_context():
+        assert db.session.scalar(db.select(db.func.count(ClinicalCase.id))) == 208
+        rows=db.session.scalars(db.select(ClinicalCase).where(ClinicalCase.id>=1000)).all()
+        assert all(row.data['caseType']=='Primeira consulta' and row.case_type=='Primeira consulta' for row in rows)

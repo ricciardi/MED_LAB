@@ -127,7 +127,7 @@ def validate_case(data):
         "learningObjectives", "references", "rubric",
     }
     optional = {"simulationOnly", "reviewStatus", "origin", "reviewNote", "catalogType",
-                "caseType", "publicPresentation", "provenance", "examMedia"}
+                "caseType", "publicPresentation", "provenance", "examMedia", "useAuthorization", "referenceReasoning", "patientSpecies"}
     if not isinstance(data, dict) or not required <= data.keys() or data.keys() - required - optional:
         _fail("estrutura")
     case = deepcopy(data)
@@ -141,6 +141,10 @@ def validate_case(data):
         _fail("caseType")
     if "publicPresentation" in case:
         case["publicPresentation"] = _text(case["publicPresentation"], "publicPresentation", 800)
+    if "referenceReasoning" in case:
+        case["referenceReasoning"] = _text(case["referenceReasoning"], "referenceReasoning", 10000)
+    if "patientSpecies" in case:
+        _validate_patient_species(case["patientSpecies"])
     field_limits = {
         "caseId": 80, "caseTitle": 180, "specialty": 80,
         "difficulty": 40, "summary": 800, "treatments": 6000,
@@ -172,14 +176,14 @@ def validate_case(data):
     for name, value in profile.items():
         if name not in {"age_value", "symptom_details"}:
             profile[name] = _text(value, "patientProfile." + name)
-    if real_case and profile["name"] != "Paciente simulado":
+    if real_case and profile["name"] != ("Paciente animal — relato reservado ao acervo" if is_nonhuman_case(case) else "Paciente simulado"):
         _fail("patientProfile.name: utilize Paciente simulado")
     details = profile.get("symptom_details", {})
     if not isinstance(details, dict) or details.keys() - set(INTENT_CATEGORIES):
         _fail("patientProfile.symptom_details")
     profile["symptom_details"] = {k: _text(v, "symptom_details." + k, 1800) for k, v in details.items()}
     for name in ("mustConsultionItems", "optionalConsultionItems", "mustPhysicalExams", "optionalPhysicalExams", "mustAuxiliaryLabs", "optionalAuxiliaryLabs"):
-        case[name] = _strings(case[name], name)
+        case[name] = _strings(case[name], name, 40 if "Consultion" in name else 50)
     for name in ("mustConsultionItems", "optionalConsultionItems"):
         if set(case[name]) - set(INTENT_CATEGORIES):
             _fail(name)
@@ -224,7 +228,9 @@ def validate_case(data):
         if not isinstance(section, dict) or not {"criteria", "criticalActions"} <= section.keys() or section.keys() - {"criteria", "criticalActions", "assessable", "reason"}:
             _fail("rubric." + key)
         assessable = section.get("assessable", True)
-        if not isinstance(assessable, bool) or (key in {"consultation", "diagnosis", "overall"} and not assessable):
+        local_contract = isinstance(case.get("provenance"), dict) and "localPreparation" in case["provenance"]
+        always_assessable = key == "overall" or (key in {"consultation", "diagnosis"} and not local_contract)
+        if not isinstance(assessable, bool) or (always_assessable and not assessable):
             _fail("rubric." + key + ".assessable")
         section["criteria"] = _strings(section["criteria"], "rubric." + key, 12, not assessable)
         section["criticalActions"] = _strings(section["criticalActions"], "rubric." + key, 12)
@@ -245,17 +251,22 @@ def validate_case(data):
             case[key] = _text(case[key], key, 1200)
     if real_case:
         _validate_provenance(case.get("provenance"))
-        if case["provenance"].get("reuseBasis") == "clinical_facts":
+        locally_prepared = "localPreparation" in case["provenance"]
+        if case["provenance"].get("reuseBasis") == "clinical_facts" and not locally_prepared:
             _validate_factual_coverage(case)
         if case["reviewStatus"] == "educational_seed" or case["caseId"] != "mcr-" + case["provenance"]["pmcid"].lower():
             _fail("reviewStatus/caseId: relato real requer origem e revisão próprias")
-        if profile["chief_complaint"] == UNKNOWN_FACT or profile["present_illness_history"] == UNKNOWN_FACT or diagnoses["mainDiagnosis"]["disease"] == UNKNOWN_FACT:
+        if not locally_prepared and (profile["chief_complaint"] == UNKNOWN_FACT or profile["present_illness_history"] == UNKNOWN_FACT or diagnoses["mainDiagnosis"]["disease"] == UNKNOWN_FACT):
             _fail("patientProfile/diagnoses: faltam fatos centrais do relato")
         for key, available in (("physical", bool(case["physicalExams"])), ("auxiliary", bool(case["auxiliaryLabs"])), ("treatment", case["treatments"] != UNKNOWN_FACT)):
             if not available and rubric[key].get("assessable", True):
                 _fail("rubric." + key + ": faltam fatos para avaliar")
     elif "provenance" in case:
         _fail("provenance: somente relatos reais adaptados")
+    if "useAuthorization" in case:
+        if not real_case or case["reviewStatus"] != "review_required" or is_nonhuman_case(case):
+            _fail("useAuthorization: autorização provisória não é revisão clínica")
+        _validate_use_authorization(case["useAuthorization"])
     if "examMedia" in case:
         _validate_exam_media(case)
     return case
@@ -292,8 +303,11 @@ def _validate_provenance(value):
                 "xmlMd5", "metadataSha256", "checkedAt", "adaptedAt", "adaptedBy",
                 "language", "clinicalMoment", "changes", "missingFacts", "evidence", "audit"}
     factual = isinstance(value, dict) and value.get("reuseBasis") == "clinical_facts"
+    local = isinstance(value, dict) and "localPreparation" in value
     if factual:
         required |= {"reuseBasis", "sourceFacts", "factualEvidence"}
+    if local:
+        required.add("localPreparation")
     if not isinstance(value, dict) or set(value) != required:
         _fail("provenance")
     if value["dataset"] != "MedCaseReasoning" or value["language"] != "pt-BR":
@@ -334,7 +348,11 @@ def _validate_provenance(value):
     for key in ("version", "text"):
         license_data[key] = _text(license_data[key], "provenance.license." + key, 6000)
     evidence = value["evidence"]
-    if factual:
+    if local:
+        _validate_local_preparation(value["localPreparation"], value["xmlSha256"])
+        if evidence != [] or (factual and (value["sourceFacts"] != [] or value["factualEvidence"] != [])):
+            _fail("provenance: preparação local não declara prova semântica auditada")
+    elif factual:
         if evidence != []:
             _fail("provenance.evidence: fluxo factual não conserva citações")
         _validate_factual_proof(value)
@@ -346,11 +364,92 @@ def _validate_provenance(value):
         item["path"] = _text(item["path"], "provenance.evidence.path", 500)
         item["excerpt"] = _text(item["excerpt"], "provenance.evidence.excerpt", 2000)
     audit = value["audit"]
+    if local:
+        if not isinstance(audit, dict) or set(audit) != {"method", "reason"} or audit["method"] != "not_performed":
+            _fail("provenance.audit: preparação local sem auditoria")
+        audit["reason"] = _text(audit["reason"], "provenance.audit.reason", 1200)
+        return
     flags = {"portuguese", "factsSupported", "unknownsPreserved", "deidentified", "patientBeforeDiagnosis"}
     if factual:
         flags |= {"atomicFactsOnly", "originalWording"}
     if not isinstance(audit, dict) or set(audit) != flags or any(audit[k] is not True for k in flags):
         _fail("provenance.audit")
+
+
+def _validate_local_preparation(value, xml_sha256):
+    required = {"version", "preparationMethod", "sourceSha256", "extractorVersion", "packageSha256",
+                "model", "modelRevision", "translated", "translatedUnits", "clinicalReviewDeferred"}
+    if not isinstance(value, dict) or set(value) != required:
+        _fail("provenance.localPreparation")
+    if (value["version"] != "local-structured-translation-v1"
+            or value["preparationMethod"] != "local_structured_translation"
+            or value["sourceSha256"] != xml_sha256 or value["translated"] is not True
+            or value["clinicalReviewDeferred"] is not True):
+        _fail("provenance.localPreparation: método, origem ou revisão inconsistente")
+    if not isinstance(value["packageSha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", value["packageSha256"]):
+        _fail("provenance.localPreparation.packageSha256")
+    if type(value["translatedUnits"]) is not int or not 1 <= value["translatedUnits"] <= 10000:
+        _fail("provenance.localPreparation.translatedUnits")
+    for key in ("extractorVersion", "model", "modelRevision"):
+        value[key] = _text(value[key], "provenance.localPreparation." + key, 300)
+
+
+def _validate_use_authorization(value):
+    required = {"version", "acceptedForUse", "clinicalReviewDeferred", "authorizationReference", "authorizedAt"}
+    if (not isinstance(value, dict) or set(value) != required or value["version"] != "provisional-use-v1"
+            or value["acceptedForUse"] is not True or value["clinicalReviewDeferred"] is not True):
+        _fail("useAuthorization")
+    value["authorizationReference"] = _text(value["authorizationReference"], "useAuthorization.authorizationReference", 1200)
+    value["authorizedAt"] = _text(value["authorizedAt"], "useAuthorization.authorizedAt", 60)
+    from datetime import datetime
+    try:
+        timestamp = datetime.fromisoformat(value["authorizedAt"].replace("Z", "+00:00"))
+        if timestamp.tzinfo is None:
+            raise ValueError("timezone required")
+    except ValueError:
+        _fail("useAuthorization.authorizedAt")
+
+
+def _validate_patient_species(value):
+    """Classification metadata only; original excerpts stay in the private package."""
+    required = {"kind", "species", "method", "evidenceHashes"}
+    if not isinstance(value, dict) or set(value) != required:
+        _fail("patientSpecies")
+    kind, species = value["kind"], value["species"]
+    if not isinstance(kind, str) or kind not in {"human", "nonhuman", "undetermined"}:
+        _fail("patientSpecies.kind")
+    expected_method = "no_explicit_species_detected" if kind == "undetermined" else "explicit_presenting_subject"
+    if value["method"] != expected_method:
+        _fail("patientSpecies.method")
+    if kind == "undetermined":
+        if species is not None or value["evidenceHashes"] != []:
+            _fail("patientSpecies: espécie não determinada")
+    else:
+        if not isinstance(species, str) or not re.fullmatch(r"[a-z][a-z _-]{0,79}", species):
+            _fail("patientSpecies.species")
+        if (kind == "human") != (species == "human"):
+            _fail("patientSpecies: classificação inconsistente")
+    hashes = value["evidenceHashes"]
+    if (not isinstance(hashes, list) or len(hashes) > 50
+            or (kind != "undetermined" and not hashes)
+            or any(not isinstance(item, str) or not re.fullmatch(r"[a-f0-9]{64}", item) for item in hashes)
+            or len(hashes) != len(set(hashes))):
+        _fail("patientSpecies.evidenceHashes")
+
+
+def is_nonhuman_case(case):
+    return isinstance(case, dict) and isinstance(case.get("patientSpecies"), dict) and case["patientSpecies"].get("kind") == "nonhuman"
+
+
+def is_provisionally_accepted(case):
+    """True only for the explicit pending-review availability contract."""
+    if not isinstance(case, dict) or case.get("catalogType") != "published_case" or case.get("reviewStatus") != "review_required" or is_nonhuman_case(case):
+        return False
+    try:
+        _validate_use_authorization(deepcopy(case.get("useAuthorization")))
+    except CaseValidationError:
+        return False
+    return True
 
 
 def _validate_factual_proof(value):

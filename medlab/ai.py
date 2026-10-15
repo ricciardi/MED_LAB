@@ -228,7 +228,7 @@ def _evaluation_case(case):
         "specialty", "difficulty", "caseType", "catalogType", "patientProfile",
         "mustConsultionItems", "optionalConsultionItems", "mustPhysicalExams", "optionalPhysicalExams",
         "mustAuxiliaryLabs", "optionalAuxiliaryLabs", "physicalExams", "auxiliaryLabs",
-        "diagnoses", "treatments", "learningObjectives", "rubric", "reviewNote",
+        "diagnoses", "treatments", "learningObjectives", "rubric", "reviewNote", "referenceReasoning",
     )
     result = {key: case[key] for key in fields if key in case}
     provenance = case.get("provenance", {})
@@ -965,6 +965,8 @@ class AIService:
         catalog = {item["id"]: item for item in evidence if item["id"][0] != "A"}
         value = self._request(
             "Estime a nota de seis dimensões de uma consulta simulada, somente pela rubrica e ações registradas. "
+            "Use diagnoses e referenceReasoning, quando presente, como referência desta simulação. "
+            "A revisão docente posterior da ficha não impede a avaliação educacional dos dados disponíveis. "
             "Retorne JSON com SOMENTE sections, uma LISTA de seis objetos {key,score,actionIds}; sem frases, citações ou explicações. "
             "actionIds tem de0a4 IDs EXISTENTES em evidenceCatalog: Q=pergunta, P/L=solicitação de exame, "
             "D=conclusão, T=conduta. A é fala do paciente, nunca ação do aluno. Pedido não prova execução, "
@@ -1057,6 +1059,8 @@ class AIService:
             "Você é um avaliador educacional de uma consulta SIMULADA, nunca assistência real. "
             "Avalie exclusivamente evidências registradas, comparadas ao caso e sua rubrica. "
             "case é GABARITO DE REFERÊNCIA, nunca histórico de ações do aluno. Apenas session registra o que ocorreu. "
+            "Use diagnoses e referenceReasoning, quando presente, para comparar a conclusão e explicar o raciocínio. "
+            "A revisão docente posterior da ficha não impede a avaliação educacional dos dados disponíveis. "
             "Cada pergunta tem ID Q, cada fala do paciente A, exames físicos P, complementares L, conclusões D, condutas T. "
             "A fala do paciente é dado clínico, não prova de que o estudante perguntou cada detalhe. "
             "Uma pergunta ampla não recebe crédito por perguntas específicas que não foram feitas. "

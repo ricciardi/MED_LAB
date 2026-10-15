@@ -166,7 +166,7 @@ def test_invalid_or_unregistered_draft_bundle_never_creates_release(tmp_path, fa
         bundle.append({**payload, "caseId": "another-valid-slug"})
     drafts.write_text(json.dumps(bundle))
     output = tmp_path / "release.zip"
-    with pytest.raises(SystemExit, match="rascunhos devem ser casos reais"):
+    with pytest.raises(SystemExit, match="fichas devem ser casos reais"):
         write_archive(output, root, source_registry=inventory, case_drafts=drafts)
     assert not output.exists()
 
@@ -237,3 +237,22 @@ def test_release_rejects_unsafe_or_contradictory_exclusions(tmp_path, mutation):
     inventory.write_text('\n'.join(json.dumps(value) for value in rows)+'\n')
     with pytest.raises(SystemExit, match='metadata-only'):
         write_archive(tmp_path / 'release.zip', root, source_registry=inventory)
+
+
+def test_release_preserves_explicit_provisional_use_without_shipping_preparation_runtime(tmp_path):
+    from medlab.local_case_integration import authorize_provisional_use
+    root = minimal_release(tmp_path)
+    inventory, drafts, _, _, payload = real_draft_export(tmp_path)
+    payload = authorize_provisional_use(payload, 'Autorização sintética de uso provisório.')
+    drafts.write_text(json.dumps([payload]))
+    for relative in ('instance/local-preparation/translations.sqlite3',
+                     'instance/local-preparation/models/model.bin',
+                     'instance/local-preparation/venv/bin/python'):
+        path = root / relative; path.parent.mkdir(parents=True, exist_ok=True); path.write_text('private')
+    output = tmp_path / 'provisional.zip'
+    write_archive(output, root, source_registry=inventory, case_drafts=drafts)
+    with zipfile.ZipFile(output) as archive:
+        restored = json.loads(archive.read('medlab/data/real_case_drafts.json'))[0]
+        assert restored['reviewStatus'] == 'review_required'
+        assert restored['useAuthorization'] == payload['useAuthorization']
+        assert not any(name.startswith('instance/') for name in archive.namelist())
