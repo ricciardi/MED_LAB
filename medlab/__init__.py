@@ -39,11 +39,15 @@ def create_app(config=None):
         AI_BASE_URL=os.getenv("AI_BASE_URL", "https://api.deepseek.com"),
         AI_MODEL=os.getenv("AI_MODEL", "deepseek-flash"),
         AI_TIMEOUT=int(os.getenv("AI_TIMEOUT", "40")),
+        AI_IMPORT_TIMEOUT=int(os.getenv("AI_IMPORT_TIMEOUT", "120")),
         DEMO_MODE=env_bool("DEMO_MODE"),
         ADMIN_PATH=os.getenv("ADMIN_PATH", "/gestao-medlab").rstrip("/"),
         MAX_SESSION_TURNS=40,
         MAX_DAILY_AI_REQUESTS=int(os.getenv("MAX_DAILY_AI_REQUESTS", "120")),
+        LOCAL_VOICE_ENABLED=env_bool("LOCAL_VOICE_ENABLED", True),
         MAX_CONTENT_LENGTH=128 * 1024,
+        MAX_FORM_MEMORY_SIZE=128 * 1024,
+        MAX_FORM_PARTS=10,
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
         SESSION_COOKIE_SECURE=env_bool("SESSION_COOKIE_SECURE", True),
@@ -101,10 +105,11 @@ def create_app(config=None):
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        microphone = "(self)" if request.endpoint == "web.consultation" else "()"
+        response.headers["Permissions-Policy"] = f"camera=(), microphone={microphone}, geolocation=()"
         response.headers["Content-Security-Policy"] = (
-            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-            "font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; "
+            "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+            "font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://huggingface.co https://*.hf.co https://*.huggingface.co; media-src 'self' blob:; "
             "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
         )
         if request.endpoint and not request.endpoint.startswith("static"):
@@ -116,7 +121,7 @@ def create_app(config=None):
     @app.errorhandler(CSRFError)
     def csrf_error(_):
         message = "Esta página expirou. Atualize-a e tente novamente."
-        if request.is_json:
+        if request.is_json or request.endpoint in {"web.synthesize_audio", "web.voice_configuration"}:
             return jsonify(error=message), 400
         return render_template("error.html", code=400, message=message), 400
 
@@ -133,7 +138,7 @@ def create_app(config=None):
                     429: "Muitas tentativas. Aguarde alguns minutos e tente novamente.",
                     413: "O conteúdo enviado excede o limite permitido.",
                     500: "Não foi possível concluir agora. Tente novamente em instantes."}
-        if request.is_json:
+        if request.is_json or request.endpoint in {"web.synthesize_audio", "web.voice_configuration"}:
             return jsonify(error=messages[code]), code
         return render_template("error.html", code=code, message=messages[code]), code
 

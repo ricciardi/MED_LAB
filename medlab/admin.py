@@ -6,9 +6,10 @@ from sqlalchemy import func, select
 from .extensions import db
 from .models import ClinicalCase, Consultation, User
 from .security import admin_required, consume_limit, login_rate_allowed
+from .catalog import CASE_TYPES, SPECIALTIES
+from .catalogue import case_type_for, catalogue_counts
 
 bp = Blueprint("admin", __name__)
-SPECIALTIES = ["Clínica médica", "Cardiologia", "Pneumologia", "Gastroenterologia", "Neurologia", "Pediatria", "Saúde da mulher", "Saúde mental", "Medicina de família"]
 
 @bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -43,13 +44,23 @@ def dashboard():
               "drafts": db.session.scalar(select(func.count(ClinicalCase.id)).where(ClinicalCase.is_published.is_(False)))}
     recent = db.session.execute(select(Consultation).order_by(Consultation.created_at.desc()).limit(10)).scalars().all()
     return render_template("admin/dashboard.html", counts=counts, recent=recent,
+                           catalog_counts=catalogue_counts(),
                            model=current_app.config["AI_MODEL"], key_configured=bool(current_app.config["DEEPSEEK_API_KEY"]))
 
 @bp.get("/casos")
 @admin_required
 def cases():
-    found = db.session.execute(select(ClinicalCase).order_by(ClinicalCase.created_at.desc())).scalars().all()
-    return render_template("admin/cases.html", cases=found, specialties=SPECIALTIES)
+    query = select(ClinicalCase)
+    specialty = request.args.get("specialty", "")[:80]
+    status = request.args.get("status", "")
+    if specialty:
+        query = query.where(ClinicalCase.specialty == specialty)
+    if status in {"published", "draft"}:
+        query = query.where(ClinicalCase.is_published.is_(status == "published"))
+    pagination = db.paginate(query.order_by(ClinicalCase.created_at.desc()),
+        page=max(1, request.args.get("page", 1, type=int)), per_page=20, error_out=False)
+    return render_template("admin/cases.html", cases=pagination.items, specialties=SPECIALTIES,
+        pagination=pagination, selected_specialty=specialty, selected_status=status)
 
 @bp.post("/casos/gerar")
 @admin_required
@@ -67,7 +78,7 @@ def generate_case():
         data["caseId"] = "ia-" + uuid4().hex[:16]
         data["reviewStatus"] = "review_required"
         case = ClinicalCase(slug=data["caseId"], title=data["caseTitle"], specialty=data["specialty"],
-            difficulty=data["difficulty"], summary=data["summary"], data=data, is_generated=True, is_published=False)
+            difficulty=data["difficulty"], case_type=case_type_for(data), summary=data["summary"], data=data, is_generated=True, is_published=False)
         db.session.add(case)
         db.session.commit()
         flash("Rascunho criado. Revise o paciente, os exames e o gabarito antes de publicar.", "success")
@@ -86,6 +97,7 @@ def edit_case(case_id):
         data = copy.deepcopy(case.data)
         data["caseTitle"] = request.form.get("title", "").strip()
         data["summary"] = request.form.get("summary", "").strip()
+        data["caseType"] = request.form.get("case_type", case_type_for(data))
         data["treatments"] = request.form.get("treatments", "").strip()
         data["diagnoses"]["mainDiagnosis"]["disease"] = request.form.get("main_diagnosis", "").strip()
         for field in ("chief_complaint", "present_illness_history", "past_medical_history", "personal_history", "family_history", "other_medical_history", "allergy_history"):
@@ -102,6 +114,7 @@ def edit_case(case_id):
         try:
             data = validate_case(data)
             case.data, case.title, case.summary = data, data["caseTitle"], data["summary"]
+            case.case_type = case_type_for(data)
             case.is_published = False
             db.session.commit()
             flash("Alterações salvas. Confirme a revisão para publicar esta versão.", "success")
@@ -109,7 +122,7 @@ def edit_case(case_id):
         except CaseValidationError as exc:
             db.session.rollback()
             flash(str(exc), "error")
-    return render_template("admin/case.html", case=case, data=case.data)
+    return render_template("admin/case.html", case=case, data=case.data, case_types=CASE_TYPES)
 
 @bp.post("/casos/<int:case_id>/publicar")
 @admin_required
@@ -131,6 +144,7 @@ def publish_case(case_id):
             return redirect(url_for("admin.edit_case", case_id=case.id))
         data["reviewStatus"] = "reviewed"
         case.data, case.is_published = data, True
+        case.case_type = case_type_for(data)
         db.session.commit()
         flash("Caso publicado e disponível para os alunos.", "success")
     return redirect(url_for("admin.edit_case", case_id=case.id))

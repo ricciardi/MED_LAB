@@ -40,6 +40,7 @@ class ClinicalCase(db.Model):
     slug = db.Column(db.String(100), unique=True, nullable=False)
     title = db.Column(db.String(180), nullable=False)
     specialty = db.Column(db.String(80), nullable=False)
+    case_type = db.Column(db.String(80), nullable=False, default="Primeira consulta", server_default="Primeira consulta", index=True)
     difficulty = db.Column(db.String(30), nullable=False)
     summary = db.Column(db.Text, nullable=False)
     data = db.Column(db.JSON, nullable=False)

@@ -101,7 +101,7 @@ def test_demo_is_explicit_deterministic_and_does_not_generate(seed, monkeypatch)
     assert first == demo.respond(seed, "Tem alergias?", [])
     assert first["answer"].startswith("[Demonstração sem IA]")
     assert first["intent"] == "Alergias"
-    assert "informação" in demo.respond(seed, "Qual é o tamanho do seu sapato?", [])["answer"]
+    assert "Não sei lhe dizer." in demo.respond(seed, "Qual é o tamanho do seu sapato?", [])["answer"]
     assessed = demo.evaluate(seed, {})
     assert len(assessed["sections"]) == 6
     assert "sem análise clínica por IA" in assessed["summary"]

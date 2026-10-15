@@ -6,12 +6,13 @@ from uuid import uuid4
 
 from flask import Blueprint, abort, current_app, flash, jsonify, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required, login_user, logout_user
-from sqlalchemy import or_, select, update
+from sqlalchemy import func, or_, select, update
 from sqlalchemy.exc import IntegrityError
 
 from .extensions import db
 from .models import ClinicalCase, Consultation, PerformedExam, Turn, User, utcnow
 from .security import api_login_required, consume_limit, login_rate_allowed, safe_next
+from .catalogue import filtered_cases, public_summary, public_title
 
 bp = Blueprint("web", __name__)
 
@@ -22,17 +23,15 @@ def get_ai_service():
 
 
 def public_case(case):
-    profile = case.data.get("patientProfile", {})
-    return {"id": case.id, "title": case.title, "specialty": case.specialty,
-            "difficulty": case.difficulty, "summary": case.summary,
-            "complaint": profile.get("chief_complaint", case.summary),
-            "patient_name": profile.get("name", "Paciente"), "age": profile.get("age_value"),
+    return {"id": case.id, "title": public_title(case.id), "specialty": case.specialty,
+            "difficulty": case.difficulty, "summary": public_summary(case.case_type),
+            "case_type": case.case_type,
             "estimated_minutes": 15, "generated": case.is_generated}
 
 
 def public_session(training):
     case = training.case_snapshot
-    return {"id": training.id, "title": case.get("caseTitle", "Consulta"),
+    return {"id": training.id, "title": public_title(training.case_id),
             "patient_name": case.get("patientProfile", {}).get("name", "Paciente"),
             "specialty": case.get("specialty", "Clínica médica"), "status": training.status,
             "status_label": "Concluída" if training.status == "completed" else "Em andamento",
@@ -164,17 +163,14 @@ def dashboard():
 @bp.get("/casos")
 @login_required
 def cases():
-    specialty = request.args.get("specialty", "")[:80]
-    difficulty = request.args.get("difficulty", "")[:30]
-    query = select(ClinicalCase).where(ClinicalCase.is_published.is_(True))
+    query, filters = filtered_cases(request.args)
     specialties = db.session.execute(select(ClinicalCase.specialty).where(ClinicalCase.is_published.is_(True)).distinct()).scalars().all()
-    if specialty:
-        query = query.where(ClinicalCase.specialty == specialty)
-    if difficulty:
-        query = query.where(ClinicalCase.difficulty == difficulty)
-    found = db.session.execute(query.order_by(ClinicalCase.id)).scalars().all()
-    return render_template("cases.html", cases=[public_case(c) for c in found], specialties=sorted(specialties),
-                           selected_specialty=specialty, selected_difficulty=difficulty)
+    pagination = db.paginate(query.order_by(ClinicalCase.id), page=max(1, request.args.get("page", 1, type=int)),
+                             per_page=12, error_out=False)
+    total = db.session.scalar(select(func.count(ClinicalCase.id)).where(ClinicalCase.is_published.is_(True)))
+    return render_template("cases.html", cases=[public_case(c) for c in pagination.items],
+        specialties=sorted(specialties), pagination=pagination, total_catalog=total,
+        specialty_count=len(specialties), **filters)
 
 
 @bp.post("/casos/iniciar")
@@ -185,23 +181,20 @@ def start_session():
     if not current_app.config["DEEPSEEK_API_KEY"] and not current_app.config["DEMO_MODE"]:
         flash("A prática estará disponível assim que a equipe configurar a inteligência artificial.", "info")
         return redirect(url_for("web.cases"))
-    query = select(ClinicalCase).where(ClinicalCase.is_published.is_(True))
     case_id = request.form.get("case_id", type=int)
     if case_id:
-        query = query.where(ClinicalCase.id == case_id)
+        query = select(ClinicalCase).where(ClinicalCase.is_published.is_(True), ClinicalCase.id == case_id)
     else:
-        for field in ("specialty", "difficulty"):
-            value = request.form.get(field, "")
-            if value:
-                query = query.where(getattr(ClinicalCase, field) == value)
-    available = db.session.execute(query).scalars().all()
+        query, _ = filtered_cases(request.form)
+    # Fetch identifiers only: avoid loading thousands of private clinical documents to draw one case.
+    available = db.session.execute(query.with_only_columns(ClinicalCase.id)).scalars().all()
     if not available:
         flash("Não há casos disponíveis para estes filtros.", "info")
         return redirect(url_for("web.cases"))
     recent_ids = set(db.session.execute(select(Consultation.case_id).where(Consultation.user_id == current_user.id)
                                        .order_by(Consultation.created_at.desc()).limit(5)).scalars().all())
-    candidates = [c for c in available if c.id not in recent_ids] or available
-    case = secrets.choice(candidates)
+    candidates = [identifier for identifier in available if identifier not in recent_ids] or available
+    case = db.session.get(ClinicalCase, secrets.choice(candidates))
     training = Consultation(user_id=current_user.id, case_id=case.id, case_snapshot=copy.deepcopy(case.data))
     db.session.add(training)
     db.session.commit()
@@ -232,7 +225,7 @@ def consultation(session_id):
         "gender": profile.get("gender", ""), "occupation": profile.get("occupation", ""),
         "chief_complaint": profile.get("chief_complaint", ""),
         "initials": "".join(w[0] for w in profile.get("name", "Paciente").split()[:2])},
-        turns=[{"question": t.question, "answer": t.answer, "intent": t.intent} for t in training.turns],
+        turns=[{"id": t.id, "question": t.question, "answer": t.answer, "intent": t.intent} for t in training.turns],
         physical_exams=catalog("physicalExams", "physical_exam"), auxiliary_exams=catalog("auxiliaryLabs", "auxiliary_exam"),
         performed_exams=[{"name": e.name, "result": e.result, "type": e.exam_type} for e in training.exams])
 
@@ -254,7 +247,7 @@ def message(session_id):
     if existing:
         if existing.question != question.strip():
             return jsonify(error="Esta pergunta já foi enviada com outro conteúdo."), 409
-        return jsonify(answer=existing.answer, intent=existing.intent, turn_count=len(training.turns))
+        return jsonify(answer=existing.answer, intent=existing.intent, turn_id=existing.id, turn_count=len(training.turns))
     if training.status != "active":
         return jsonify(error="Esta consulta já foi concluída."), 409
     if len(training.turns) >= current_app.config["MAX_SESSION_TURNS"]:
@@ -269,7 +262,7 @@ def message(session_id):
         db.session.refresh(training)
         existing = db.session.execute(select(Turn).where(Turn.consultation_id == session_id, Turn.request_id == request_id)).scalar_one_or_none()
         if existing:
-            return jsonify(answer=existing.answer, intent=existing.intent, turn_count=len(training.turns))
+            return jsonify(answer=existing.answer, intent=existing.intent, turn_id=existing.id, turn_count=len(training.turns))
         if len(training.turns) >= current_app.config["MAX_SESSION_TURNS"]:
             return jsonify(error="Limite de perguntas atingido. Finalize a consulta."), 400
         history = [{"question": t.question, "answer": t.answer, "intentClassification": t.intent} for t in training.turns]
@@ -279,15 +272,51 @@ def message(session_id):
         if not lock_is_owned(session_id, token):
             db.session.rollback()
             return jsonify(error="A solicitação expirou. Atualize a página antes de tentar novamente."), 409
-        db.session.add(Turn(consultation_id=session_id, question=question.strip(), answer=response["answer"],
-                            intent=response["intent"], request_id=request_id))
+        turn = Turn(consultation_id=session_id, question=question.strip(), answer=response["answer"],
+                    intent=response["intent"], request_id=request_id)
+        db.session.add(turn)
         db.session.commit()
-        return jsonify(answer=response["answer"], intent=response["intent"], turn_count=len(history) + 1)
+        return jsonify(answer=response["answer"], intent=response["intent"], turn_id=turn.id, turn_count=len(history) + 1)
     except AIError as exc:
         db.session.rollback()
         return jsonify(error=str(exc)), 503
     finally:
         release_lock(session_id, token)
+
+
+def get_speech_service():
+    from .speech import SpeechService
+    return SpeechService(current_app.config)
+
+
+@bp.get("/sessao/<session_id>/voz/config")
+@api_login_required
+def voice_configuration(session_id):
+    training = own_session(session_id)
+    return jsonify(get_speech_service().configuration(training.case_snapshot))
+
+
+@bp.post("/sessao/<session_id>/voz/falar")
+@api_login_required
+def synthesize_audio(session_id):
+    from .speech import voice_options
+    training = own_session(session_id)
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict) or type(payload.get("turn_id")) is not int:
+        return jsonify(error="Selecione uma resposta desta consulta para ouvir."), 400
+    turn = db.session.scalar(select(Turn).where(Turn.id == payload["turn_id"], Turn.consultation_id == training.id))
+    if turn is None:
+        abort(404)
+    voice_id = payload.get("voice_id")
+    if not isinstance(voice_id, str) or voice_id not in {v["id"] for v in voice_options(training.case_snapshot)["voices"]}:
+        return jsonify(error="Escolha uma voz compatível com este paciente."), 400
+    service = get_speech_service()
+    if not service.available:
+        return jsonify(error=service.configuration(training.case_snapshot)["reason"]), 503
+    # Only the already saved answer leaves the server. Inference and audio stay
+    # in the student's browser; caller-supplied text is deliberately ignored.
+    return jsonify(text=turn.answer, voice_id=voice_id)
+
 
 
 @bp.post("/sessao/<session_id>/exame")

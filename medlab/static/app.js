@@ -114,6 +114,7 @@
     });
     $$('.consult-panel').forEach(panel => { panel.hidden = panel.id !== `${name}-panel`; });
     if (name === 'chat') scrollChat();
+    app.dispatchEvent(new CustomEvent('medlab:tab-change', {detail:{name}}));
   }
   $$('[data-consult-tab]').forEach(button => {
     button.addEventListener('click', () => activateTab(button.dataset.consultTab));
@@ -172,9 +173,11 @@
   chatForm.addEventListener('submit', async event => {
     event.preventDefault();
     if (busy) return;
+    if (app.dataset.voiceBusy === 'true') { showError('chat-error','Conclua ou descarte a gravação antes de enviar sua pergunta.'); return; }
     const question = questionInput.value.trim();
     if (question.length < 2) { showError('chat-error','Escreva uma pergunta com pelo menos 2 caracteres.'); questionInput.focus(); return; }
     busy = true;
+    app.dispatchEvent(new CustomEvent('medlab:conversation-busy', {detail:{busy:true}}));
     showError('chat-error','');
     const sendButton = $('button[type=submit]', chatForm);
     sendButton.disabled = true;
@@ -188,7 +191,11 @@
     try {
       const result = await api('mensagem', retryRequest);
       loading.remove();
-      messageNode(result.answer,true);
+      const answerNode = messageNode(result.answer,true);
+      if (result.turn_id !== undefined && result.turn_id !== null) {
+        answerNode.dataset.turnId = String(result.turn_id);
+        app.dispatchEvent(new CustomEvent('medlab:turn-saved', {detail:{turnId:result.turn_id, element:answerNode}}));
+      }
       $('#turn-count').textContent = result.turn_count;
       retryRequest = null;
     } catch (error) {
@@ -196,7 +203,9 @@
       questionInput.value = question;
       showError('chat-error', error instanceof TypeError ? 'A conexão foi interrompida. Sua pergunta está preservada; tente enviar novamente.' : error.message);
     } finally {
-      busy = false; sendButton.disabled = false; questionInput.disabled = false; formSubmit.disabled = false;
+      busy = false;
+      app.dispatchEvent(new CustomEvent('medlab:conversation-busy', {detail:{busy:false}}));
+      sendButton.disabled = false; questionInput.disabled = false; formSubmit.disabled = false;
       sendButton.removeAttribute('aria-busy'); questionInput.focus(); scrollChat();
     }
   });
@@ -237,7 +246,11 @@
     try { sessionStorage.setItem(draftKey,JSON.stringify(draft)); } catch { /* The server still preserves submitted drafts. */ }
   }));
   $('#diagnosis-form').addEventListener('submit', event => {
-    if (busy) { event.preventDefault(); showError('chat-error','Aguarde a resposta do paciente antes de finalizar.'); activateTab('chat'); formSubmit.disabled = false; }
+    if (busy || app.dataset.voiceBusy === 'true') {
+      event.preventDefault();
+      showError('chat-error',busy ? 'Aguarde a resposta do paciente antes de finalizar.' : 'Conclua ou descarte a gravação antes de finalizar a consulta.');
+      activateTab('chat'); formSubmit.disabled = false; formSubmit.removeAttribute('aria-busy'); $('#evaluation-progress').hidden = true;
+    }
   });
   const hasServerDraft = $('#diagnosis').defaultValue.trim() || $('#treatment').defaultValue.trim();
   activateTab(hasServerDraft ? 'diagnosis' : 'chat');

@@ -117,7 +117,7 @@ def test_case_catalog_does_not_reveal_drafts_or_answers(client, login):
     response = client.get("/casos")
     assert response.status_code == 200
     body = response.get_data(as_text=True)
-    assert "Cenário de teste 1" in body and "Cenário de teste 2" in body
+    assert "Encontro clínico #00001" in body and "Encontro clínico #00002" in body
     assert "Cenário de teste 3" not in body
     assert "Diagnóstico reservado" not in body
     assert "Plano reservado" not in body

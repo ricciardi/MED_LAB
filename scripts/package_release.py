@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 from pathlib import Path
 import zipfile
 
@@ -15,8 +16,8 @@ ROOT_FILES = {
     ".env.example", "README.md", "LICENSE", "LICENSE.md", "LICENSE.txt",
     "pyproject.toml", "pytest.ini",
 }
-TREES = ("medlab", "docs", "scripts", "tests", "EasyMED", "SPBench")
-SUFFIXES = {".py", ".html", ".css", ".js", ".json", ".md", ".txt", ".toml", ".ini", ".svg"}
+TREES = ("medlab", "docs", "scripts", "tests", "frontend", "EasyMED", "SPBench")
+SUFFIXES = {".py", ".html", ".css", ".js", ".cjs", ".mjs", ".wasm", ".json", ".md", ".txt", ".toml", ".ini", ".svg"}
 EXCLUDED_PARTS = {
     ".git", ".venv", "venv", "env", "__pycache__", ".pytest_cache",
     ".mypy_cache", ".ruff_cache", "node_modules", "instance", "dist",
@@ -32,6 +33,9 @@ def release_files(root: Path = ROOT) -> list[Path]:
         folder = root / directory
         if folder.is_dir():
             candidates.extend(folder.rglob("*"))
+    assets_manifest = root / "scripts" / "voice_assets.json"
+    voice_assets = {"medlab/static/voice-local/" + item["path"]
+                    for item in json.loads(assets_manifest.read_text())} if assets_manifest.is_file() else set()
     selected = []
     for path in candidates:
         relative = path.relative_to(root)
@@ -43,7 +47,7 @@ def release_files(root: Path = ROOT) -> list[Path]:
         if any(part in EXCLUDED_PARTS or part.startswith(".env") for part in relative.parts):
             if relative.as_posix() != ".env.example":
                 continue
-        if relative.as_posix() not in ROOT_FILES and path.suffix.lower() not in SUFFIXES:
+        if relative.as_posix() not in ROOT_FILES | voice_assets and path.suffix.lower() not in SUFFIXES:
             continue
         if any(part.startswith(".") for part in relative.parts) and relative.as_posix() != ".env.example":
             continue
@@ -56,6 +60,16 @@ def write_archive(output: Path, root: Path = ROOT) -> tuple[int, str]:
     missing = [name for name in required if not (root / name).is_file()]
     if missing:
         raise SystemExit("Entrega incompleta: faltam " + ", ".join(missing))
+    assets_manifest = root / "scripts" / "voice_assets.json"
+    if assets_manifest.exists():
+        for asset in json.loads(assets_manifest.read_text()):
+            path = root / "medlab" / "static" / "voice-local" / asset["path"]
+            if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != asset.get("output_sha256", asset["sha256"]):
+                raise SystemExit("Prepare os recursos de voz com python scripts/prepare_voice_assets.py antes de empacotar.")
+        for source in (root / "frontend").glob("*.js"):
+            generated = root / "medlab" / "static" / "voice-local" / source.name
+            if not generated.is_file() or generated.read_bytes() != source.read_bytes():
+                raise SystemExit("Worker desatualizado: execute python scripts/prepare_voice_assets.py antes de empacotar.")
     paths = release_files(root)
     output.parent.mkdir(parents=True, exist_ok=True)
     manifest = []

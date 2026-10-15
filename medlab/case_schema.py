@@ -1,4 +1,4 @@
-"""Strict, dependency-free contracts for fictional MED LAB educational cases."""
+"""Strict contracts for fictional and source-grounded educational simulations."""
 
 from copy import deepcopy
 import re
@@ -24,6 +24,7 @@ SECTION_TITLES = {
     "treatment": "Plano terapêutico", "overall": "Avaliação global",
 }
 DIFFICULTIES = ("Iniciante", "Intermediário", "Avançado")
+UNKNOWN_FACT = "Não informado na fonte."
 
 
 class CaseValidationError(ValueError):
@@ -66,10 +67,21 @@ def validate_case(data):
         "physicalExams", "auxiliaryLabs", "diagnoses", "treatments",
         "learningObjectives", "references", "rubric",
     }
-    optional = {"simulationOnly", "reviewStatus", "origin", "reviewNote"}
+    optional = {"simulationOnly", "reviewStatus", "origin", "reviewNote", "catalogType",
+                "caseType", "publicPresentation", "provenance"}
     if not isinstance(data, dict) or not required <= data.keys() or data.keys() - required - optional:
         _fail("estrutura")
     case = deepcopy(data)
+    case.setdefault("catalogType", "fictional")
+    if case["catalogType"] not in {"fictional", "published_case"}:
+        _fail("catalogType")
+    real_case = case["catalogType"] == "published_case"
+    case.setdefault("caseType", "Primeira consulta")
+    from .catalog import CASE_TYPES
+    if case["caseType"] not in CASE_TYPES:
+        _fail("caseType")
+    if "publicPresentation" in case:
+        case["publicPresentation"] = _text(case["publicPresentation"], "publicPresentation", 800)
     field_limits = {
         "caseId": 80, "caseTitle": 180, "specialty": 80,
         "difficulty": 40, "summary": 800, "treatments": 6000,
@@ -96,11 +108,13 @@ def validate_case(data):
     if not isinstance(profile, dict) or not required_profile <= profile.keys() or profile.keys() - required_profile - optional_profile:
         _fail("patientProfile")
     age = profile["age_value"]
-    if isinstance(age, bool) or not isinstance(age, (int, float)) or not 0 <= age <= 120:
+    if not (real_case and age is None) and (isinstance(age, bool) or not isinstance(age, (int, float)) or not 0 <= age <= 120):
         _fail("patientProfile.age_value")
     for name, value in profile.items():
         if name not in {"age_value", "symptom_details"}:
             profile[name] = _text(value, "patientProfile." + name)
+    if real_case and profile["name"] != "Paciente simulado":
+        _fail("patientProfile.name: utilize Paciente simulado")
     details = profile.get("symptom_details", {})
     if not isinstance(details, dict) or details.keys() - set(INTENT_CATEGORIES):
         _fail("patientProfile.symptom_details")
@@ -123,14 +137,14 @@ def validate_case(data):
     diagnoses = case["diagnoses"]
     if not isinstance(diagnoses, dict) or set(diagnoses) != {"mainDiagnosis", "differentialDiagnoses"}:
         _fail("diagnoses")
-    if not isinstance(diagnoses["differentialDiagnoses"], list) or not 1 <= len(diagnoses["differentialDiagnoses"]) <= 10:
+    if not isinstance(diagnoses["differentialDiagnoses"], list) or not (0 if real_case else 1) <= len(diagnoses["differentialDiagnoses"]) <= 10:
         _fail("diagnoses.differentialDiagnoses")
     for diagnosis in [diagnoses["mainDiagnosis"], *diagnoses["differentialDiagnoses"]]:
         if not isinstance(diagnosis, dict) or set(diagnosis) != {"disease"}:
             _fail("diagnoses")
         diagnosis["disease"] = _text(diagnosis["disease"], "diagnoses.disease", 300)
     answer = normalized(diagnoses["mainDiagnosis"]["disease"])
-    if answer in normalized(case["caseTitle"]) or answer in normalized(case["summary"]):
+    if any(answer in normalized(case.get(field, "")) for field in ("caseTitle", "summary", "publicPresentation")):
         _fail("caseTitle/summary: não inclua a resposta")
     case["learningObjectives"] = _strings(case["learningObjectives"], "learningObjectives", 12, False)
     references = case["references"]
@@ -148,10 +162,19 @@ def validate_case(data):
     if not isinstance(rubric, dict) or set(rubric) != set(SECTION_TITLES):
         _fail("rubric")
     for key, section in rubric.items():
-        if not isinstance(section, dict) or set(section) != {"criteria", "criticalActions"}:
+        if not isinstance(section, dict) or not {"criteria", "criticalActions"} <= section.keys() or section.keys() - {"criteria", "criticalActions", "assessable", "reason"}:
             _fail("rubric." + key)
-        section["criteria"] = _strings(section["criteria"], "rubric." + key, 12, False)
+        assessable = section.get("assessable", True)
+        if not isinstance(assessable, bool) or (key in {"consultation", "diagnosis", "overall"} and not assessable):
+            _fail("rubric." + key + ".assessable")
+        section["criteria"] = _strings(section["criteria"], "rubric." + key, 12, not assessable)
         section["criticalActions"] = _strings(section["criticalActions"], "rubric." + key, 12)
+        if not assessable:
+            if section["criteria"] or section["criticalActions"]:
+                _fail("rubric." + key + ": dimensão sem evidência não deve pontuar")
+            section["reason"] = _text(section.get("reason"), "rubric." + key + ".reason", 1200)
+        elif "reason" in section:
+            section["reason"] = _text(section["reason"], "rubric." + key + ".reason", 1200)
     if "simulationOnly" in case and case["simulationOnly"] is not True:
         _fail("simulationOnly")
     case["simulationOnly"] = True
@@ -161,4 +184,65 @@ def validate_case(data):
     for key in ("origin", "reviewNote"):
         if key in case:
             case[key] = _text(case[key], key, 1200)
+    if real_case:
+        _validate_provenance(case.get("provenance"))
+        if case["reviewStatus"] == "educational_seed" or case["caseId"] != "mcr-" + case["provenance"]["pmcid"].lower():
+            _fail("reviewStatus/caseId: relato real requer origem e revisão próprias")
+        if profile["chief_complaint"] == UNKNOWN_FACT or profile["present_illness_history"] == UNKNOWN_FACT or diagnoses["mainDiagnosis"]["disease"] == UNKNOWN_FACT:
+            _fail("patientProfile/diagnoses: faltam fatos centrais do relato")
+        for key, available in (("physical", bool(case["physicalExams"])), ("auxiliary", bool(case["auxiliaryLabs"])), ("treatment", case["treatments"] != UNKNOWN_FACT)):
+            if not available and rubric[key].get("assessable", True):
+                _fail("rubric." + key + ": faltam fatos para avaliar")
+    elif "provenance" in case:
+        _fail("provenance: somente relatos reais adaptados")
     return case
+
+
+def _validate_provenance(value):
+    required = {"dataset", "datasetRevision", "sourceRecordId", "pmcid", "doi", "articleUrl",
+                "articleTitle", "citation", "authors", "license", "pmcVersion", "xmlSha256",
+                "xmlMd5", "metadataSha256", "checkedAt", "adaptedAt", "adaptedBy",
+                "language", "clinicalMoment", "changes", "missingFacts", "evidence", "audit"}
+    if not isinstance(value, dict) or set(value) != required:
+        _fail("provenance")
+    if value["dataset"] != "MedCaseReasoning" or value["language"] != "pt-BR":
+        _fail("provenance.dataset/language")
+    if not re.fullmatch(r"PMC[1-9][0-9]{0,11}", str(value["pmcid"])):
+        _fail("provenance.pmcid")
+    if value["articleUrl"] != "https://pmc.ncbi.nlm.nih.gov/articles/" + value["pmcid"] + "/":
+        _fail("provenance.articleUrl")
+    if isinstance(value["pmcVersion"], bool) or not isinstance(value["pmcVersion"], int) or value["pmcVersion"] < 1:
+        _fail("provenance.pmcVersion")
+    for key, length in (("xmlSha256", 64), ("metadataSha256", 64), ("xmlMd5", 32)):
+        if not re.fullmatch(r"[0-9a-f]{" + str(length) + r"}", str(value[key])):
+            _fail("provenance." + key)
+    for key in ("datasetRevision", "sourceRecordId", "articleTitle", "citation", "checkedAt", "adaptedAt", "adaptedBy", "clinicalMoment"):
+        value[key] = _text(value[key], "provenance." + key, 1200)
+    if value["doi"] is not None:
+        value["doi"] = _text(value["doi"], "provenance.doi", 300)
+    for key in ("authors", "changes", "missingFacts"):
+        value[key] = _strings(value[key], "provenance." + key, 100)
+    license_data = value["license"]
+    if not isinstance(license_data, dict) or set(license_data) != {"code", "url", "version", "text"}:
+        _fail("provenance.license")
+    if license_data["code"] not in {"CC BY", "CC0"}:
+        _fail("provenance.license.code")
+    pattern = r"https://creativecommons.org/(?:licenses/by/(?:1\.0|2\.0|2\.5|3\.0|4\.0)|publicdomain/zero/1\.0)/"
+    if not re.fullmatch(pattern, str(license_data["url"])):
+        _fail("provenance.license.url")
+    if (license_data["code"] == "CC0") != ("/zero/" in license_data["url"]) or license_data["version"] != license_data["url"].rstrip("/").rsplit("/", 1)[-1]:
+        _fail("provenance.license.version/code")
+    for key in ("version", "text"):
+        license_data[key] = _text(license_data[key], "provenance.license." + key, 6000)
+    evidence = value["evidence"]
+    if not isinstance(evidence, list) or not 1 <= len(evidence) <= 180:
+        _fail("provenance.evidence")
+    for item in evidence:
+        if not isinstance(item, dict) or set(item) != {"path", "excerpt"}:
+            _fail("provenance.evidence")
+        item["path"] = _text(item["path"], "provenance.evidence.path", 500)
+        item["excerpt"] = _text(item["excerpt"], "provenance.evidence.excerpt", 2000)
+    audit = value["audit"]
+    flags = {"portuguese", "factsSupported", "unknownsPreserved", "deidentified", "patientBeforeDiagnosis"}
+    if not isinstance(audit, dict) or set(audit) != flags or any(audit[k] is not True for k in flags):
+        _fail("provenance.audit")

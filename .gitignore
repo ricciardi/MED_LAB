@@ -17,3 +17,6 @@ tmp/
 *.log
 .DS_Store
 screenshots/
+node_modules/
+# Generated, checksum-verified speech runtimes are included in the release ZIP.
+medlab/static/voice-local/
