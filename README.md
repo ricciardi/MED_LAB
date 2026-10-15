@@ -75,6 +75,8 @@ Os testes cobrem autenticação, autorização, isolamento entre usuários, CSRF
 
 Consulte [Arquitetura e decisões](docs/ARQUITETURA.md). A aplicação inclui senhas com hash, cookies protegidos, invalidação de sessões após troca de senha, limites persistentes no banco, proteção CSRF e bloqueio de operações simultâneas na mesma consulta.
 
+A [pesquisa de bases clínicas reais](docs/BASES_CLINICAS.md) compara fontes para ampliar a biblioteca, registra verificações de licença e descreve a adaptação para pacientes virtuais e avaliação. A importação de centenas de casos ainda não foi executada.
+
 ## Escopo educacional
 
 Os oito casos iniciais são fictícios, acompanhados de referências e rubricas didáticas. Ainda não receberam validação clínica humana. Casos gerados por IA são salvos como rascunhos e exigem revisão administrativa antes de chegar aos estudantes. A avaliação apoia o estudo; não representa certificação de competência ou orientação para atendimento de pacientes reais.
