@@ -212,9 +212,34 @@ def translation_queue(output, *, destination=None, prior_queues=()):
     return report
 
 
+def post_edit_record(item):
+    """Validate an explicitly source-checked assistant correction, not clinical review."""
+    edited = item.get("translation", {}).get("postEditing")
+    if edited is None:
+        return None
+    expected = {"method", "actor", "sourceSha256", "translationSha256", "numbersAndUnitsChecked"}
+    if (not isinstance(edited, dict) or set(edited) != expected
+            or edited["method"] != "assistant_post_edit" or edited["actor"] != "Codex"
+            or edited["sourceSha256"] != text_id(item["text"])
+            or edited["translationSha256"] != text_id(item["textPt"])
+            or edited["numbersAndUnitsChecked"] is not True):
+        raise ValueError("Correção assistida sem identidade ou conferência válida.")
+    return {key: edited[key] for key in ("sourceSha256", "translationSha256")}
+
+
+def case_translation_metadata(package, metadata):
+    metadata = metadata or {}
+    result = {key: value for key, value in metadata.items() if key != "_post_edits"}
+    selected = {text_id(unit["text"]) for unit in package["translationUnits"]}
+    edits = [value for key, value in sorted(metadata.get("_post_edits", {}).items()) if key in selected]
+    if edits:
+        result["postEditing"] = {"method": "assistant_post_edit", "actor": "Codex", "units": edits}
+    return result
+
+
 def translated_units(path):
     from scripts.local_translate_cases import needs_recovery
-    values, priorities, metadata = {}, {}, None
+    values, priorities, edits, metadata = {}, {}, {}, None
     paths = path if isinstance(path, (list, tuple)) else [path]
     for current_path in paths:
         with Path(current_path).open(encoding="utf-8") as handle:
@@ -230,7 +255,8 @@ def translated_units(path):
                     continue
                 if item["id"] != text_id(item["text"]) or not isinstance(item.get("textPt"), str) or not item["textPt"].strip():
                     raise ValueError("A tradução não corresponde à unidade original.")
-                if needs_recovery(item):
+                edited = post_edit_record(item)
+                if edited is None and needs_recovery(item):
                     continue
                 current = item.get("translation", {})
                 if not isinstance(current, dict) or not current.get("model") or not current.get("revision"):
@@ -239,7 +265,7 @@ def translated_units(path):
                 if metadata is not None and metadata != identity:
                     raise ValueError("O lote mistura configurações de tradução.")
                 metadata = identity
-                priority = int(isinstance(item.get("recoverySource"), dict))
+                priority = 2 if edited else int(isinstance(item.get("recoverySource"), dict))
                 if item["id"] in values and values[item["id"]] != item["textPt"]:
                     if priorities[item["id"]] == priority:
                         raise ValueError("Traduções conflitantes da mesma unidade.")
@@ -247,6 +273,10 @@ def translated_units(path):
                         continue
                 values[item["id"]] = item["textPt"]
                 priorities[item["id"]] = priority
+                if edited:
+                    edits[item["id"]] = edited
+    if edits:
+        metadata = {**metadata, "_post_edits": edits}
     return values, metadata
 
 
@@ -265,9 +295,10 @@ def build(output, translations=None, *, authorization_reference=None, pmcids=Non
             counters["awaitingTranslation"] += 1
             continue
         local = {unit["id"]: values[text_id(unit["text"])] for unit in package["translationUnits"]}
+        case_metadata = case_translation_metadata(package, metadata)
         identity = {"packageSha256": checksum(path), "assemblerCodeSha256": assembler_sha,
                     "translationsSha256": text_id(json.dumps(local, ensure_ascii=False, sort_keys=True)),
-                    "translationMetadata": metadata, "authorizationReference": authorization_reference}
+                    "translationMetadata": case_metadata, "authorizationReference": authorization_reference}
         state_path = output / "build-state" / path.name
         if destination.exists() and state_path.exists():
             state = json.loads(state_path.read_text())
@@ -276,8 +307,15 @@ def build(output, translations=None, *, authorization_reference=None, pmcids=Non
                 completed.append(path.stem)
                 continue
         try:
-            case = validate_case(assemble_local_case(package, local, metadata,
+            case = validate_case(assemble_local_case(package, local, case_metadata,
                 accepted_for_use=bool(authorization_reference), authorization_reference=authorization_reference))
+            if destination.exists():
+                previous = validate_case(json.loads(destination.read_text()))
+                if previous.get("caseId") == case["caseId"] and previous["provenance"].get("localPreparation", {}).get("packageSha256") == case["provenance"]["localPreparation"]["packageSha256"]:
+                    case["provenance"]["adaptedAt"] = previous["provenance"]["adaptedAt"]
+                    authorization = previous.get("useAuthorization", {})
+                    if authorization.get("authorizationReference") == authorization_reference:
+                        case["useAuthorization"] = authorization
             if case["provenance"]["pmcid"] != path.stem or case["provenance"]["language"] != "pt-BR":
                 raise ValueError("A ficha não corresponde à fonte em português.")
             save_json(destination, case)

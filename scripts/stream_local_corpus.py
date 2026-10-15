@@ -17,7 +17,7 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.local_corpus import (DEFAULT_OUTPUT, DEFAULT_PROCESSED, build,
-                                 checksum, now, package_paths, save_json, text_id)
+                                 checksum, now, package_paths, post_edit_record, save_json, text_id)
 from scripts.local_translate_cases import needs_recovery
 
 
@@ -26,6 +26,7 @@ class TranslationTail:
         self.positions = {}
         self.values = {}
         self.priorities = {}
+        self.post_edits = {}
         self.metadata = None
         self.failed = set()
 
@@ -69,7 +70,8 @@ class TranslationTail:
                 identifier = item["id"]
                 if not item.get("translationError") and (not isinstance(item.get("textPt"), str) or not item["textPt"].strip()):
                     raise ValueError("Tradução vazia.")
-                if needs_recovery(item):
+                edited = None if item.get("translationError") else post_edit_record(item)
+                if edited is None and needs_recovery(item):
                     if identifier not in self.values:
                         self.failed.add(identifier)
                     continue
@@ -81,7 +83,7 @@ class TranslationTail:
                 identity = {key: current[key] for key in ("model", "revision", "target", "backend", "device", "beamSize") if key in current}
                 if self.metadata is not None and self.metadata != identity:
                     raise ValueError("Diários misturam configurações de tradução.")
-                priority = int(isinstance(item.get("recoverySource"), dict))
+                priority = 2 if edited else int(isinstance(item.get("recoverySource"), dict))
                 if identifier in self.values and self.values[identifier] != translated:
                     if self.priorities[identifier] == priority:
                         raise ValueError("Traduções conflitantes da mesma unidade.")
@@ -92,6 +94,8 @@ class TranslationTail:
                     added.add(identifier)
                 self.values[identifier] = translated
                 self.priorities[identifier] = priority
+                if edited:
+                    self.post_edits[identifier] = edited
                 self.failed.discard(identifier)
             self.positions[str(path)] = (stat.st_ino, handle.tell())
         return added
@@ -173,7 +177,7 @@ def stream(output, processed, journals, *, authorization_reference, apply=False,
                 if checksum(output / "extracted" / (pmcid + ".json")) != index.package_hashes[pmcid]:
                     raise ValueError("Pacote mudou após indexação: " + pmcid)
             result = build(output, authorization_reference=authorization_reference, pmcids=identifiers,
-                           translated_cache=(tail.values, tail.metadata))
+                           translated_cache=(tail.values, {**(tail.metadata or {}), **({"_post_edits": tail.post_edits} if tail.post_edits else {})}))
             completed = result["completedIds"]
             if completed:
                 latest = integrate(completed)

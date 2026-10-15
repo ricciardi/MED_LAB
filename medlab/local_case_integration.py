@@ -469,6 +469,9 @@ def assemble_local_case(package, translations, translation_metadata, *, accepted
             "packageSha256": _hash(package), "model": translation_metadata.get("model"),
             "modelRevision": translation_metadata.get("revision", translation_metadata.get("modelRevision")),
             "translated": True, "translatedUnits": len(units), "clinicalReviewDeferred": True})
+    if "postEditing" in translation_metadata:
+        origin["localPreparation"]["postEditing"] = deepcopy(translation_metadata["postEditing"])
+        origin["changes"].append("Após a tradução inicial pelo modelo local identificado, unidades rastreadas por hash receberam pós-edição linguística assistida por Codex. Essa correção não constitui revisão clínica nem auditoria semântica.")
     if factual:
         origin.update(sourceFacts=[], factualEvidence=[])
         origin["changes"].append("Fonte ND: somente termos e valores em templates próprios; nenhuma tradução narrativa do artigo.")

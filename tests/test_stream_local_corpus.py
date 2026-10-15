@@ -137,6 +137,31 @@ def test_explicit_recovery_stays_authoritative_when_old_warning_becomes_equivale
     assert translated_units(paths)[0] == tail.values
 
 
+def test_assistant_post_edit_has_hash_bound_provenance_scoped_to_each_case(tmp_path):
+    from scripts.local_corpus import translated_units, case_translation_metadata
+    original = record("A 12-year-old girl.", "Uma menina de 12 anos.")
+    amended = record(original["text"], "Uma paciente de 12 anos de idade.")
+    pair = {"sourceSha256": original["id"], "translationSha256": stream.text_id(amended["textPt"])}
+    amended["translation"]["postEditing"] = {"method": "assistant_post_edit", "actor": "Codex",
+                                             **pair, "numbersAndUnitsChecked": True}
+    first, second = tmp_path / "first.jsonl", tmp_path / "edited.jsonl"
+    first.write_bytes(line(original)); second.write_bytes(line(amended))
+    tail = stream.TranslationTail()
+    tail.read(first); tail.read(second)
+    values, metadata = translated_units([first, second])
+    assert values == tail.values == {original["id"]: amended["textPt"]}
+    assert metadata["_post_edits"] == tail.post_edits == {original["id"]: pair}
+    selected = case_translation_metadata({"translationUnits": [{"text": original["text"]}]}, metadata)
+    assert selected["postEditing"]["units"] == [pair]
+    assert "_post_edits" not in selected
+    unrelated = case_translation_metadata({"translationUnits": [{"text": "Unrelated case."}]}, metadata)
+    assert "postEditing" not in unrelated and "_post_edits" not in unrelated
+    amended["translation"]["postEditing"]["translationSha256"] = "0" * 64
+    second.write_bytes(line(amended))
+    with pytest.raises(ValueError, match="Correção assistida"):
+        stream.TranslationTail().read(second)
+
+
 @pytest.mark.parametrize("mutation,message", [
     (lambda row: row.update(text="Different original."), "Identidade"),
     (lambda row: row.update(textPt="Conflicting translation."), "conflitantes"),

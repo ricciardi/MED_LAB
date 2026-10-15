@@ -379,7 +379,7 @@ def _validate_provenance(value):
 def _validate_local_preparation(value, xml_sha256):
     required = {"version", "preparationMethod", "sourceSha256", "extractorVersion", "packageSha256",
                 "model", "modelRevision", "translated", "translatedUnits", "clinicalReviewDeferred"}
-    if not isinstance(value, dict) or set(value) != required:
+    if not isinstance(value, dict) or not required <= set(value) or set(value) - required - {"postEditing"}:
         _fail("provenance.localPreparation")
     if (value["version"] != "local-structured-translation-v1"
             or value["preparationMethod"] != "local_structured_translation"
@@ -392,6 +392,26 @@ def _validate_local_preparation(value, xml_sha256):
         _fail("provenance.localPreparation.translatedUnits")
     for key in ("extractorVersion", "model", "modelRevision"):
         value[key] = _text(value[key], "provenance.localPreparation." + key, 300)
+    if "postEditing" in value:
+        _validate_post_editing(value["postEditing"])
+
+
+def _validate_post_editing(value):
+    path = "provenance.localPreparation.postEditing"
+    if (not isinstance(value, dict) or set(value) != {"method", "actor", "units"}
+            or value["method"] != "assistant_post_edit" or value["actor"] != "Codex"
+            or not isinstance(value["units"], list) or not 1 <= len(value["units"]) <= 10000):
+        _fail(path)
+    seen = set()
+    for unit in value["units"]:
+        if not isinstance(unit, dict) or set(unit) != {"sourceSha256", "translationSha256"}:
+            _fail(path + ".units")
+        for key in ("sourceSha256", "translationSha256"):
+            if not isinstance(unit[key], str) or not re.fullmatch(r"[0-9a-f]{64}", unit[key]):
+                _fail(path + ".units." + key)
+        if unit["sourceSha256"] in seen:
+            _fail(path + ".units: fonte repetida")
+        seen.add(unit["sourceSha256"])
 
 
 def _validate_use_authorization(value):
