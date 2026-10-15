@@ -41,6 +41,8 @@ def create_app(config=None):
         AI_TIMEOUT=int(os.getenv("AI_TIMEOUT", "40")),
         AI_IMPORT_TIMEOUT=int(os.getenv("AI_IMPORT_TIMEOUT", "120")),
         DEMO_MODE=env_bool("DEMO_MODE"),
+        CASE_REUSE_SCOPE=os.getenv("CASE_REUSE_SCOPE", "noncommercial").strip().lower(),
+        CASE_ALLOW_CLINICAL_FACTS=env_bool("CASE_ALLOW_CLINICAL_FACTS", False),
         ADMIN_PATH=os.getenv("ADMIN_PATH", "/gestao-medlab").rstrip("/"),
         MAX_SESSION_TURNS=40,
         MAX_DAILY_AI_REQUESTS=int(os.getenv("MAX_DAILY_AI_REQUESTS", "120")),
@@ -59,6 +61,8 @@ def create_app(config=None):
         app.config.update(config)
     if len(app.config["SECRET_KEY"]) < 32:
         raise RuntimeError("Configure SECRET_KEY com pelo menos 32 caracteres aleatórios no ambiente.")
+    if app.config["CASE_REUSE_SCOPE"] not in {"commercial", "noncommercial"}:
+        raise RuntimeError("CASE_REUSE_SCOPE deve ser commercial ou noncommercial.")
     prefix = app.config["ADMIN_PATH"]
     if not re.fullmatch(r"/[a-z0-9][a-z0-9/_-]{3,80}", prefix) or prefix in {"/painel", "/casos", "/entrar", "/cadastro", "/historico", "/sessao", "/static", "/privacidade", "/saude"}:
         raise RuntimeError("ADMIN_PATH deve ser um endereço exclusivo, por exemplo /gestao-medlab.")

@@ -50,6 +50,69 @@ class ClinicalCase(db.Model):
     updated_at = db.Column(db.DateTime, default=utcnow, onupdate=utcnow, nullable=False)
 
 
+class SourceRecord(db.Model):
+    """Private source inventory, never a student-facing clinical case.
+
+    Full articles stay in the private source files. Original titles/diagnoses
+    must only be displayed in authorized administration views.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    dataset = db.Column(db.String(64), nullable=False, index=True)
+    pmcid = db.Column(db.String(16), nullable=False, index=True)
+    dataset_revision = db.Column(db.String(64), nullable=False)
+    dataset_url = db.Column(db.String(512), nullable=False)
+    source_file_sha256 = db.Column(db.String(64), nullable=False)
+    record_sha256 = db.Column(db.String(64), nullable=False)
+    source_row_number = db.Column(db.Integer, nullable=False)
+    original_title = db.Column(db.Text, nullable=False, default="")
+    original_diagnosis = db.Column(db.Text, nullable=False)
+    original_metadata = db.Column(db.JSON, nullable=False)
+    import_status = db.Column(db.String(32), nullable=False, default="registered", index=True)
+    verified = db.Column(db.Boolean, nullable=False, default=False, index=True)
+    translated = db.Column(db.Boolean, nullable=False, default=False, index=True)
+    license_code = db.Column(db.String(20))
+    specialty = db.Column(db.String(80), index=True)
+    attempts = db.Column(db.Integer, nullable=False, default=0)
+    last_error = db.Column(db.Text)
+    provenance = db.Column(db.JSON)
+    checkpoint_sha256 = db.Column(db.String(64))
+    checkpoint_updated_at = db.Column(db.DateTime)
+    clinical_case_id = db.Column(db.Integer, db.ForeignKey("clinical_case.id", ondelete="SET NULL"), index=True)
+    clinical_case = db.relationship("ClinicalCase")
+    created_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=utcnow, onupdate=utcnow, nullable=False)
+    __table_args__ = (db.UniqueConstraint("dataset", "pmcid", name="uq_source_dataset_pmcid"),)
+
+
+class SourceExclusion(db.Model):
+    """Minimal durable blocklist; no article text, diagnosis or source metadata."""
+    dataset = db.Column(db.String(64), primary_key=True)
+    pmcid = db.Column(db.String(16), primary_key=True)
+    reason = db.Column(db.String(32), nullable=False, default="source_rejected")
+    created_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+
+
+class AIUsage(db.Model):
+    """Provider counters for one operation; no prompts, answers or error text."""
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="SET NULL"), index=True)
+    consultation_id = db.Column(db.String(36), db.ForeignKey("consultation.id", ondelete="SET NULL"), index=True)
+    operation = db.Column(db.String(32), nullable=False, index=True)
+    successful = db.Column(db.Boolean, nullable=False)
+    requests = db.Column(db.Integer, nullable=False)
+    responses = db.Column(db.Integer, nullable=False)
+    usage_reports = db.Column(db.Integer, nullable=False)
+    cache_usage_reports = db.Column(db.Integer, nullable=False)
+    prompt_tokens = db.Column(db.BigInteger, nullable=False)
+    completion_tokens = db.Column(db.BigInteger, nullable=False)
+    total_tokens = db.Column(db.BigInteger, nullable=False)
+    cache_hit_tokens = db.Column(db.BigInteger, nullable=False)
+    cache_miss_tokens = db.Column(db.BigInteger, nullable=False)
+    usage_complete = db.Column(db.Boolean, nullable=False)
+    cache_usage_complete = db.Column(db.Boolean, nullable=False)
+    created_at = db.Column(db.DateTime, default=utcnow, nullable=False, index=True)
+
+
 class Consultation(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid4()))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)

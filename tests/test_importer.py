@@ -377,3 +377,39 @@ def test_import_timeout_override_does_not_change_web_timeout_contract(tmp_path):
         AIService({"AI_TIMEOUT": 120})
     with pytest.raises(AIError):
         AIService({}, request_timeout=181)
+
+
+def test_all_records_mode_resumes_beyond_specialty_quota(tmp_path, source_file):
+    runner = importer(tmp_path)
+    first = runner.run(source_file, target_per_specialty=1, adapt=True)
+    assert first['adaptedDrafts'] == 1
+    second = runner.run(source_file, target_per_specialty=1, adapt=True, all_records=True, source_workers=2)
+    assert second['adaptedDrafts'] == 3
+    assert second['allRecords'] is True
+    assert second['sourceWorkers'] == 2
+    assert runner.ai.classify_case.call_count == 3
+
+
+def test_parallel_source_verification_checkpoints_errors_and_resumes(tmp_path, source_file):
+    client = fake_pmc()
+    def verify(pmcid, refresh=False):
+        if pmcid == 'PMC456':
+            raise SourceRejected('Fonte não elegível.')
+        return {'provenance': provenance(pmcid), 'articleText': ARTICLE}
+    client.verify.side_effect = verify
+    runner = importer(tmp_path, pmc_client=client)
+    report = runner.run(source_file, source_workers=3)
+    assert report['sourceVerified'] == 2
+    assert report['licenseRejected'] == 1
+    assert report['pendingVerification'] == 0
+    assert runner.run(source_file, source_workers=3)['processedThisRun'] == 0
+    assert client.verify.call_count == 3
+    runner.ai.classify_case.assert_not_called()
+
+
+@pytest.mark.parametrize('workers', [0, 9, True, '2'])
+def test_invalid_worker_count_rejected_before_network(tmp_path, source_file, workers):
+    runner = importer(tmp_path)
+    with pytest.raises(ImportError, match='conexões'):
+        runner.run(source_file, source_workers=workers)
+    runner.pmc.verify.assert_not_called()

@@ -9,9 +9,11 @@ MED_LAB é uma aplicação web em português para treinamento com pacientes simu
 | `app.py`, `passenger_wsgi.py` | Entradas de desenvolvimento/CLI e WSGI para Passenger. |
 | `medlab.create_app(config=None)` | Fábrica Flask: configura ambiente, extensões, rotas e comandos. |
 | `medlab.extensions` | SQLAlchemy, autenticação e proteção CSRF. |
-| `medlab.models` | Usuários, casos, consultas, turnos e exames realizados. |
+| `medlab.models` | Usuários, casos, consultas, turnos, exames, inventário privado de fontes e identificadores de exclusão opcional. |
+| `medlab.source_registry` | Registro idempotente por base/PMCID, hashes e sincronização dos checkpoints; exportação schema 2 de metadados e bloqueios de reimportação, sem texto integral ou alegações de tradução. |
 | `medlab.web`, `medlab.admin` | Fluxo do estudante, isolamento das consultas por usuário e administração autenticada. |
 | `medlab.ai` | Integração de servidor com DeepSeek e modo de demonstração explícito. |
+| `medlab.usage` | Registro dos contadores informados pelo provedor nas operações web, separado dos relatórios da importação. |
 | `medlab.speech` | Configuração de voz local e opções coerentes com o perfil do paciente. |
 | `frontend/`, `medlab/static/voice.js` | Workers de Whisper/Kokoro e controles de gravação, revisão e reprodução no navegador. |
 | `scripts/prepare_voice_assets.py` | Aquisição conferida por checksum dos runtimes estáticos de voz, sem compilação no cPanel. |
@@ -19,6 +21,7 @@ MED_LAB é uma aplicação web em português para treinamento com pacientes simu
 | `medlab.importer` | Preparação PMC, proveniência e adaptação retomável de relatos reais em rascunhos privados. |
 | `medlab.migrations` | Atualização idempotente do esquema de catálogo existente. |
 | `medlab/data/cases_pt.json` | Casos didáticos curados para a experiência em português. |
+| `medlab/data/source_registry.jsonl`, `medlab/data/real_case_drafts.json` | Arquivos opcionais da entrega: metadados/exclusões e fichas reais privadas, restaurados separadamente e sem publicar automaticamente. |
 | `EasyMED/` e `SPBench/` | Código e dados originais preservados como referência. |
 | `tests/` | Verificação automatizada com banco temporário e IA simulada. |
 
@@ -35,6 +38,9 @@ Whisper tenta WebGPU quando disponível, com alternativa WebAssembly em uma thre
 - **Consultation:** proprietário, caso de origem, cópia do caso no início da sessão, estado, datas, diagnóstico, diferenciais, tratamento, avaliação e nota.
 - **Turn:** pergunta, resposta, intenção clínica e identificador da requisição dentro de uma consulta.
 - **PerformedExam:** exame solicitado, tipo e resultado vinculado à consulta.
+- **SourceRecord:** metadados privados da fonte, estado de preparação e vínculo ao caso, sem artigo integral.
+- **SourceExclusion:** identificador mínimo de uma fonte explicitamente excluída, para impedir reintrodução por registro, sincronização ou restauração.
+- **AIUsage:** contadores por operação web, datas e vínculos internos, sem prompts ou respostas; distingue consumo informado, parcial e ausente.
 
 A cópia do caso na consulta evita que edições futuras no catálogo alterem retroativamente o material usado em uma sessão. A repetição de uma requisição de mensagem usa um identificador próprio para evitar turnos duplicados. Controle de ocupação da consulta coordena operações de IA concorrentes.
 
@@ -69,7 +75,27 @@ A experiência web utiliza oito casos didáticos em português: tosse e febre, a
 
 Casos gerados por IA precisam de revisão editorial e clínica antes de publicação. Revisão, correções e publicação pertencem ao administrador; a geração automática não estabelece validade clínica. O código original permanece como referência e não é executado diretamente como servidor web.
 
-O acervo original MedCaseReasoning foi adquirido integralmente em cache privado: 14.489 registros. Não acompanha o ZIP nem é publicado pelo download. O importador consulta metadados e XML oficiais do PMC, verifica licença e checksum, e usa a DeepSeek para classificação, adaptação e uma segunda auditoria por IA. Trechos de evidência são comparados ao texto da fonte. Cada rascunho precisa de revisão humana antes da publicação. O catálogo suporta 55 especialidades do CFM; isso não implica 55 especialidades rotuladas no corpus nem cobertura de 300 casos por área. Consulte [o inventário e os limites da base](BASES_CLINICAS.md).
+O acervo original MedCaseReasoning foi adquirido integralmente em cache privado: **14.489 registros**. Depois da exclusão explícita de 11 artigos retratados e 2 fontes indisponíveis, há **14.476 fontes ativas verificadas na instalação de preparação**: 10.761 para adaptação licenciada e 3.715 para preparação factual ND. A meta de 55 especialidades × 300 casos exige 16.500 fichas únicas, com déficit mínimo de 2.024 fontes antes de considerar completude e distribuição. O CSV não contém rótulos de especialidade; esses totais não comprovam cobertura de todas as áreas.
+
+O CSV bruto permanece privado e não acompanha o ZIP da aplicação. O empacotador pode incluir metadados/exclusões (`--source-registry`) e uma lista de rascunhos (`--case-drafts`), validando suas fontes correspondentes. `init-db`/`upgrade-db` restauram esses arquivos de forma idempotente, respeitando a política de reutilização e preservando casos/revisões existentes. Os rascunhos entram privados em `review_required`. Uma ficha já preparada não torna a fonte verificada no servidor novo: sem XML local conferido, os metadados restaurados mantêm a verificação pendente. Usuários, conversas, banco e artigos integrais não são transferidos pelo ZIP.
+
+O arquivo administrativo separado `medlab-acervo-retomada.tar.gz` conserva CSV, snapshots, checkpoints e exportações, sem banco ou credenciais. Destina-se a uma instalação nova; a sincronização valida os arquivos transferidos antes de restaurar o progresso. O manifesto `MANIFEST-ACERVO.sha256` é independente do manifesto do aplicativo. Esse arquivo de aproximadamente 270 MB fica no servidor privado e não faz parte dos modelos de voz baixados pelo navegador.
+
+A página administrativa `/acervo`, dentro de `ADMIN_PATH`, distingue registro, verificação, português preparado, rascunhos e publicação; o aluno vê somente casos publicados. O estado desta entrega é **seis fichas reais preparadas por Codex e revisadas por outro agente, privadas; 14.470 fontes ainda sem ficha; zero casos reais publicados e oito fictícios publicados**. A revisão clínica humana permanece pendente. O importador usa metadados e XML oficiais do PMC, verifica licença/checksum e dispõe do fluxo DeepSeek de classificação, preparação e auditoria por IA. As evidências são conferidas contra a fonte e cada rascunho requer revisão antes de publicar. Consulte [o inventário e os limites da base](BASES_CLINICAS.md).
+
+O produto é uma ficha em português para paciente simulado e avaliador: fatos disponíveis, fala leiga, exames, diagnóstico de referência e rubrica. Não é uma tradução integral do artigo. O artigo original permanece privado para verificação. Com `CASE_ALLOW_CLINICAL_FACTS=true` (padrão `false`), um extrator produz fatos atômicos e um gerador isolado recebe somente esses fatos para escrever paciente e rubrica. A ficha conserva hashes/localizadores de evidência e a referência da fonte, sem reproduzir o texto do relato nem atribuir automaticamente sua licença ND à redação nova. Esse fluxo exige verificação e revisão próprias; não equivale a liberar ND para tradução. As 3.715 fontes ND foram verificadas e conservadas nesse fluxo. Artigos retratados e fontes não verificáveis foram excluídos explicitamente; `excluded_pmcids` impede sua reimportação. O formato portátil schema 2 conserva os bloqueios mínimos sem restaurar os registros removidos e sem apagar casos/históricos já vinculados.
+
+O processamento no Terminal usa dois limites independentes: `--source-workers 1..8` para PMC e `--adapt-workers 1..16` para casos com IA. Adaptação paralela exige `--adapt --all-records`; cada caso possui serviço de IA próprio. Resultados são devolvidos ao coordenador, que grava checkpoints, chama a sincronização e escreve no banco sequencialmente. Erros gerais do provedor param novas chamadas, preservando resultados válidos já recebidos; requisições já em voo não podem ser desfeitas. A retomada exige ação explícita, sem repetição automática de chamadas pagas.
+
+O relatório separa tarefas enviadas, terminadas e interrompidas, além dos tokens de entrada, saída e cache informados pelo provedor. Indicadores de completude evitam tratar uma resposta sem estatísticas como consumo zero. Esses dados não são uma estimativa de preço nem comprovam a execução de etapas que falharam. Nesta entrega, a autenticação da chave foi confirmada, mas a geração pela DeepSeek não foi validada durante a indisponibilidade do provedor. Os seis rascunhos foram preparados por Codex a partir de snapshots verificados. O procedimento de retomada está documentado; nenhum lote fica executando ou agendado automaticamente.
+
+## Organização dos prompts e cache
+
+O serviço de IA serializa objetos JSON de forma determinística, ordenando mapas recursivamente e preservando a ordem de listas. Instruções e formatos reutilizáveis precedem o conteúdo variável de caso, sessão, histórico e pergunta. Isso abrange intenção, resposta do paciente, avaliação, geração/preparação e auditorias. O paciente continua recebendo apenas os fatos pertinentes à pergunta: favorecer cache não autoriza incluir diagnóstico ou gabarito no seu contexto.
+
+O avaliador recebe clínica, rubrica, momento clínico e dados ausentes, sem autoria, licença, hashes, citações de evidência ou datas da importação. A proveniência completa permanece no caso armazenado e no fluxo de revisão. O cache é administrado pela DeepSeek, não pelo banco do MED LAB; o aplicativo não força persistência nem faz aquecimento pago. Veja [regras atuais, consumo observado e limites](CPANEL.md#9-cache-de-prompts-e-consumo-observado).
+
+O painel privado `ADMIN_PATH/uso-ia` agrega conversas, avaliações e geração de casos pelo site. O registro usa a diferença dos contadores antes/depois de cada operação e uma transação própria para conservar métricas após falhas, sem confirmar conteúdo pendente da consulta. Não inclui consumo histórico anterior à ativação nem os lotes do Terminal. O modo demonstrativo não cria consumo de API. A taxa de acerto só é calculada quando as estatísticas de cache estão completas; os tokens observados não substituem a fatura do provedor.
 
 ## Autenticação, persistência e falhas
 

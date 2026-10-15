@@ -13,6 +13,7 @@ from .extensions import db
 from .models import ClinicalCase, Consultation, PerformedExam, Turn, User, utcnow
 from .security import api_login_required, consume_limit, login_rate_allowed, safe_next
 from .catalogue import filtered_cases, public_summary, public_title
+from .usage import capture_usage
 
 bp = Blueprint("web", __name__)
 
@@ -268,7 +269,9 @@ def message(session_id):
         history = [{"question": t.question, "answer": t.answer, "intentClassification": t.intent} for t in training.turns]
         case_data = copy.deepcopy(training.case_snapshot)
         db.session.commit()
-        response = get_ai_service().respond(case_data, question.strip(), history)
+        service = get_ai_service()
+        with capture_usage(service, "conversation", user_id=current_user.id, consultation_id=session_id):
+            response = service.respond(case_data, question.strip(), history)
         if not lock_is_owned(session_id, token):
             db.session.rollback()
             return jsonify(error="A solicitação expirou. Atualize a página antes de tentar novamente."), 409
@@ -383,7 +386,9 @@ def finish(session_id):
         # Save the learner's draft before an external request so a failed evaluation loses no reasoning.
         training.diagnosis, training.differential, training.treatment = diagnosis, differential, treatment
         db.session.commit()
-        evaluation = get_ai_service().evaluate(case_data, session_data)
+        service = get_ai_service()
+        with capture_usage(service, "evaluation", user_id=current_user.id, consultation_id=session_id):
+            evaluation = service.evaluate(case_data, session_data)
         if not lock_is_owned(session_id, token):
             db.session.rollback()
             flash("A avaliação expirou. Sua consulta permanece salva; tente novamente.", "error")

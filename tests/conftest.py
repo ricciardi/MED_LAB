@@ -74,6 +74,8 @@ def app(case_data, monkeypatch):
         "WTF_CSRF_ENABLED": False,
         "SESSION_COOKIE_SECURE": False,
         "DEMO_MODE": True,
+        "CASE_REUSE_SCOPE": "noncommercial",
+        "CASE_ALLOW_CLINICAL_FACTS": False,
         "DEEPSEEK_API_KEY": "",
         "ADMIN_PATH": "/gestao-teste",
         "MAX_DAILY_AI_REQUESTS": 120,

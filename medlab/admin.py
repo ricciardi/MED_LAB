@@ -1,13 +1,17 @@
 import copy
+from datetime import timedelta
 from uuid import uuid4
 from flask import Blueprint, abort, current_app, flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_user, logout_user
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
+from sqlalchemy.orm import selectinload
+from urllib.parse import urlsplit
 from .extensions import db
-from .models import ClinicalCase, Consultation, User
+from .models import AIUsage, ClinicalCase, Consultation, User, utcnow
 from .security import admin_required, consume_limit, login_rate_allowed
 from .catalog import CASE_TYPES, SPECIALTIES
 from .catalogue import case_type_for, catalogue_counts
+from .usage import OPERATIONS, capture_usage, usage_row, usage_summary
 
 bp = Blueprint("admin", __name__)
 
@@ -47,6 +51,31 @@ def dashboard():
                            catalog_counts=catalogue_counts(),
                            model=current_app.config["AI_MODEL"], key_configured=bool(current_app.config["DEEPSEEK_API_KEY"]))
 
+
+@bp.get("/uso-ia")
+@admin_required
+def ai_usage():
+    period = request.args.get("period", "30")
+    if period not in {"7", "30", "all"}:
+        period = "30"
+    operation = request.args.get("operation", "")
+    if operation not in OPERATIONS:
+        operation = ""
+    conditions = []
+    if period != "all":
+        conditions.append(AIUsage.created_at >= utcnow() - timedelta(days=int(period)))
+    if operation:
+        conditions.append(AIUsage.operation == operation)
+    pagination = db.paginate(select(AIUsage).where(*conditions).order_by(AIUsage.id.desc()),
+        page=min(1_000_000, max(1, request.args.get("page", 1, type=int))), per_page=25, error_out=False)
+    filters = {"period": period, "operation": operation}
+    if pagination.page > max(1, pagination.pages):
+        return redirect(url_for("admin.ai_usage", page=max(1, pagination.pages), **filters))
+    return render_template("admin/usage.html", totals=usage_summary(*conditions),
+        entries=[usage_row(item) for item in pagination.items], pagination=pagination,
+        operations=OPERATIONS, filters=filters)
+
+
 @bp.get("/casos")
 @admin_required
 def cases():
@@ -62,6 +91,98 @@ def cases():
     return render_template("admin/cases.html", cases=pagination.items, specialties=SPECIALTIES,
         pagination=pagination, selected_specialty=specialty, selected_status=status)
 
+
+SOURCE_STATUS_LABELS = {
+    "registered": "Registrado",
+    "pending": "Aguardando verificação",
+    "verified": "Fonte verificada",
+    "license_rejected": "Não elegível na política atual",
+    "source_error": "Falha ao obter a fonte",
+    "classification_error": "Classificação pendente",
+    "adaptation_error": "Adaptação pendente",
+    "quota_deferred": "Aguardando cota",
+    "draft": "Adaptação criada",
+}
+SOURCE_STAGE_LABELS = {
+    "verified": "Fontes verificadas",
+    "translated": "Português preparado",
+    "untranslated": "Português ainda não preparado",
+    "draft": "Rascunhos em revisão",
+    "published": "Publicados para os alunos",
+}
+
+
+def source_external_url(record):
+    """Only turn a registry URL into an ordinary HTTP(S) link."""
+    metadata = record.original_metadata if isinstance(record.original_metadata, dict) else {}
+    value = metadata.get("article_link", "")
+    if isinstance(value, str):
+        try:
+            parts = urlsplit(value)
+            if parts.scheme in {"https", "http"} and parts.hostname and not parts.username and not parts.password:
+                return value
+        except ValueError:
+            pass
+    if record.pmcid and record.pmcid.startswith("PMC") and record.pmcid[3:].isdigit():
+        return f"https://pmc.ncbi.nlm.nih.gov/articles/{record.pmcid}/"
+    return None
+
+
+@bp.get("/acervo")
+@admin_required
+def sources():
+    from .models import SourceRecord
+    from .source_registry import source_counts, verified_source_filter
+
+    search = request.args.get("q", "").strip()[:160]
+    dataset = request.args.get("dataset", "").strip()[:64]
+    specialty = request.args.get("specialty", "").strip()[:80]
+    stage = request.args.get("stage", "")
+    import_status = request.args.get("status", "")
+    if stage not in SOURCE_STAGE_LABELS:
+        stage = ""
+    if import_status not in SOURCE_STATUS_LABELS:
+        import_status = ""
+    query = select(SourceRecord).options(
+        selectinload(SourceRecord.clinical_case).load_only(ClinicalCase.id, ClinicalCase.title, ClinicalCase.is_published)
+    )
+    if search:
+        # Wildcards typed by an editor are literal search characters.
+        escaped = search.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+        pattern = f"%{escaped}%"
+        query = query.where(or_(SourceRecord.original_title.ilike(pattern, escape="\\"),
+            SourceRecord.pmcid.ilike(pattern, escape="\\"),
+            SourceRecord.original_diagnosis.ilike(pattern, escape="\\")))
+    if dataset:
+        query = query.where(SourceRecord.dataset == dataset)
+    if specialty:
+        query = query.where(SourceRecord.specialty == specialty)
+    if import_status:
+        query = query.where(SourceRecord.import_status == import_status)
+    if stage == "verified":
+        query = query.where(verified_source_filter())
+    elif stage in {"translated", "untranslated"}:
+        query = query.where(SourceRecord.translated.is_(stage == "translated"))
+    elif stage in {"draft", "published"}:
+        query = query.where(SourceRecord.clinical_case.has(ClinicalCase.is_published.is_(stage == "published")))
+    filters = {"q": search, "dataset": dataset, "specialty": specialty, "stage": stage, "status": import_status}
+    page = min(1_000_000, max(1, request.args.get("page", 1, type=int)))
+    pagination = db.paginate(query.order_by(SourceRecord.id.asc()),
+        page=page, per_page=25, error_out=False)
+    if pagination.page > max(1, pagination.pages):
+        return redirect(url_for("admin.sources", page=max(1, pagination.pages), **filters))
+    # Counts describe the entire registry. Filters affect only the record list.
+    counts = source_counts(dataset=None)
+    datasets = db.session.scalars(select(SourceRecord.dataset).distinct().order_by(SourceRecord.dataset)).all()
+    specialties = db.session.scalars(select(SourceRecord.specialty).where(
+        SourceRecord.specialty.is_not(None), SourceRecord.specialty != "").distinct().order_by(SourceRecord.specialty)).all()
+    records = [{"record": record, "source_url": source_external_url(record),
+        "clinical_case": record.clinical_case} for record in pagination.items]
+    return render_template("admin/sources.html", records=records, pagination=pagination,
+        source_counts=counts, datasets=datasets, specialties=specialties, filters=filters,
+        stage_labels=SOURCE_STAGE_LABELS, status_labels=SOURCE_STATUS_LABELS,
+        filters_active=any(filters.values()))
+
 @bp.post("/casos/gerar")
 @admin_required
 def generate_case():
@@ -74,7 +195,9 @@ def generate_case():
     if not consume_limit("generate-case", str(current_user.id), 12, 3600):
         abort(429)
     try:
-        data = validate_case(AIService(current_app.config).generate_case(specialty, difficulty))
+        service = AIService(current_app.config)
+        with capture_usage(service, "generation", user_id=current_user.id):
+            data = validate_case(service.generate_case(specialty, difficulty))
         data["caseId"] = "ia-" + uuid4().hex[:16]
         data["reviewStatus"] = "review_required"
         case = ClinicalCase(slug=data["caseId"], title=data["caseTitle"], specialty=data["specialty"],
@@ -127,7 +250,7 @@ def edit_case(case_id):
 @bp.post("/casos/<int:case_id>/publicar")
 @admin_required
 def publish_case(case_id):
-    from .case_schema import CaseValidationError, validate_case
+    from .case_schema import CaseValidationError, source_license_allowed, validate_case
     case = db.get_or_404(ClinicalCase, case_id)
     if case.is_published:
         case.is_published = False
@@ -141,6 +264,12 @@ def publish_case(case_id):
             data = validate_case(case.data)
         except CaseValidationError as exc:
             flash(str(exc), "error")
+            return redirect(url_for("admin.edit_case", case_id=case.id))
+        if data.get("catalogType") == "published_case" and not source_license_allowed(
+            data.get("provenance"), current_app.config.get("CASE_REUSE_SCOPE", "commercial"),
+            current_app.config.get("CASE_ALLOW_CLINICAL_FACTS", False)
+        ):
+            flash("A origem deste caso não atende à política de reutilização atual. Confira a licença e a configuração de preparação factual antes de publicar.", "error")
             return redirect(url_for("admin.edit_case", case_id=case.id))
         data["reviewStatus"] = "reviewed"
         case.data, case.is_published = data, True

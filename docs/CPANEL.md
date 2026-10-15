@@ -26,7 +26,16 @@ python3 scripts/prepare_voice_assets.py
 python3 scripts/package_release.py
 ```
 
-O arquivo `dist/medlab-cpanel.zip` contém somente os arquivos de entrega permitidos, incluindo os runtimes estáticos de voz previamente preparados. O script exclui banco de dados, `.env`, ambientes virtuais, caches, histórico Git e capturas de tela. O acervo clínico bruto em `instance/imports/` também não faz parte do ZIP. O `MANIFEST.sha256` interno permite conferir os arquivos extraídos. A versão de origem dos casos SPBench continua incluída para rastreabilidade.
+O arquivo `dist/medlab-cpanel.zip` contém somente os arquivos de entrega permitidos, incluindo os runtimes estáticos de voz previamente preparados. O script exclui banco de dados, `.env`, ambientes virtuais, caches, histórico Git e capturas de tela. O acervo clínico bruto em `instance/imports/` também não faz parte do ZIP. O `MANIFEST.sha256` interno permite conferir os arquivos extraídos. Para incluir inventário e rascunhos reais previamente preparados:
+
+```bash
+flask --app app export-sources --output instance/exports/source_registry.jsonl
+python scripts/package_release.py \
+  --source-registry instance/exports/source_registry.jsonl \
+  --case-drafts instance/exports/real_case_drafts.json
+```
+
+`--case-drafts` recebe uma lista JSON privada de fichas `review_required`, como a exportação dos seis rascunhos desta entrega; não prepara novos casos. O empacotador valida o esquema, a fonte correspondente e os identificadores excluídos. Inclui `medlab/data/source_registry.jsonl` e `medlab/data/real_case_drafts.json` para restauração por `init-db`/`upgrade-db`. Fontes e rascunhos permanecem privados, com permissão `0600`; usuários, conversas e banco não são transferidos. Os arquivos SPBench de origem continuam incluídos para rastreabilidade.
 
 1. Envie o ZIP pelo Gerenciador de Arquivos ou SFTP e extraia em `/home/SEU_USUARIO/medlab`.
 2. Crie/registre a aplicação conforme a interface disponível.
@@ -57,12 +66,23 @@ python -c 'import secrets; print(secrets.token_hex(32))'
 
 Use o valor gerado para `SECRET_KEY`. A sessão depende dessa chave; trocá-la encerra as sessões existentes. As variáveis disponíveis e seus valores padrão estão em `.env.example`.
 
+Para inserir a chave DeepSeek, use o Terminal interativo com o ambiente virtual ativo:
+
+```bash
+python scripts/configure_deepseek.py
+python scripts/configure_deepseek.py --check
+```
+
+O primeiro comando solicita a chave com **entrada oculta**, preserva as demais variáveis do `.env`, grava o arquivo com permissão `0600` e define `DEMO_MODE=false`. Não passe a chave como argumento, por pipe ou pelo chat. O segundo informa apenas se existe uma chave no `.env`; não exibe seu valor, não faz chamada à API e não confirma saldo ou validade. Reinicie Passenger depois da configuração. Variáveis já definidas no painel podem prevalecer sobre o `.env`; a verificação desse comando se limita ao arquivo privado desta instalação.
+
 | Configuração | Uso em produção |
 | --- | --- |
 | `SECRET_KEY` | Segredo aleatório próprio da instalação; não reutilizar exemplos. |
 | `DEEPSEEK_API_KEY` | Chave do projeto DeepSeek, armazenada somente no servidor. |
 | `LOCAL_VOICE_ENABLED` | `true` para oferecer a voz local; exige os runtimes estáticos preparados. |
 | `DEMO_MODE` | `false`. O modo demonstrativo local é explicitamente separado. |
+| `CASE_REUSE_SCOPE` | `noncommercial` nesta instalação educacional privada; define quais licenças de fontes podem seguir para adaptação. |
+| `CASE_ALLOW_CLINICAL_FACTS` | `false` por padrão; `true` somente quando se deseja o fluxo separado de fatos clínicos, com fonte verificada e redação independente. |
 | `ADMIN_PATH` | Prefixo administrativo, por exemplo `/gestao-medlab`. Não incluir barra final. |
 | `DATABASE_URL` | URL SQLAlchemy; SQLite privado ou MySQL com PyMySQL. |
 | `SESSION_COOKIE_SECURE` | `true` quando o domínio estiver em HTTPS. |
@@ -108,7 +128,9 @@ flask --app app init-db
 flask --app app create-admin
 ```
 
-O primeiro comando cria o esquema inicial e importa os casos curados. O segundo solicita os dados da nova conta e a senha de forma interativa. Não existe conta administrativa com senha pública. Use uma conta nova desta instalação.
+O primeiro comando cria o esquema inicial, importa os oito casos fictícios e restaura o inventário e os rascunhos reais incluídos no ZIP, quando presentes e compatíveis com a configuração. Para restaurar também as fichas baseadas somente em fatos ND, é necessário optar explicitamente por `CASE_ALLOW_CLINICAL_FACTS=true`; mantenha `CASE_REUSE_SCOPE=noncommercial` no escopo desta instalação. A restauração é idempotente, preserva casos e revisões existentes, respeita exclusões e mantém `review_required`, sem publicar os seis rascunhos. O segundo comando solicita os dados da nova conta e a senha de forma interativa. Não existe conta administrativa com senha pública. Use uma conta nova desta instalação.
+
+A restauração dos metadados não substitui a conferência do XML: no servidor novo, a fonte começa com verificação pendente, mesmo quando a ficha em português já está vinculada. As contagens de fontes verificadas da máquina de preparação não são uma verificação feita no destino. Confira os relatórios e revalide fonte e conteúdo antes de publicar.
 
 O endereço administrativo padrão é `https://SEU_DOMINIO/gestao-medlab/login`; se `ADMIN_PATH` mudar, ajuste esse endereço. Não há link administrativo na navegação pública. O caminho discreto reduz sua exposição, mas a proteção efetiva continua sendo autenticação e permissão de administrador no servidor.
 
@@ -186,15 +208,29 @@ A entrega de código e os testes locais não verificam DNS, certificado, disponi
 
 ## 8. Adquirir fontes de casos reais
 
-Na raiz privada do projeto e com o ambiente virtual ativo:
+**O produto da preparação é uma ficha de simulação em português, não a tradução integral de um artigo.** Ela reúne o roteiro leigo do paciente, os achados disponíveis para investigação e um gabarito reservado ao avaliador, com perguntas relevantes, diagnóstico de referência, critérios de feedback e nota. O texto original é usado para conferir fatos e preservar a referência; introdução, revisão bibliográfica e outras partes sem função no exercício não são traduzidas para a biblioteca.
+
+Configure `CASE_REUSE_SCOPE=noncommercial` no mesmo ambiente usado pelo Passenger e pelo Terminal. Esse é o escopo de uso **exclusivamente não comercial** definido para esta instalação. O filtro de adaptação licenciada admite CC BY, CC0, CC BY-NC, CC BY-SA e CC BY-NC-SA quando confirmadas por artigo. Fontes ND não seguem para tradução/adaptação do texto. `CASE_ALLOW_CLINICAL_FACTS=false` é o padrão; a instalação local autorizada usa `true` para um fluxo distinto, com extração de fatos atômicos e gerador isolado que recebe apenas esses fatos. A referência mantém a licença original, sem dizer que ND autoriza traduzir e sem aplicar ND automaticamente à ficha nova. Evidências usam hashes/localizadores e a publicação continua exigindo revisão. Artigos retratados e fontes indisponíveis permanecem fora da biblioteca. Consulte o [fluxo de fatos clínicos](BASES_CLINICAS.md#fluxo-opcional-baseado-somente-em-fatos-clínicos).
+
+Na raiz privada do projeto, após o backup e a preparação do banco, use o ambiente virtual ativo:
 
 ```bash
-python scripts/source_inventory.py
+python scripts/download_case_corpus.py
+flask --app app register-sources \
+  --source instance/imports/MedCaseReasoning/medcasereasoning_core.csv
 ```
 
-Esse comando não requer chave de IA. Baixa o CSV completo de 205 MB da revisão fixada do MedCaseReasoning, valida seu SHA256 e registra **14.489 casos de fonte** em `instance/imports/MedCaseReasoning/`, com inventário e evidências da aquisição. Reserve espaço adicional para XMLs, metadados, rascunhos e backups. A hospedagem precisa alcançar Hugging Face e o PMC Cloud durante a preparação das fontes. É possível fazer o trabalho no computador de administração e transferir os arquivos necessários para a pasta privada do servidor por SFTP.
+O download usa somente a biblioteca padrão do Python e não requer chave de IA. Obtém o CSV completo de **205.157.823 bytes** da revisão fixada do MedCaseReasoning, confere tamanho e SHA256 antes da substituição atômica e salva `acquisition.json` em `instance/imports/MedCaseReasoning/`. Um arquivo já válido é conferido e reutilizado sem acesso à rede; um download interrompido pode ser repetido, começando novamente, sem instalar arquivo parcial. O CSV e seus metadados ficam privados, com permissão `0600`.
 
-O acervo bruto não contém especialidades e não é automaticamente uma biblioteca de pacientes em português. O aplicativo suporta as 55 especialidades do CFM; a meta de 300 por área exige 16.500 casos únicos, pelo menos 2.011 além deste acervo, antes dos filtros. A distribuição real por área e as licenças precisam ser apuradas. Não duplique casos para preencher essa diferença.
+Se o inventário já veio no ZIP, `init-db` já o registrou. Para consultar, use `flask --app app source-report` ou a página `/<ADMIN_PATH>/acervo`, acessível somente pela administração. Uma exportação separada pode ser restaurada com `flask --app app restore-sources --source caminho/source_registry.jsonl`. O formato portátil schema 2 restaura metadados com verificação pendente e identificadores de exclusão; sozinho, não restaura fichas em português nem publica casos. Os rascunhos são transportados separadamente por `--case-drafts`, como descrito na seção 2.
+
+`register-sources` percorre os **14.489 registros de fonte**, sem rede, tradução ou publicação, e respeita os bloqueios de reimportação. Repetir o comando preserva registros já existentes e informa conflitos. Nesta entrega foram excluídos explicitamente **13 registros: 11 retratados e 2 indisponíveis**, restando **14.476 ativos**. Os identificadores mínimos de exclusão acompanham a exportação para impedir sua reintrodução. Não há exclusão automática de todas as fontes ND. Para o inventário detalhado do CSV, o comando opcional `python scripts/source_inventory.py` continua disponível. CSV e snapshots ficam privados.
+
+**Os 205 MB do acervo clínico ficam no servidor, não no tablet do estudante.** Esse CSV não faz parte dos modelos de voz baixados no navegador. Reserve espaço adicional no servidor para XMLs, metadados, rascunhos e backups. A hospedagem precisa alcançar Hugging Face para o download e PMC Cloud para verificar fontes. É possível preparar o acervo no computador de administração e transferi-lo para a pasta privada do servidor por SFTP.
+
+O acervo bruto não contém especialidades e não é automaticamente uma biblioteca de pacientes em português. O aplicativo suporta as 55 especialidades do CFM; a meta de 300 por área exige 16.500 casos únicos, **no mínimo 2.024 além das 14.476 fontes ativas**. Na instalação de preparação, a verificação foi concluída para 10.761 fontes de adaptação licenciada e 3.715 de preparação factual ND. Completude clínica e distribuição por área ainda precisam ser apuradas; não há promessa de 300 casos em cada especialidade.
+
+O estado desta entrega é **seis fichas reais em português preparadas por Codex e revisadas por outro agente, privadas em `review_required`; 14.470 fontes ainda sem ficha; zero reais publicados e oito fictícios publicados**. Revisão clínica humana permanece pendente. A autenticação DeepSeek foi confirmada, mas a geração pela API não foi validada durante a indisponibilidade do provedor. Os comandos abaixo deixam a retomada pronta para execução explícita quando o serviço estiver disponível; nenhum lote fica rodando ou agendado automaticamente.
 
 A preparação preserva PMCID, versão, licença e evidências da fonte. Depois do backup e de `upgrade-db`, consulte a contagem efetiva do banco e prepare um primeiro lote de fontes sem chamar IA:
 
@@ -208,7 +244,42 @@ flask --app app import-report
 
 O diretório de trabalho padrão é `instance/imports/MedCaseReasoning/processed`. Ele contém `manifest.json`, `records/`, `pmc-cache/`, `drafts/` e `report.json`. Use `--work-dir CAMINHO_PRIVADO` em ambos os comandos de importação/relatório para escolher outro diretório. O checksum vincula esse diretório ao CSV original; uma fonte diferente exige outro diretório. Não execute dois lotes simultâneos sobre o mesmo diretório.
 
-Após configurar `DEEPSEEK_API_KEY` e `DEMO_MODE=false`, acrescente `--adapt` para classificar, traduzir e auditar por IA. **Esse passo consome créditos**, e cada caso pode exigir várias chamadas; `--limit` limita registros trabalhados, não tokens nem valor monetário. `AI_IMPORT_TIMEOUT` controla o tempo de espera por chamada da adaptação no Terminal: padrão 120 segundos, máximo 180. Essa configuração não aumenta o timeout da conversa web, que continua limitado a 45 segundos por chamada. Por exemplo, para um lote pequeno com meta de 300 em cada uma das áreas selecionadas:
+Quando o serviço estiver disponível, após configurar a chave pelo comando de entrada oculta da seção 3 e manter `DEMO_MODE=false`, execute o lote de adaptação:
+
+```bash
+flask --app app import-real-cases \
+  --source instance/imports/MedCaseReasoning/medcasereasoning_core.csv \
+  --all-records \
+  --adapt \
+  --limit 50
+```
+
+`--adapt` classifica, prepara a ficha em português pelo fluxo aplicável à fonte e audita por IA. **Esse passo consome créditos**, e cada caso pode exigir várias chamadas; `--limit` limita registros trabalhados, não tokens nem valor monetário. `--all-records` remove o teto de 300 rascunhos por especialidade, mas mantém os filtros de fonte/licença, eventuais especialidades selecionadas e o limite de 50 registros deste lote. Repita o comando para continuar: ele não traduz todo o acervo em uma única execução com `--limit 50`.
+
+`--source-workers N` permite de 1 a 8 verificações de fontes em paralelo; o padrão é 1. Esse parâmetro só paraleliza consultas ao PMC. `--adapt-workers N` aceita de 1 a 16 casos em preparação simultânea; acima de 1 exige `--adapt --all-records`. Gravações no banco, checkpoints e atualização do progresso permanecem coordenados sequencialmente. Comece com poucos casos em paralelo e ajuste à capacidade da hospedagem e aos limites do provedor. Por exemplo:
+
+```bash
+flask --app app import-real-cases \
+  --source instance/imports/MedCaseReasoning/medcasereasoning_core.csv \
+  --all-records --adapt --adapt-workers 4 --source-workers 4 --limit 50
+```
+
+Falhas gerais de autenticação, saldo, limite de uso, indisponibilidade ou transporte interrompem novas chamadas. Requisições já enviadas podem terminar, e resultados válidos recebidos são preservados. O relatório indica interrupção e trabalho efetivamente concluído; paralelismo não garante que todos os casos enviados terminem. Depois de resolver a causa, acrescente `--retry-errors` quando houver registros em erro:
+
+```bash
+flask --app app import-real-cases \
+  --source instance/imports/MedCaseReasoning/medcasereasoning_core.csv \
+  --all-records --adapt --limit 50 --retry-errors
+flask --app app import-report
+flask --app app source-report
+flask --app app catalog-report
+```
+
+`aiUsageThisRun` resume o lote; `aiUsage` resume os dados persistidos. Os contadores incluem requisições e tokens de entrada, saída e cache informados pelo provedor. `usageComplete=false` ou `cacheUsageComplete=false` sinaliza informação incompleta: ausência de estatística não significa custo zero. O relatório não estima a cobrança nem impõe teto monetário; `--limit` continua sendo limite de registros.
+
+`AI_IMPORT_TIMEOUT` controla o tempo de espera por chamada da adaptação no Terminal: padrão 120 segundos, máximo 180. Essa configuração não aumenta o timeout da conversa web, que continua limitado a 45 segundos por chamada.
+
+Para trabalhar com a meta de 300 em áreas específicas, omita `--all-records`. Por exemplo:
 
 ```bash
 flask --app app import-real-cases \
@@ -224,4 +295,53 @@ Sem `--specialty`, o escopo é a lista completa de 55 especialidades. O filtro n
 
 Rascunhos válidos são inseridos no banco **privados**, sem substituir casos já existentes. Revise o conteúdo e a fonte pela administração antes de publicar. A auditoria por IA não equivale a revisão clínica humana. Licença e retratação são snapshots da consulta ao PMC; revalide-os antes da publicação. `import-report` separa fonte, classificação e rascunhos, e `catalog-report` distingue casos reais publicados, reais em revisão e fictícios. Apenas os publicados chegam à biblioteca do estudante.
 
-Execute lotes no Terminal, sem ocupar uma requisição web longa. A tradução de todo o acervo não foi realizada nesta entrega. Consulte [fontes, inventário e limites de cobertura](BASES_CLINICAS.md) antes de publicar casos derivados de artigos.
+Preserve a atribuição e a identificação das alterações. Adaptações SA devem acompanhar a mesma licença e versão da fonte, inclusive em eventual arquivo de caso exportado. A finalidade não comercial da instalação não acrescenta NC a uma fonte CC BY-SA. O resultado apresenta a origem; confira os créditos e as condições antes da publicação, conforme [licenças e atribuição dos casos](BASES_CLINICAS.md#condições-para-adaptar-e-disponibilizar). O inventário portátil é apenas um registro de metadados e não substitui esses créditos.
+
+Depois de alterar o escopo ou habilitar fatos clínicos, reavalie as fontes antes de preparar fichas; `--refresh-sources` permite consultar novamente as ainda não adaptadas. Não edite contagens ou estados manualmente para converter rejeições em aprovações. A opção `commercial` conserva o filtro CC BY/CC0, mas trocar a variável não apaga obrigações de casos NC/SA que já estejam no banco.
+
+Execute lotes no Terminal, sem ocupar uma requisição web longa. Os seis rascunhos preparados por Codex não comprovam funcionamento da geração DeepSeek. Consulte [fontes, inventário e limites de cobertura](BASES_CLINICAS.md) antes de publicar casos derivados de artigos.
+
+### Restaurar o pacote privado de retomada
+
+`dist/medlab-acervo-retomada.tar.gz` é um arquivo administrativo separado: **269.704.016 bytes, aproximadamente 270 MB comprimidos e 1,05 GB de dados extraídos**. Contém o CSV fixado, progresso e snapshots das 14.476 fontes ativas, seis fichas privadas e exportações com os 13 bloqueios de reimportação. Não contém `.env`, chave, banco, contas ou conversas. Não é necessário para estudar ou executar o aplicativo; serve para continuar a preparação no Terminal sem baixar novamente as fontes já conferidas. Esses 270 MB ficam no servidor privado, separados dos downloads opcionais de voz no navegador.
+
+Use somente em **instalação nova**, com o aplicativo já instalado e sem um diretório `instance/imports/MedCaseReasoning/processed` contendo progresso próprio. Não extraia sobre checkpoints mais recentes. Envie o arquivo por SFTP para uma pasta privada da conta, fora de `public_html`. Confira seu SHA256 antes de extrair:
+
+```bash
+sha256sum /home/SEU_USUARIO/medlab-acervo-retomada.tar.gz
+```
+
+O resultado esperado para esta entrega é `89bfab4697d23e20fac5884819c6f88e5e3811beceb9983e6f72b780d8013a0c`. Somente depois de conferir, extraia na raiz privada do aplicativo e valide os arquivos internos:
+
+```bash
+cd /home/SEU_USUARIO/medlab
+tar -xzf /home/SEU_USUARIO/medlab-acervo-retomada.tar.gz
+sha256sum -c MANIFEST-ACERVO.sha256
+```
+
+O manifesto do acervo tem nome próprio e não substitui `MANIFEST.sha256` do aplicativo. Leia também `RETOMADA-LEIA-ME.txt`. Configure `CASE_REUSE_SCOPE=noncommercial` e opte por `CASE_ALLOW_CLINICAL_FACTS=true` para restaurar os dois fluxos; configure a chave localmente pelo comando da seção 3. Com o ambiente virtual ativo:
+
+```bash
+flask --app app init-db
+flask --app app restore-sources --source instance/exports/source_registry.jsonl
+flask --app app register-sources \
+  --source instance/imports/MedCaseReasoning/medcasereasoning_core.csv \
+  --work-dir instance/imports/MedCaseReasoning/processed
+flask --app app upgrade-db
+flask --app app source-report
+flask --app app catalog-report
+```
+
+Nesse caminho, a sincronização confere os snapshots e checkpoints transferidos antes de refletir o progresso; é diferente de restaurar apenas metadados do ZIP. Confira 14.476 fontes ativas, seis rascunhos reais privados e zero reais publicados antes de preparar novos lotes. O pacote não publica fichas nem inicia a DeepSeek. Quando o provedor estiver operacional, comece com `--limit 5 --retry-errors` no comando `import-real-cases --all-records --adapt` mostrado acima, confira o relatório e só então aumente o lote.
+
+## 9. Cache de prompts e consumo observado
+
+A DeepSeek habilita o cache automaticamente, sem uma flag de ativação. O acerto exige correspondência exata com uma unidade de prefixo já persistida; conteúdo comum entre duas chamadas não garante acerto imediato. A construção leva segundos e entradas sem uso podem ser removidas após horas ou dias. O serviço é de melhor esforço, sem taxa garantida ou permanência. [Guia oficial de cache](https://api-docs.deepseek.com/guides/kv_cache/).
+
+O MED LAB serializa mapas de forma determinística e coloca instruções, formatos e listas estáveis antes do caso, histórico e pergunta variáveis. Isso favorece reaproveitamento sem ampliar os dados clínicos enviados ao paciente. Não há chamadas de aquecimento nem repetição paga automática para criar cache. Os valores `prompt_cache_hit_tokens` e `prompt_cache_miss_tokens` informam o uso observado; armazenamento em cache não elimina a geração da saída nem garante custo zero.
+
+Na administração, **Uso da IA** (`ADMIN_PATH/uso-ia`, por padrão `/gestao-medlab/uso-ia`) mostra conversas, avaliações e geração de casos pelo site, com filtros de 7 dias, 30 dias ou todo o período registrado. Uma operação pode fazer várias solicitações. O painel cobre chamadas desde a ativação deste registro, incluindo operações não concluídas; importações pelo Terminal continuam nos relatórios `aiUsage`/`aiUsageThisRun`.
+
+A taxa é `cache hit ÷ (cache hit + cache miss)` e só aparece quando todas as chamadas da seleção informam cache e existe denominador positivo. Sem estatísticas completas, o painel sinaliza dados parciais ou não informados; ausência de dados não significa gasto zero. São armazenados apenas contadores, data, operação e identificadores internos, sem prompts, respostas, diagnóstico ou credenciais nesse registro. Confira a cobrança no provedor: o painel não é uma fatura nem impõe um teto monetário.
+
+Esse cache pertence ao provedor de IA. Ele é separado do cache de fontes PMC no servidor e dos modelos de voz baixados no dispositivo. O consumo de memória e o download inicial de Whisper/Kokoro no navegador continuam existindo, independentemente do cache de prompts.
