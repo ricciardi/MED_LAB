@@ -1,6 +1,6 @@
 # Pesquisa de bases para casos clínicos reais
 
-Pesquisa e coleta iniciadas em 14/10/2026 (15/10 em UTC). O acervo original completo do MedCaseReasoning foi baixado e conferido: **14.489 registros reais de fonte**, em inglês. Após excluir explicitamente 11 artigos retratados e 2 fontes indisponíveis, o inventário privado contém **14.476 fontes ativas verificadas**: **10.761 para adaptação licenciada e 3.715 para o fluxo opcional de fatos clínicos ND**. Fichas em português estão sendo preparadas e corrigidas por lotes, com chamadas reais DeepSeek e revisão assistida. Consulte `source-report`, `import-report` e `catalog-report` para os totais atuais; verificação da fonte, ficha preparada, revisão clínica e publicação são etapas distintas.
+Pesquisa e coleta iniciadas em 14/10/2026 (15/10 em UTC). O acervo original completo do MedCaseReasoning foi baixado e conferido: **14.489 registros reais de fonte**, em inglês. Após excluir 117 relatos veterinários, 11 artigos retratados e 2 fontes indisponíveis, o inventário privado contém **14.359 fontes ativas verificadas**: **10.667 para adaptação licenciada e 3.692 para o fluxo opcional de fatos clínicos ND**. A etapa atual prepara fichas em português com tradução local e correções assistidas, sem chamadas à DeepSeek; os pilotos anteriores com API estão documentados separadamente. Consulte a [preparação local](PREPARACAO_LOCAL.md) e `source-report`, `import-report` e `catalog-report` para o progresso. Verificação da fonte, ficha preparada, revisão clínica e publicação são etapas distintas.
 
 ## Fonte recomendada: MedCaseReasoning
 
@@ -41,7 +41,7 @@ O inventário registra a distribuição completa por periódico e ano informado.
 
 O MED LAB adota as **55 especialidades** da [Resolução CFM nº 2.380/2024, páginas 2–3](https://sistemas.cfm.org.br/normas/arquivos/resolucoes/BR/2024/2380_2024.pdf), disponíveis em `medlab/catalog.py`. A consulta ao [portal da Comissão Mista de Especialidades](https://portal.cfm.org.br/?page_id=156910) não identificou norma posterior substituindo essa relação; o próprio CFM ainda menciona 55 em [publicação de 06/10/2026](https://portal.cfm.org.br/noticias/cfm-abre-o-i-forum-de-medicina-paliativa-com-defesa-do-debate-etico-e-do-cuidado-integral-ao-paciente/). Esse é o escopo brasileiro escolhido para estudo, não um catálogo de rótulos fornecido pelo MedCaseReasoning.
 
-**300 casos únicos por especialidade representam 16.500 casos.** As 14.476 fontes ativas verificadas deixam um déficit mínimo de **2.024**, antes de considerar conteúdo incompleto ou inadequado ao exercício. Esse total inclui 10.761 fontes para adaptação licenciada e 3.715 para preparação factual com a opção explícita habilitada. O déficit efetivo por área só pode ser calculado após classificar e revisar. Não há evidência de que todas as 55 áreas estejam representadas nem de que alguma já possua 300 casos aptos.
+**300 casos únicos por especialidade representam 16.500 casos.** As 14.359 fontes ativas verificadas deixam um déficit mínimo de **2.141**, antes de considerar conteúdo incompleto ou inadequado ao exercício. Esse total inclui 10.667 fontes para adaptação licenciada e 3.692 para preparação factual com a opção explícita habilitada. O déficit efetivo por área só pode ser calculado após classificar e revisar. Esses totais não comprovam que todas as 55 áreas estejam representadas nem que cada uma tenha 300 casos aptos.
 
 Uma classificação por DeepSeek deve registrar modelo, versão do esquema, justificativa e estado de revisão. É um rótulo gerado pela aplicação até ser revisado, nunca uma etiqueta oficial da fonte. Para controlar a meta, cada caso tem uma especialidade principal; temas secundários podem ser tags sem aumentar a contagem de casos únicos. Os 15 tipos de queixa em `CASE_TYPES` são uma organização pedagógica própria, independente da relação do CFM.
 
@@ -94,7 +94,7 @@ A referência conserva autores, fonte, versão e licença original. Ela identifi
 
 ### Auditoria executada pelo importador
 
-O importador examinou os **14.489 registros**, consultando metadados oficiais do PMC e o XML das fontes elegíveis aos dois fluxos. As correções conservadoras de formatação de licença foram revalidadas contra snapshots locais, sem alterar os critérios de aceitação. A conferência final da instalação de preparação registra:
+O importador examinou os **14.489 registros**, consultando metadados oficiais do PMC e o XML das fontes elegíveis aos dois fluxos. As correções conservadoras de formatação de licença foram revalidadas contra snapshots locais, sem alterar os critérios de aceitação. A primeira conferência, anterior à exclusão dos relatos veterinários, registrou:
 
 | Etapa | Quantidade |
 | --- | ---: |
@@ -106,7 +106,9 @@ O importador examinou os **14.489 registros**, consultando metadados oficiais do
 | Exclusões aplicadas: artigos retratados / fontes indisponíveis | 11 / 2 |
 | Fichas preparadas, pendentes e publicadas | Consultar relatórios operacionais |
 
-As 3.715 fontes factuais tiveram o XML conferido; isso verifica origem e elegibilidade para o fluxo, não a validade clínica de uma futura ficha. A licença ND permanece na proveniência original. Os 13 registros excluídos não contam novamente nas categorias ativas. Identificadores mínimos de exclusão impedem sua reintrodução pelo CSV, sincronização ou restauração. A exclusão preserva eventuais casos e históricos já vinculados; os artigos ND ativos foram mantidos.
+Posteriormente, a exclusão solicitada de **117 relatos veterinários** retirou 94 fontes de adaptação licenciada e 23 do fluxo factual. O inventário atual tem **14.359 fontes**: 10.667 de adaptação licenciada e 3.692 factuais (3.675 CC BY-NC-ND e 17 CC BY-ND), com **130 exclusões duráveis**. Uma ficha veterinária anterior, sem consultas vinculadas, também foi removida. O plano atual preserva 73 fichas anteriores e prepara 14.286 novas fichas; os oito casos fictícios iniciais são contados separadamente.
+
+As fontes factuais tiveram o XML conferido; isso verifica origem e elegibilidade para o fluxo, não a validade clínica de uma futura ficha. A licença ND permanece na proveniência original. Identificadores mínimos de exclusão impedem a reintrodução das fontes excluídas pelo CSV, sincronização ou restauração.
 
 A auditoria recuperou 12 falsos negativos técnicos da primeira passada: oito URLs CC BY 2.0 com marcação residual, duas URLs CC BY-NC 4.0 com diferença de maiúsculas e duas declarações separadas de CC BY para o artigo e CC0 para dados. No fluxo factual, outras sete variantes foram verificadas pontualmente: quatro declarações CC BY-NC-ND 3.0 US e três declarações em texto de permissões. Foram preservados código, versão e jurisdição, sem transformar uma licença desconhecida em licença aceita. Em 56 fontes havia uma versão sem código e outra com ND; isso não acrescenta 56 exclusões.
 
@@ -164,7 +166,7 @@ O processamento deve ocorrer por lotes retomáveis no Terminal/cPanel, com o res
 
 Os relatórios guardam requisições e tokens de entrada, saída e cache informados pelo provedor. `usageComplete` e `cacheUsageComplete` indicam se os dados cobrem todas as requisições observadas. Uma resposta sem estatística de uso não comprova consumo zero; esses contadores não substituem a cobrança do provedor. Paralelismo não garante uma velocidade fixa nem aumenta o saldo disponível.
 
-A preparação real foi exercitada com a API DeepSeek e continua dependente de chave, saldo e disponibilidade. Checkpoints em `processed/ai-stages/` conservam respostas intermediárias e seus hashes; retomada e reparos limitados conferem novamente o resultado. Etapas rejeitadas não são fichas aprovadas. A revisão clínica é distinta dos testes de software e da auditoria por IA; só casos publicados devem aparecer na biblioteca do aluno.
+O fluxo opcional com a API DeepSeek foi exercitado em pilotos anteriores e depende de chave, saldo e disponibilidade. Checkpoints em `processed/ai-stages/` conservam respostas intermediárias e seus hashes; retomada e reparos limitados conferem novamente o resultado. A etapa atual usa [tradução e montagem locais](PREPARACAO_LOCAL.md), sem o provedor, e conserva seus próprios journals e comprovantes. A disponibilização provisória autorizada mantém `review_required` e a referência da autorização; não equivale a revisão clínica. Só casos publicados aparecem na biblioteca do aluno.
 
 ## Registro no banco e portabilidade
 
