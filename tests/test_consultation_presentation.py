@@ -84,3 +84,63 @@ def test_occupation_hides_only_missing_values(app, client, start_session, occupa
         assert header.count("<span>·</span>") == 1
     with app.app_context():
         assert db.session.get(Consultation, session_id).case_snapshot == snapshot
+
+
+def test_finish_path_is_explicit_and_does_not_reveal_reference(app, client, start_session, monkeypatch):
+    session_id = start_session()
+    monkeypatch.setattr("medlab.web.get_ai_service", lambda: pytest.fail("Navigation must not evaluate"))
+    body = client.get(f"/sessao/{session_id}").get_data(as_text=True)
+    chat_panel = body.split('id="chat-panel"', 1)[1].split('id="exams-panel"', 1)[0]
+    assert 'id="conclude-consultation" type="button"' in chat_panel
+    assert 'data-conclude-consultation aria-controls="diagnosis-panel"' in chat_panel
+    assert "Concluir consulta e receber avaliação" in chat_panel
+    assert "Não há encerramento automático por tempo ou número de perguntas." in body
+    assert "A avaliação começa após o envio dessas conclusões." in body
+    assert 'action="/sessao/' + session_id + '/finalizar" method="post"' in body
+    assert "Enviar conclusões e receber avaliação" in body
+    assert "Voltar à conversa antes de enviar" in body
+    assert "avaliação de demonstração por regras, sem IA" in body
+    assert "Diagnóstico reservado do cenário" not in body
+    with app.app_context():
+        training = db.session.get(Consultation, session_id)
+        assert training.status == "active"
+        assert training.evaluation is None
+
+
+def test_live_finish_path_identifies_ai_without_calling_it(app, client, start_session, monkeypatch):
+    session_id = start_session()
+    app.config["DEMO_MODE"] = False
+    monkeypatch.setattr("medlab.web.get_ai_service", lambda: pytest.fail("Rendering must not call AI"))
+    body = client.get(f"/sessao/{session_id}").get_data(as_text=True)
+    assert "o avaliador por IA analisa a conversa, os exames solicitados e suas conclusões" in body
+    assert "avaliação de demonstração por regras" not in body
+    assert "médico experiente" not in body
+
+
+def test_completed_feedback_exposes_scores_and_reference_as_distinct_sections(app, client, start_session, monkeypatch):
+    session_id = start_session()
+    with app.app_context():
+        training = db.session.get(Consultation, session_id)
+        training.status = "completed"
+        training.diagnosis = "Hipótese escrita pela estudante"
+        training.treatment = "Conduta escrita pela estudante"
+        training.score = 73
+        training.evaluation = {
+            "score": 73, "summary": "Resumo educacional de teste.",
+            "sections": [{"title": "Anamnese", "score": 73, "feedback": "Comentário de teste.",
+                          "strengths": ["Ponto forte registrado"], "improvements": ["Ajuste indicado"], "evidence": []}],
+            "strengths": ["Ponto forte registrado"], "improvements": ["Ajuste indicado"], "next_steps": [],
+        }
+        db.session.commit()
+    monkeypatch.setattr("medlab.web.get_ai_service", lambda: pytest.fail("Results must not trigger another evaluation"))
+    body = client.get(f"/sessao/{session_id}/resultado").get_data(as_text=True)
+    for anchor in ("result-dimensions", "result-reflections", "result-reference"):
+        assert f'href="#{anchor}"' in body
+        assert f'id="{anchor}"' in body
+    assert 'id="result-reference"><details class="review-details" open>' in body
+    assert "Hipótese escrita pela estudante" in body
+    assert "Diagnóstico reservado do cenário" in body
+    assert "Plano reservado do cenário de teste." in body
+    assert "Ponto forte registrado" in body and "Ajuste indicado" in body
+    assert "AVALIAÇÃO DE DEMONSTRAÇÃO" in body
+    assert "73<small>/100</small>" in body

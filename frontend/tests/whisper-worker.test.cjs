@@ -75,6 +75,40 @@ test('empty or excessive transcripts never become a valid result',async()=>{
     await h.send({id:'speech',type:'transcribe',audio:speech(),sampleRate:16000});assert.equal(h.messages.at(-1).code,code);
   }
 });
+test('constant DC bias is not speech and malformed buffers never reach inference',async()=>{
+  const h=harness();await h.send({id:'load',type:'load'});
+  await h.send({id:'dc',type:'transcribe',audio:new Float32Array(16000).fill(.2),sampleRate:16000});
+  assert.equal(h.messages.at(-1).code,'NO_SPEECH');assert.equal(h.inferences.length,0);
+});
+test('quiet audio retains every sample and gain, and reports an objective review flag',async()=>{
+  const h=harness();await h.send({id:'load',type:'load'});
+  const audio=Float32Array.from({length:16000},(_,i)=>.002*Math.sin(i*.1));
+  const before=audio.slice();await h.send({id:'quiet',type:'transcribe',audio,sampleRate:16000});
+  assert.equal(h.inferences[0].audio.length,audio.length);
+  assert.deepEqual(audio,before);assert.equal(h.inferences[0].audio,audio);
+  assert.equal(h.messages.at(-1).needsReview,true);
+  assert.equal(h.messages.at(-1).audioQuality.warnings[0],'low_volume');
+  assert.equal(h.messages.at(-1).audioQuality.dcOffset,0);
+});
+test('clipped audio is flagged without claiming transcript confidence; ordinary audio remains untouched',async()=>{
+  const h=harness();await h.send({id:'load',type:'load'});
+  const audio=Float32Array.from({length:16000},(_,i)=>i%2?.9999:-.9999);
+  await h.send({id:'clipped',type:'transcribe',audio,sampleRate:16000});
+  assert.equal(h.messages.at(-1).needsReview,true);
+  assert.equal(h.messages.at(-1).audioQuality.warnings[0],'clipped_audio');
+  const regular=speech();await h.send({id:'regular',type:'transcribe',audio:regular,sampleRate:16000});
+  assert.equal(h.messages.at(-1).needsReview,false);assert.equal(h.inferences.at(-1).audio,regular);
+  assert.equal(h.messages.at(-1).audioQuality.dcOffset,0);
+});
+test('removing a measurable DC bias preserves waveform length and relative sample differences',async()=>{
+  const h=harness();await h.send({id:'load',type:'load'});
+  const audio=Float32Array.from({length:16000},(_,i)=>.03+.1*Math.sin(i*.1));
+  const before=audio.slice();await h.send({id:'biased',type:'transcribe',audio,sampleRate:16000});
+  const output=h.inferences[0].audio,offset=h.messages.at(-1).audioQuality.dcOffset;
+  assert.ok(offset>.029&&offset<.031);assert.equal(output.length,audio.length);
+  assert.deepEqual(audio,before);assert.notEqual(output,audio);
+  for(let i=0;i<audio.length;i++)assert.ok(Math.abs(output[i]-(audio[i]-offset))<1e-7);
+});
 test('dispose closes the worker model and later inference cannot restart downloads',async()=>{
   const h=harness();await h.send({id:'load',type:'load'});await h.send({id:'dispose',type:'dispose'});
   assert.equal(h.messages.at(-1).type,'disposed');await h.send({id:'again',type:'load'});

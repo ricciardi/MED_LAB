@@ -21,7 +21,7 @@ class Element {
 const defaults={provider:'local',available:true,supported:true,gender:'male',gender_locked:true,default_voice:'pm_alex',
   voices:[{id:'pf_dora',label:'Dora',gender:'female'},{id:'pm_alex',label:'Alex',gender:'male'},{id:'pm_santa',label:'Santa',gender:'male'}],
   models_asr:{download_mb:100},models_tts:{download_mb:120},max_recording_seconds:45};
-async function harness(configuration={}, {workerLoads=true,micDenies=false,streamChunks=1,streamFinishes=true,withApp=false,micDeferred=false,messageFails=false,messageDeferred=false,asrFails=false,autoplayBlocked=false,bodyDeferred=false}={}) {
+async function harness(configuration={}, {workerLoads=true,micDenies=false,streamChunks=1,streamFinishes=true,withApp=false,micDeferred=false,messageFails=false,messageDeferred=false,asrFails=false,asrNeedsReview=false,autoplayBlocked=false,bodyDeferred=false}={}) {
   const nodes=new Map(),workers=[],requests=[],audioContexts=[],streams=[],recorders=[];let micCalls=0,energy=0,now=0,nextTimer=0,resolveMic,resolveMessage; const timers=new Map();
   const schedule=(fn,delay,repeat=false)=>{const id=++nextTimer;timers.set(id,{fn,at:now+delay,delay,repeat});return id;};
   const advance=async(ms)=>{const end=now+ms;while(true){const entry=[...timers].filter(([,t])=>t.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!entry)break;const[id,t]=entry;now=t.at;if(t.repeat)t.at+=t.delay;else timers.delete(id);t.fn();await settle();}now=end;await settle();};
@@ -34,7 +34,7 @@ async function harness(configuration={}, {workerLoads=true,micDenies=false,strea
   class FakeWorker extends Element {
     constructor(url,options){super();this.url=url;this.options=options;this.messages=[];workers.push(this);}
     postMessage(data,transfer){this.messages.push({data,transfer});if(data.type==='load'&&workerLoads)queueMicrotask(()=>this.dispatchEvent({type:'message',data:{type:'ready',id:data.id,device:'wasm'}}));
-      if(data.type==='transcribe')queueMicrotask(()=>this.dispatchEvent({type:'message',data:asrFails?{type:'error',id:data.id,message:'Transcrição falhou.'}:{type:'result',id:data.id,text:'Estou com dor há três dias.'}}));
+      if(data.type==='transcribe')queueMicrotask(()=>this.dispatchEvent({type:'message',data:asrFails?{type:'error',id:data.id,message:'Transcrição falhou.'}:{type:'result',id:data.id,text:'Estou com dor há três dias.',needsReview:asrNeedsReview}}));
       if(data.type==='synthesize')queueMicrotask(()=>{
         for(let index=0;index<streamChunks;index++)this.dispatchEvent({type:'message',data:{type:'chunk',id:data.id,index,total:streamChunks,samples:Float32Array.from({length:2400},()=>.1),sampleRate:24000}});
         if(streamFinishes)this.dispatchEvent({type:'message',data:{type:'result',id:data.id,streamed:true,samples:new Float32Array(0),sampleRate:24000}});
@@ -54,7 +54,8 @@ async function harness(configuration={}, {workerLoads=true,micDenies=false,strea
   }
   class Offline extends Context {async startRendering(){return{getChannelData:()=>Float32Array.from({length:16000},()=>.2)};}}
   class Recorder extends Element {static isTypeSupported(){return true;}constructor(){super();this.state='inactive';this.mimeType='audio/webm';recorders.push(this);}start(){this.state='recording';}stop(){this.state='inactive';this.dispatchEvent({type:'dataavailable',data:new Blob(['audio'])});queueMicrotask(()=>this.dispatchEvent({type:'stop'}));}}
-  const navigator={mediaDevices:{getUserMedia:async()=>{micCalls++;if(micDenies)throw Object.assign(new Error('denied'),{name:'NotAllowedError'});const track=new Element();track.stopped=false;track.stop=()=>{track.stopped=true;};const stream={getTracks:()=>[track]};streams.push(stream);if(micDeferred)await new Promise(resolve=>{resolveMic=resolve;});return stream;}}};
+  const captureConstraints=[];
+  const navigator={mediaDevices:{getUserMedia:async constraints=>{captureConstraints.push(constraints);micCalls++;if(micDenies)throw Object.assign(new Error('denied'),{name:'NotAllowedError'});const track=new Element();track.stopped=false;track.stop=()=>{track.stopped=true;};const stream={getTracks:()=>[track]};streams.push(stream);if(micDeferred)await new Promise(resolve=>{resolveMic=resolve;});return stream;}}};
   const document=Object.assign(new Element(),{hidden:false,body:new Element(),getElementById:id=>get(`#${id}`),querySelector:get,querySelectorAll:()=>[],createElement:tag=>Object.assign(new Element(),{tagName:tag.toUpperCase()})});
   const window=Object.assign(new Element(),{location:{href:'https://medlab.test/sessao/local-session',origin:'https://medlab.test'},isSecureContext:true,AudioContext:Context,OfflineAudioContext:Offline});
   const context={document,window,navigator,Worker:FakeWorker,WebAssembly,MediaRecorder:Recorder,Float32Array,ArrayBuffer,DataView,Blob,URL,AbortController,Event,CustomEvent:class extends Event{constructor(type,options={}){super(type);this.detail=options.detail;}},DOMException,console,Date:class extends Date{static now(){return now;}},setTimeout:(fn,ms)=>schedule(fn,ms),clearTimeout:id=>timers.delete(id),setInterval:(fn,ms)=>schedule(fn,ms,true),clearInterval:id=>timers.delete(id),
@@ -62,7 +63,7 @@ async function harness(configuration={}, {workerLoads=true,micDenies=false,strea
     fetch:async(url,options={})=>{requests.push({url,options});if(url.endsWith('/mensagem')){if(messageDeferred)await new Promise(resolve=>{resolveMessage=resolve;});return{ok:!messageFails,json:async()=>{if(bodyDeferred){await new Promise(resolve=>{resolveMessage=resolve;});if(options.signal.aborted)throw new DOMException('aborted','AbortError');}return messageFails?{error:'Falha da consulta.'}:{answer:'Minha resposta salva.',turn_id:42,turn_count:1};}};}return{ok:true,json:async()=>url.endsWith('/config')?{...defaults,...configuration}:{text:'Estou com dor no peito há três dias.',voice_id:JSON.parse(options.body).voice_id}};}};
   if(withApp)vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../medlab/static/app.js'),'utf8'),context);
   vm.runInNewContext(original,context);await settle();
-  return{get,workers,requests,audioContexts,streams,recorders,document,window,advance,energy:value=>{energy=value;},resolveMic:()=>resolveMic?.(),resolveMessage:()=>resolveMessage?.(),micCalls:()=>micCalls,app:get('#consultation-app')};
+  return{get,workers,requests,audioContexts,streams,recorders,captureConstraints,document,window,advance,energy:value=>{energy=value;},resolveMic:()=>resolveMic?.(),resolveMessage:()=>resolveMessage?.(),micCalls:()=>micCalls,app:get('#consultation-app')};
 }
 async function settle(){await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));}
 test('page load asks for neither microphone nor model download',async()=>{
@@ -151,7 +152,7 @@ async function startContinuous(options={}) {
 async function speak(h) {
   h.energy(0);await h.advance(300);
   h.energy(.08);await h.advance(650);
-  h.energy(0);await h.advance(1100);
+  h.energy(0);await h.advance(1600);
 }
 function answerBubble(h) {return h.get('#chat-thread').children.find(node=>node.className==='chat-message patient-message')?.querySelector('.message-bubble');}
 function sends(h) {return h.requests.filter(request=>request.url.endsWith('/mensagem'));}
@@ -180,18 +181,50 @@ test('continuous VAD sends once, synchronizes text, and listens again only after
 });
 
 test('steady background noise is calibrated and no-speech timeout never reaches ASR or sends text',async()=>{
-  const h=await startContinuous();h.energy(.02);await h.advance(15050);
-  assert.equal(h.app.dataset.continuousState,'idle');assert.equal(sends(h).length,0);
-  assert.equal(h.workers.flatMap(worker=>worker.messages).filter(item=>item.data.type==='transcribe').length,0);
+  for(const level of [.02,.1]){
+    const h=await startContinuous();h.energy(level);await h.advance(15050);
+    assert.equal(h.app.dataset.continuousState,'idle');assert.equal(sends(h).length,0);
+    assert.equal(h.workers.flatMap(worker=>worker.messages).filter(item=>item.data.type==='transcribe').length,0);
+    assert.equal(h.streams[0].getTracks()[0].stopped,true);
+  }
+});
+
+test('speech starting immediately is retained through calibration, with mono requested as an ideal',async()=>{
+  const h=await startContinuous();
+  assert.equal(h.captureConstraints[0].audio.channelCount.ideal,1);
+  assert.equal(h.captureConstraints[0].video,false);
+  h.energy(.04);await h.advance(400);h.energy(0);await h.advance(1650);
+  assert.equal(sends(h).length,1);
+  h.get('#voice-continuous-toggle').click();
+});
+
+test('quiet speech above a quiet noise floor and softer endings survive hysteresis',async()=>{
+  const h=await startContinuous();h.energy(.0008);await h.advance(300);
+  h.energy(.008);await h.advance(250);h.energy(.004);await h.advance(250);
+  h.energy(.0008);await h.advance(1300);
+  assert.equal(sends(h).length,0);assert.equal(h.app.dataset.continuousState,'listening');
+  await h.advance(350);assert.equal(sends(h).length,1);
+  h.get('#voice-continuous-toggle').click();
+});
+
+test('quiet background without an onset never sends and an objective audio warning requires review',async()=>{
+  const noise=await startContinuous();noise.energy(.001);await noise.advance(15050);
+  assert.equal(sends(noise).length,0);assert.equal(noise.app.dataset.continuousState,'idle');
+  const h=await startContinuous({asrNeedsReview:true});await speak(h);
+  assert.equal(sends(h).length,0);assert.equal(h.app.dataset.continuousState,'idle');
   assert.equal(h.streams[0].getTracks()[0].stopped,true);
+  assert.equal(h.get('#voice-review').hidden,false);
+  assert.equal(h.get('#voice-transcript').value,'Estou com dor há três dias.');
+  assert.match(h.get('#voice-status').textContent,/não foi enviada/);
+  assert.equal(h.get('#question').value,'');
 });
 
 test('a short microphone click is insufficient speech and word pauses do not split an utterance',async()=>{
   const short=await startContinuous();await short.advance(300);short.energy(.09);await short.advance(150);short.energy(0);await short.advance(14600);
   assert.equal(sends(short).length,0);assert.equal(short.app.dataset.continuousState,'idle');
-  const h=await startContinuous();await h.advance(300);h.energy(.08);await h.advance(400);h.energy(0);await h.advance(650);
+  const h=await startContinuous();await h.advance(300);h.energy(.08);await h.advance(400);h.energy(0);await h.advance(1300);
   assert.equal(h.app.dataset.continuousState,'listening');assert.equal(sends(h).length,0);
-  h.energy(.08);await h.advance(400);h.energy(0);await h.advance(1150);
+  h.energy(.08);await h.advance(400);h.energy(0);await h.advance(1650);
   assert.equal(sends(h).length,1);h.get('#voice-continuous-toggle').click();
 });
 

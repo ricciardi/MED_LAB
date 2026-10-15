@@ -236,7 +236,7 @@ def test_evaluation_uses_full_40_turns_all_dimensions_and_authoritative_exams(se
     lambda e: e["sections"][0].update(score=True),
     lambda e: e["sections"][0].update(score="70"),
     lambda e: e["sections"][0].update(evidence="invented"),
-    lambda e: e["sections"][0].update(evidence=[]),
+    lambda e: e["sections"][0].update(evidence=None),
     lambda e: e["sections"][1].update(key="consultation"),
     lambda e: e.update(extra="unexpected"),
     lambda e: e.pop("next_steps"),

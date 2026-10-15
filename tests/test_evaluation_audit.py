@@ -271,3 +271,75 @@ def test_expired_budget_sends_no_request_and_runtime_deadline_is_restored(seed, 
     with pytest.raises(AIError):
         service.evaluate(seed, {})
     assert service._runtime_deadline is None
+
+
+def test_a_rejected_dimension_does_not_discard_other_audited_feedback(seed):
+    checked = grade("Investigou febre sem uma pergunta registrada.")
+    diagnosis = next(s for s in checked["sections"] if s["key"] == "diagnosis")
+    diagnosis.update(score=100, feedback="A hipótese coincide com a referência do caso.",
+                     strengths=["Hipótese compatível com a referência."],
+                     improvements=["Explique as pistas que sustentam a hipótese."],
+                     evidenceRefs=[{"id": "D1", "quote": "Hipótese registrada"}],
+                     evidence=["Conclusão do aluno: Hipótese registrada"])
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    numeric = numeric_grade()
+    next(s for s in numeric["sections"] if s["key"] == "diagnosis").update(score=100, actionIds=["D1"])
+    service._request = Mock(return_value=numeric)
+    session = context()
+    session["userSubmissions"] = [{"data": {"diagnosis": "Hipótese registrada"}}]
+    fallback = service._score_only_evaluation(seed, _session_evidence(AIService._session(session)))
+    result = service._retain_checked_feedback(checked, fallback, [
+        {"path": "/sections/0/feedback", "claim": checked["sections"][0]["feedback"]}])
+    assert result["sections"][0]["feedbackLimited"] is True
+    retained = next(s for s in result["sections"] if s["key"] == "diagnosis")
+    assert retained["feedback"] == diagnosis["feedback"]
+    assert retained["feedbackLimited"] is False
+    assert retained["score"] == 100  # Both graders agree; every score is still supplied by the fallback.
+    assert result["improvements"] == diagnosis["improvements"]
+    assert "Investigou febre" not in str(result)
+    assert checked["sections"][0]["feedback"].startswith("Investigou febre")
+    assert all(s["feedbackLimited"] for s in fallback["sections"])
+
+
+def test_unverified_prose_or_a_previous_number_cannot_be_retained(seed):
+    checked = grade("Sua nota é 75 por investigar o início.")
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = Mock(return_value=numeric_grade())
+    fallback = service._score_only_evaluation(seed, _session_evidence(AIService._session(context())))
+    result = service._retain_checked_feedback(checked, fallback, [{"path": "/summary"}])
+    assert result == fallback
+
+
+def test_changed_grade_cannot_reuse_a_previous_interpretation(seed):
+    checked = grade()
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = Mock(return_value=numeric_grade())
+    fallback = service._score_only_evaluation(seed, _session_evidence(AIService._session(context())))
+    assert checked["sections"][0]["score"] != fallback["sections"][0]["score"]
+    assert service._retain_checked_feedback(checked, fallback, [{"path": "/summary"}]) == fallback
+
+
+def test_empty_display_evidence_uses_verified_refs_without_inventing_actions(seed):
+    initial = grade()
+    for section in initial["sections"]:
+        section["evidence"] = []
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = Mock(return_value=initial)
+    service._audit_evaluation = Mock(return_value=[])
+    result = service.evaluate(seed, context())
+    assert service._request.call_count == 1
+    assert result["verification"]["status"] == "checked"
+    assert result["sections"][0]["evidence"] == ['Pergunta 1: “Quando começou?”']
+    physical = next(s for s in result["sections"] if s["key"] == "physical")
+    assert physical["score"] == 0
+    assert physical["evidenceRefs"] == []
+    assert physical["evidence"] == ["Nenhuma ação registrada foi citada para sustentar esta dimensão."]
+
+
+def test_empty_evidence_does_not_allow_positive_score_without_a_student_action(seed):
+    initial = grade()
+    initial["sections"][1].update(score=100, evidence=[], evidenceRefs=[])
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = Mock(return_value=initial)
+    with pytest.raises(AIError, match="evidências"):
+        service.evaluate(seed, context())

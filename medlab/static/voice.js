@@ -602,19 +602,32 @@
   // Energy-based endpointing, not speech recognition. Short clicks and silence
   // never reach ASR. Background noise may still require the manual mode.
   class VoiceActivity {
-    constructor(started) { this.started = started; this.last = started; this.lastVoice = null; this.voicedMs = 0; this.noise = .003; this.calibrationMinimum = Infinity; }
+    constructor(started) { this.started = started; this.last = started; this.lastVoice = null; this.voicedMs = 0; this.noise = .001; this.calibrationMinimum = Infinity; this.onsetFrames = []; }
     sample(rms, now) {
       const elapsed = Math.max(0,Math.min(now-this.last,100));
       this.last = now;
-      if (now-this.started <= 250) {
+      if (this.lastVoice === null) {
+        // Retain the first syllables while estimating the noise floor. Someone
+        // may speak immediately: a later quiet frame can establish that those
+        // initial frames were speech. The recording itself is never trimmed.
+        this.onsetFrames.push({rms,now,elapsed});
+        this.onsetFrames = this.onsetFrames.filter(frame => now-frame.now <= 1500);
         this.calibrationMinimum = Math.min(this.calibrationMinimum,rms);
-        this.noise = Math.max(.001,Math.min(.03,this.calibrationMinimum));
-        return 'listening';
+        this.noise = Math.max(.0005,this.calibrationMinimum);
+        if (now-this.started <= 250) return 'listening';
+        const entryThreshold = Math.max(.006,this.noise*3);
+        for (const frame of this.onsetFrames) {
+          if (frame.rms >= entryThreshold) { this.voicedMs += frame.elapsed; this.lastVoice = frame.now; }
+        }
+        if (this.lastVoice !== null) this.onsetFrames = [];
+      } else {
+        // Hysteresis preserves quieter word endings without treating the same
+        // low level as a fresh onset; noise-only captures still time out.
+        const continuing = now-this.lastVoice <= 250;
+        const threshold = continuing ? Math.max(.0035,this.noise*1.6) : Math.max(.006,this.noise*3);
+        if (rms >= threshold) { this.voicedMs += elapsed; this.lastVoice = now; }
       }
-      const threshold = Math.max(.012,this.noise*3);
-      if (rms >= threshold) { this.voicedMs += elapsed; this.lastVoice = now; }
-      else if (this.lastVoice === null) this.noise = Math.min(.02,this.noise*.95+rms*.05);
-      if (this.voicedMs >= 350 && now-this.started >= 900 && this.lastVoice !== null && now-this.lastVoice >= 1100) return 'complete';
+      if (this.voicedMs >= 350 && now-this.started >= 900 && this.lastVoice !== null && now-this.lastVoice >= 1600) return 'complete';
       if (this.voicedMs < 350 && now-this.started >= 15000) return 'silent';
       return 'listening';
     }
@@ -721,6 +734,14 @@
       if (operation.cancelled) return;
       if (typeof data.text !== 'string' || !data.text.trim()) throw new Error('Não identificamos uma fala. Tente novamente, perto do microfone.');
       if (data.text.length > 2000) throw new Error('A transcrição ultrapassou o limite da pergunta. Grave um trecho mais curto.');
+      if (continuous && data.needsReview === true) {
+        transcription = null;
+        stopContinuous('O volume da gravação ficou muito baixo ou saturado. Confira o texto ou grave novamente; a pergunta não foi enviada.',true);
+        $('#voice-transcript').value = data.text.trim();
+        $('#voice-review').hidden = false;
+        $('#voice-transcript').focus();
+        return;
+      }
       if (continuous) {
         if (!continuousActive || item.continuousGeneration !== continuousGeneration || document.hidden) return;
         const text = data.text.trim();
@@ -765,7 +786,7 @@
     notice('Permita o uso do microfone para gravar sua pergunta.');
     let stream;
     try {
-      stream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});
+      stream = await navigator.mediaDevices.getUserMedia({audio:{channelCount:{ideal:1},echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});
       if (!pendingPermission || permissionToken !== permissionGeneration) { releaseStream(stream); return; }
       const types = ['audio/webm;codecs=opus','audio/ogg;codecs=opus','audio/mp4','audio/webm'];
       const mimeType = types.find(type => MediaRecorder.isTypeSupported(type)) || '';
@@ -797,7 +818,7 @@
       },500);
       item.timeout = setTimeout(() => { if (recording === item) stopRecording(false); },maxSeconds*1000);
       notice(continuousToken !== null
-        ? `Faça uma pergunta e pause por um instante. Ela será enviada após cerca de um segundo de silêncio (máximo ${maxSeconds}s).`
+        ? `Faça uma pergunta e pause por um instante. Ela será enviada após cerca de 1,6 segundo de silêncio (máximo ${maxSeconds}s).`
         : `Grave uma pergunta de até ${maxSeconds} segundos. O áudio será transcrito neste navegador.`);
     } catch (error) {
       releaseStream(stream);

@@ -116,6 +116,9 @@
   const formSubmit = $('#diagnosis-form button[type=submit]');
   function scrollChat() { chat.scrollTop = chat.scrollHeight; }
   function activateTab(name, focus = false) {
+    app.dataset.activeTab = name;
+    const phase = $('#consultation-phase-label');
+    if (phase) phase.textContent = name === 'diagnosis' ? 'Conclusões antes da avaliação' : 'Consulta em andamento';
     $$('[data-consult-tab]').forEach(button => {
       const active = button.dataset.consultTab === name;
       button.classList.toggle('active', active);
@@ -140,6 +143,21 @@
       if (next !== undefined) { event.preventDefault(); activateTab(tabs[next].dataset.consultTab, true); }
     });
   });
+  $$('[data-conclude-consultation]').forEach(button => button.addEventListener('click', () => {
+    if (busy) {
+      showError('conclusion-status', 'Aguarde a resposta do paciente antes de avançar.');
+      return;
+    }
+    showError('conclusion-status', '');
+    activateTab('diagnosis');
+    $('#diagnosis').focus({preventScroll:true});
+    $('#diagnosis-panel').scrollIntoView?.({block:'start'});
+  }));
+  $$('[data-return-to-chat]').forEach(button => button.addEventListener('click', () => {
+    activateTab('chat');
+    questionInput.focus({preventScroll:true});
+    $('#chat-panel').scrollIntoView?.({block:'start'});
+  }));
   function showError(id, message) {
     const error = document.getElementById(id);
     error.textContent = message;
@@ -263,7 +281,9 @@
       busy = false;
       app.dispatchEvent(new CustomEvent('medlab:conversation-busy', {detail:{busy:false}}));
       sendButton.disabled = false; questionInput.disabled = false; formSubmit.disabled = false;
-      sendButton.removeAttribute('aria-busy'); questionInput.focus(); scrollChat();
+      sendButton.removeAttribute('aria-busy');
+      if (app.dataset.activeTab === 'chat') questionInput.focus();
+      scrollChat();
     }
   });
   questionInput.addEventListener('keydown', event => {

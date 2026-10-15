@@ -124,16 +124,34 @@ export function validateAudio(audio, sampleRate) {
     throw new Error('Grave uma pergunta entre 0,1 e 45 segundos.');
   }
   let energy = 0;
-  let peak = 0;
+  let sum = 0;
+  let clipped = 0;
   for (let index = 0; index < audio.length; index++) {
     const sample = audio[index];
     if (!Number.isFinite(sample) || Math.abs(sample) > 1.01) {
       throw new Error('O áudio não pôde ser lido. Grave a pergunta novamente.');
     }
     energy += sample * sample;
-    peak = Math.max(peak, Math.abs(sample));
+    sum += sample;
+    if (Math.abs(sample) >= 0.999) clipped++;
   }
-  return { silence: peak < 0.0005 && Math.sqrt(energy / audio.length) < 0.0001 };
+  const dcOffset = sum / audio.length;
+  const rms = Math.sqrt(Math.max(0, energy / audio.length - dcOffset * dcOffset));
+  let peak = 0;
+  for (const sample of audio) peak = Math.max(peak, Math.abs(sample - dcOffset));
+  return { silence: peak < 0.0005 && rms < 0.0001, rms, peak, dcOffset, clippedFraction: clipped / audio.length };
+}
+
+export function prepareAudio(audio, quality) {
+  // Remove a measurable DC bias only. A saved-WAV comparison found no accuracy
+  // gain from amplifying quiet audio, so preserve its gain and every syllable.
+  const dcOffset = Math.abs(quality.dcOffset) >= 0.001 ? quality.dcOffset : 0;
+  const prepared = dcOffset
+    ? Float32Array.from(audio, sample => Math.max(-1, Math.min(1, sample - dcOffset))) : audio;
+  const warnings = [];
+  if (quality.rms < 0.003) warnings.push('low_volume');
+  if (quality.clippedFraction > 0.01) warnings.push('clipped_audio');
+  return { audio: prepared, quality: { rms: quality.rms, peak: quality.peak, clippedFraction: quality.clippedFraction, dcOffset, warnings } };
 }
 async function transcribe(id, audio, sampleRate) {
   if (retired || !transcriber) {
@@ -144,11 +162,14 @@ async function transcribe(id, audio, sampleRate) {
     error(id, 'BUSY', 'Aguarde a transcrição atual antes de enviar outra gravação.');
     return;
   }
+  let prepared;
   try {
-    if (validateAudio(audio, sampleRate).silence) {
+    const quality = validateAudio(audio, sampleRate);
+    if (quality.silence) {
       error(id, 'NO_SPEECH', 'Não identificamos uma fala na gravação. Tente novamente, perto do microfone.');
       return;
     }
+    prepared = prepareAudio(audio, quality);
   } catch (cause) {
     error(id, 'INVALID_AUDIO', cause.message);
     return;
@@ -166,7 +187,7 @@ async function transcribe(id, audio, sampleRate) {
     };
     let result;
     try {
-      result = await transcriber(audio, options);
+      result = await transcriber(prepared.audio, options);
     } catch (firstError) {
       // Some GPUs can load a graph but fail during inference. Reuse the same
       // cached model weights in WASM, then retry this local buffer once.
@@ -177,7 +198,7 @@ async function transcribe(id, audio, sampleRate) {
       progress(id, 'fallback', 'A aceleração gráfica foi interrompida. Continuando no modo compatível.', { device });
       transcriber = await createTranscriber(id, device);
       progress(id, 'transcribing', 'Transcrevendo no seu dispositivo, no modo compatível.', { device });
-      result = await transcriber(audio, options);
+      result = await transcriber(prepared.audio, options);
     }
     const text = typeof result?.text === 'string' ? result.text.trim() : '';
     if (!text) {
@@ -185,7 +206,7 @@ async function transcribe(id, audio, sampleRate) {
     } else if (text.length > 2000) {
       error(id, 'TEXT_TOO_LONG', 'A transcrição ultrapassou o limite da pergunta. Grave um trecho mais curto.');
     } else {
-      reply(id, 'result', { text, device, language: 'pt-BR' });
+      reply(id, 'result', { text, device, language: 'pt-BR', audioQuality: prepared.quality, needsReview: prepared.quality.warnings.length > 0 });
     }
   } catch {
     error(id, transcriber ? 'TRANSCRIPTION_FAILED' : 'MODEL_LOAD_FAILED', 'A transcrição local não foi concluída. Tente uma gravação mais curta ou ative o modelo novamente.');
