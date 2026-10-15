@@ -16,7 +16,8 @@ from medlab.importer import DATASET_REVISION
 from medlab.migrations import upgrade_database
 from medlab.models import ClinicalCase, Consultation, SourceExclusion, SourceRecord, User
 from medlab.source_registry import (SourceRegistryError, export_source_registry, import_source_registry,
-                                    excluded_pmcids, prune_restricted_sources, register_sources, source_counts, sync_import_records)
+                                    excluded_pmcids, prune_restricted_sources, register_sources, source_counts,
+                                    source_provenance_matches, sync_import_records)
 
 
 @pytest.fixture
@@ -178,6 +179,105 @@ def test_missing_or_mismatched_draft_cannot_be_counted_as_translated(registry_ap
     work, case = work_files(tmp_path, path, status="draft", case=case_data)
     case["provenance"]["xmlSha256"] = "f" * 64
     write_json(work / "drafts" / "PMC123.json", case)
+    result = sync_import_records(work)
+    assert result["invalid"] == 1 and result["database"]["translated"] == 0
+
+
+def comparison_provenance():
+    return {"articleTitle": "Original source", "authors": ["A. Author", "B. Author"],
+            "xmlSha256": "a" * 64, "metadataSha256": "b" * 64, "doi": None, "pmcVersion": 1,
+            "citation": "Journal 2024", "license": {"code": "CC BY", "text": "License notice",
+            "url": "https://creativecommons.org/licenses/by/4.0/"}}
+
+
+def test_source_comparison_only_strips_outer_bibliographic_whitespace_without_mutation():
+    expected = comparison_provenance()
+    expected["articleTitle"] = "\u00a0Original source\u2007"
+    expected["authors"] = ["\u202fA. Author\t", " B. Author\u00a0"]
+    actual = {**comparison_provenance(), "language": "pt-BR", "localPreparation": {"translated": True}}
+    before = deepcopy((actual, expected))
+    assert source_provenance_matches(actual, expected)
+    assert source_provenance_matches(expected, comparison_provenance())
+    assert (actual, expected) == before
+
+
+@pytest.mark.parametrize(("field", "value"), [
+    ("articleTitle", "Different source"),
+    ("articleTitle", "Original  source"),
+    ("authors", ["Changed Author", "B. Author"]),
+    ("authors", ["B. Author", "A. Author"]),
+    ("authors", ["A.  Author", "B. Author"]),
+    ("authors", ["A. Author"]),
+    ("xmlSha256", "f" * 64),
+    ("metadataSha256", "f" * 64),
+    ("citation", "Journal 2024 "),
+    ("pmcVersion", True),
+    ("license", {"code": "CC BY-NC", "text": "License notice", "url": "https://creativecommons.org/licenses/by/4.0/"}),
+    ("license", {"code": "CC BY", "text": "License notice ", "url": "https://creativecommons.org/licenses/by/4.0/"}),
+    ("license", {"code": "CC BY", "text": "License notice", "url": "https://creativecommons.org/licenses/by/3.0/"}),
+])
+def test_source_comparison_rejects_real_changes_and_other_whitespace(field, value):
+    expected = comparison_provenance()
+    actual = {**deepcopy(expected), field: value}
+    assert not source_provenance_matches(actual, expected)
+
+
+@pytest.mark.parametrize(("actual", "expected"), [
+    (None, {"articleTitle": "Title"}),
+    ({"articleTitle": "Title"}, None),
+    ({}, {}),
+    ({"articleTitle": ["Title"]}, {"articleTitle": "Title"}),
+    ({"articleTitle": "Title"}, {"articleTitle": None}),
+    ({"authors": "A. Author"}, {"authors": ["A. Author"]}),
+    ({"authors": ["A. Author"]}, {"authors": ("A. Author",)}),
+    ({"authors": [None]}, {"authors": ["A. Author"]}),
+    ({"authors": ["A. Author"]}, {"authors": [None]}),
+    ({}, {"doi": None}),
+])
+def test_source_comparison_rejects_invalid_structure_and_missing_fields(actual, expected):
+    assert not source_provenance_matches(actual, expected)
+
+
+def test_sync_accepts_normalized_draft_and_case_against_raw_bibliographic_spaces(registry_app, tmp_path, case_data):
+    path = csv_source(tmp_path / "source.csv", [{"pmcid": "PMC123"}])
+    register_sources(path)
+    work, case = work_files(tmp_path, path, status="draft", case=case_data)
+    cache_path = work / "pmc-cache" / "PMC123.verified.json"
+    cache = json.loads(cache_path.read_text())
+    cache["provenance"]["articleTitle"] = "\u00a0Original source\u2007"
+    cache["provenance"]["authors"] = ["A. Author\u00a0"]
+    write_json(cache_path, cache)
+    before_cache = cache_path.read_bytes()
+    draft_path = work / "drafts" / "PMC123.json"
+    before_draft = draft_path.read_bytes()
+    before_case = deepcopy(case)
+    clinical = ClinicalCase(slug=case["caseId"], title=case["caseTitle"], specialty=case["specialty"],
+                            difficulty=case["difficulty"], summary=case["summary"], data=case, is_published=False)
+    db.session.add(clinical)
+    db.session.commit()
+    result = sync_import_records(work)
+    assert result["invalid"] == 0 and result["linked"] == 1
+    assert result["database"]["translated"] == 1
+    source = db.session.scalar(db.select(SourceRecord).where(SourceRecord.pmcid == "PMC123"))
+    assert source.provenance == cache["provenance"]
+    assert clinical.data == before_case
+    assert cache_path.read_bytes() == before_cache and draft_path.read_bytes() == before_draft
+    assert sync_import_records(work)["unchanged"] == 1
+
+
+@pytest.mark.parametrize("location", ["draft", "stored_case"])
+def test_sync_rejects_changed_bibliographic_author_in_either_comparison(registry_app, tmp_path, case_data, location):
+    path = csv_source(tmp_path / "source.csv", [{"pmcid": "PMC123"}])
+    register_sources(path)
+    work, case = work_files(tmp_path, path, status="draft", case=case_data)
+    changed = deepcopy(case)
+    changed["provenance"]["authors"] = ["Different Author"]
+    if location == "draft":
+        write_json(work / "drafts" / "PMC123.json", changed)
+    else:
+        db.session.add(ClinicalCase(slug=case["caseId"], title=case["caseTitle"], specialty=case["specialty"],
+            difficulty=case["difficulty"], summary=case["summary"], data=changed, is_published=False))
+        db.session.commit()
     result = sync_import_records(work)
     assert result["invalid"] == 1 and result["database"]["translated"] == 0
 

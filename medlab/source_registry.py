@@ -360,6 +360,43 @@ def _verified_provenance(work_dir, source):
     return provenance
 
 
+def source_provenance_matches(actual: dict, expected: dict) -> bool:
+    """Compare source fields, tolerating only outer bibliographic whitespace.
+
+    Adaptation fields may be present in ``actual``. Neither input is changed;
+    source snapshots, hashes, author order and internal whitespace stay exact.
+    """
+    if not isinstance(actual, dict) or not isinstance(expected, dict) or not expected:
+        return False
+
+    def exact(left, right):
+        if type(left) is not type(right):
+            return False
+        if isinstance(right, dict):
+            return (left.keys() == right.keys()
+                    and all(isinstance(k, str) and exact(left[k], v) for k, v in right.items()))
+        if isinstance(right, list):
+            return len(left) == len(right) and all(exact(a, b) for a, b in zip(left, right))
+        return type(right) in (str, int, float, bool, type(None)) and left == right
+
+    for key, value in expected.items():
+        if not isinstance(key, str) or key not in actual:
+            return False
+        observed = actual[key]
+        if key == "articleTitle":
+            if not isinstance(observed, str) or not isinstance(value, str) or observed.strip() != value.strip():
+                return False
+        elif key == "authors":
+            if (not isinstance(observed, list) or not isinstance(value, list)
+                    or len(observed) != len(value)
+                    or any(not isinstance(a, str) or not isinstance(b, str) or a.strip() != b.strip()
+                           for a, b in zip(observed, value))):
+                return False
+        elif not exact(observed, value):
+            return False
+    return True
+
+
 def sync_import_records(work_dir, *, dataset=DEFAULT_DATASET, batch_size=500, pmcids=None, include_counts=True):
     """Mirror valid local checkpoints, and link existing cases without changing them."""
     dataset, batch_size = _dataset(dataset), _batch_size(batch_size)
@@ -421,12 +458,12 @@ def sync_import_records(work_dir, *, dataset=DEFAULT_DATASET, batch_size=500, pm
                     linked_id = _linked_case_id(source)
                 if status == "draft":
                     case = validate_case(_json(work_dir / "drafts" / f"{pmcid}.json"))
-                    if case["catalogType"] != "published_case" or case["reviewStatus"] != "review_required" or case["caseId"] != checkpoint.get("caseId") or case["specialty"] != specialty or any(case["provenance"].get(k) != v for k, v in provenance.items()):
+                    if case["catalogType"] != "published_case" or case["reviewStatus"] != "review_required" or case["caseId"] != checkpoint.get("caseId") or case["specialty"] != specialty or not source_provenance_matches(case["provenance"], provenance):
                         raise ValueError("invalid adapted draft")
                     clinical = db.session.scalar(db.select(ClinicalCase).where(ClinicalCase.slug == case["caseId"]))
                     if clinical:
                         data = validate_case(clinical.data)
-                        if data["catalogType"] != "published_case" or any(data["provenance"].get(k) != v for k, v in provenance.items()):
+                        if data["catalogType"] != "published_case" or not source_provenance_matches(data["provenance"], provenance):
                             raise ValueError("case origin conflict")
                         linked_id = clinical.id
                 changes = {"import_status": status, "verified": provenance is not None, "translated": case is not None,
