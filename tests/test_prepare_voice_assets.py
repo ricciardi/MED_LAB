@@ -12,12 +12,14 @@ import pytest
 from scripts import prepare_voice_assets as assets
 
 
-def asset_root(tmp_path, *, append=""):
+def asset_root(tmp_path, *, append="", fallback=False):
     source = b"pinned browser runtime"
     asset = {"path": "vendor/runtime.js", "url": "https://assets.example.invalid/runtime.js",
              "size": len(source), "sha256": hashlib.sha256(source).hexdigest()}
     if append:
         asset.update(append=append, output_sha256=hashlib.sha256(source + append.encode()).hexdigest())
+    if fallback:
+        asset["fallback_urls"] = ["https://mirror.example.invalid/pinned-version/runtime.js"]
     (tmp_path / "scripts").mkdir()
     (tmp_path / "scripts/voice_assets.json").write_text(json.dumps([asset]))
     (tmp_path / "frontend").mkdir()
@@ -133,7 +135,7 @@ def test_transient_connection_failure_recovers(tmp_path, monkeypatch, error):
     URLError(socket.gaierror(socket.EAI_NONAME, "name does not exist")),
 ])
 def test_permanent_failure_is_not_retried(tmp_path, monkeypatch, error):
-    _, _, target = asset_root(tmp_path)
+    _, _, target = asset_root(tmp_path, fallback=True)
     calls, delays = [], []
 
     def fail(*args, **kwargs):
@@ -150,8 +152,9 @@ def test_permanent_failure_is_not_retried(tmp_path, monkeypatch, error):
 
 
 @pytest.mark.parametrize("corruption", ["checksum", "short", "oversize", "prepared_checksum"])
-def test_integrity_failure_is_not_retried_or_published(tmp_path, monkeypatch, corruption):
-    asset, source, target = asset_root(tmp_path, append="\nexport default runtime;")
+@pytest.mark.parametrize("endpoint", ["primary", "fallback"])
+def test_integrity_failure_is_not_retried_or_published(tmp_path, monkeypatch, corruption, endpoint):
+    asset, source, target = asset_root(tmp_path, append="\nexport default runtime;", fallback=True)
     body = source
     if corruption == "checksum":
         body = b"X" * len(source)
@@ -165,18 +168,80 @@ def test_integrity_failure_is_not_retried_or_published(tmp_path, monkeypatch, co
     target.write_bytes(b"previous version")
     calls, delays = [], []
 
-    def open_url(*args, **kwargs):
-        calls.append(1)
+    def open_url(url, timeout):
+        calls.append(url)
+        if endpoint == "fallback" and len(calls) == 1:
+            raise HTTPError(url, 503, "Unavailable", {}, None)
         return io.BytesIO(body)
 
     monkeypatch.setattr(assets, "urlopen", open_url)
     monkeypatch.setattr(assets.time, "sleep", delays.append)
     with pytest.raises(ValueError):
         assets.prepare(tmp_path)
-    assert len(calls) == 1
-    assert delays == []
+    assert calls == [asset["url"]] + (asset["fallback_urls"] if endpoint == "fallback" else [])
+    assert delays == ([1] if endpoint == "fallback" else [])
     assert target.read_bytes() == b"previous version"
     assert list(target.parent.iterdir()) == [target]
+
+
+def test_manifest_fallback_restarts_partial_transfer_and_shares_digest(tmp_path, monkeypatch):
+    asset, source, target = asset_root(tmp_path, append="\nexport default runtime;", fallback=True)
+    calls, delays = [], []
+
+    def open_url(url, timeout):
+        calls.append(url)
+        assert timeout == 60
+        if len(calls) == 1:
+            return InterruptedResponse(source[:8], TimeoutError("read timeout"))
+        return io.BytesIO(source)
+
+    def sleep(delay):
+        assert not list(target.parent.iterdir())
+        delays.append(delay)
+
+    monkeypatch.setattr(assets, "urlopen", open_url)
+    monkeypatch.setattr(assets.time, "sleep", sleep)
+    assets.prepare(tmp_path)
+    assert calls == [asset["url"], asset["fallback_urls"][0]]
+    assert delays == [1]
+    assert target.read_bytes() == source + asset["append"].encode()
+    assert hashlib.sha256(target.read_bytes()).hexdigest() == asset["output_sha256"]
+    assert list(target.parent.iterdir()) == [target]
+
+
+def test_fallback_failure_does_not_reset_attempt_limit(tmp_path, monkeypatch):
+    asset, _, target = asset_root(tmp_path, fallback=True)
+    calls, delays = [], []
+
+    def fail(url, timeout):
+        calls.append(url)
+        raise HTTPError(url, 503, "Unavailable", {}, None)
+
+    monkeypatch.setattr(assets, "urlopen", fail)
+    monkeypatch.setattr(assets.time, "sleep", delays.append)
+    with pytest.raises(HTTPError):
+        assets.prepare(tmp_path)
+    assert calls == [asset["url"]] + asset["fallback_urls"] * 3
+    assert delays == [1, 2, 4]
+    assert not list(target.parent.iterdir())
+
+
+def test_fallback_404_stops_immediately(tmp_path, monkeypatch):
+    asset, _, target = asset_root(tmp_path, fallback=True)
+    calls, delays = [], []
+
+    def fail(url, timeout):
+        calls.append(url)
+        raise HTTPError(url, 503 if len(calls) == 1 else 404, "Unavailable", {}, None)
+
+    monkeypatch.setattr(assets, "urlopen", fail)
+    monkeypatch.setattr(assets.time, "sleep", delays.append)
+    with pytest.raises(HTTPError) as raised:
+        assets.prepare(tmp_path)
+    assert raised.value.code == 404
+    assert calls == [asset["url"], asset["fallback_urls"][0]]
+    assert delays == [1]
+    assert not list(target.parent.iterdir())
 
 
 def test_verified_asset_skips_network(tmp_path, monkeypatch):

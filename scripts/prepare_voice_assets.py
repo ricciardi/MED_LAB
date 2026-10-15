@@ -40,7 +40,7 @@ def _transient_download_error(error):
     }
 
 
-def _download_once(asset, path):
+def _download_once(asset, path, *, url):
     """Publish only a complete, verified file; discard every partial attempt."""
     digest = hashlib.sha256()
     size = 0
@@ -49,7 +49,7 @@ def _download_once(asset, path):
     try:
         with tempfile.NamedTemporaryFile(dir=path.parent, delete=False) as output:
             temporary = Path(output.name)
-            with urlopen(asset["url"], timeout=60) as response:
+            with urlopen(url, timeout=60) as response:
                 while chunk := response.read(1024 * 1024):
                     size += len(chunk)
                     if size > asset["size"]:
@@ -73,14 +73,19 @@ def _download_once(asset, path):
 
 
 def _download(asset, path):
+    # Alternatives are explicit pinned URLs, sharing the same size and digest.
+    # Moving to a mirror consumes the existing retry budget instead of resetting it.
+    urls = [asset["url"], *asset.get("fallback_urls", [])]
     for attempt in range(DOWNLOAD_ATTEMPTS):
         try:
-            _download_once(asset, path)
+            _download_once(asset, path, url=urls[min(attempt, len(urls) - 1)])
             return
         except Exception as error:
             if attempt == DOWNLOAD_ATTEMPTS - 1 or not _transient_download_error(error):
                 raise
             delay = RETRY_DELAYS[attempt]
+            if attempt + 1 < len(urls):
+                print(f"Usando fonte alternativa do manifesto: {asset['path']}.", file=sys.stderr)
             print(f"Download temporariamente indisponível: {asset['path']}. "
                   f"Nova tentativa {attempt + 2}/{DOWNLOAD_ATTEMPTS} em {delay}s.", file=sys.stderr)
             time.sleep(delay)

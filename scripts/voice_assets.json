@@ -2,24 +2,36 @@
   {
     "path": "vendor/transformers.js",
     "url": "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.1/dist/transformers.min.js",
+    "fallback_urls": [
+      "https://unpkg.com/@huggingface/transformers@4.3.1/dist/transformers.min.js"
+    ],
     "sha256": "8d6716d9086f57c30a4bf367dba61b887593573c770c454465e8019b2703e743",
     "size": 586230
   },
   {
     "path": "licenses/transformers.LICENSE.txt",
     "url": "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.1/LICENSE",
+    "fallback_urls": [
+      "https://unpkg.com/@huggingface/transformers@4.3.1/LICENSE"
+    ],
     "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
     "size": 11358
   },
   {
     "path": "ort/ort-wasm-simd-threaded.jsep.mjs",
     "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.31.0-dev.20260914-8d85527a0/dist/ort-wasm-simd-threaded.jsep.mjs",
+    "fallback_urls": [
+      "https://unpkg.com/onnxruntime-web@1.31.0-dev.20260914-8d85527a0/dist/ort-wasm-simd-threaded.jsep.mjs"
+    ],
     "sha256": "c2f80e915e9df63289788a99d434d8c4e00e64e9c1f030f4b80b022458dd2c99",
     "size": 46851
   },
   {
     "path": "ort/ort-wasm-simd-threaded.jsep.wasm",
     "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.31.0-dev.20260914-8d85527a0/dist/ort-wasm-simd-threaded.jsep.wasm",
+    "fallback_urls": [
+      "https://unpkg.com/onnxruntime-web@1.31.0-dev.20260914-8d85527a0/dist/ort-wasm-simd-threaded.jsep.wasm"
+    ],
     "sha256": "62ff86b2f2fa3a79eb87a7e4720e8ea9051942bf975f314181bf7dcef2feac06",
     "size": 28352885
   },
@@ -32,18 +44,27 @@
   {
     "path": "ort/ort-wasm-simd-threaded.asyncify.mjs",
     "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.31.0-dev.20260914-8d85527a0/dist/ort-wasm-simd-threaded.asyncify.mjs",
+    "fallback_urls": [
+      "https://unpkg.com/onnxruntime-web@1.31.0-dev.20260914-8d85527a0/dist/ort-wasm-simd-threaded.asyncify.mjs"
+    ],
     "sha256": "0966b6105cd936744498aa60df7a22cbd47af3374dbc64a9ab561c08a71e3611",
     "size": 53057
   },
   {
     "path": "ort/ort-wasm-simd-threaded.asyncify.wasm",
     "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.31.0-dev.20260914-8d85527a0/dist/ort-wasm-simd-threaded.asyncify.wasm",
+    "fallback_urls": [
+      "https://unpkg.com/onnxruntime-web@1.31.0-dev.20260914-8d85527a0/dist/ort-wasm-simd-threaded.asyncify.wasm"
+    ],
     "sha256": "49871f5a4409519797e127440868a6d1923339d9185907f301a5b2a1d90af082",
     "size": 26861777
   },
   {
     "path": "espeak/piper_phonemize.js",
     "url": "https://cdn.jsdelivr.net/npm/@diffusionstudio/piper-wasm@1.0.0/build/piper_phonemize.js",
+    "fallback_urls": [
+      "https://unpkg.com/@diffusionstudio/piper-wasm@1.0.0/build/piper_phonemize.js"
+    ],
     "sha256": "fef0c2fc442d24fdef5c7c7cc37d5da2314407640fe11ab1bfe347c723dff19b",
     "size": 120714,
     "append": "\nexport default createPiperPhonemize;\n",
@@ -52,12 +73,18 @@
   {
     "path": "espeak/piper_phonemize.wasm",
     "url": "https://cdn.jsdelivr.net/npm/@diffusionstudio/piper-wasm@1.0.0/build/piper_phonemize.wasm",
+    "fallback_urls": [
+      "https://unpkg.com/@diffusionstudio/piper-wasm@1.0.0/build/piper_phonemize.wasm"
+    ],
     "sha256": "b777cd107a91d2bcc6a1ea46f2c26a662a7407394fe84589198aeaa83dd7a9d6",
     "size": 635212
   },
   {
     "path": "espeak/piper_phonemize.data",
     "url": "https://cdn.jsdelivr.net/npm/@diffusionstudio/piper-wasm@1.0.0/build/piper_phonemize.data",
+    "fallback_urls": [
+      "https://unpkg.com/@diffusionstudio/piper-wasm@1.0.0/build/piper_phonemize.data"
+    ],
     "sha256": "29f1025eb23a5b5c192cd14a6efbce4509402ff265405072ee6f7d1a09b78f8c",
     "size": 18077249
   },
@@ -136,12 +163,18 @@
   {
     "path": "vendor/transformers-tts.js",
     "url": "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1/dist/transformers.min.js",
+    "fallback_urls": [
+      "https://unpkg.com/@huggingface/transformers@3.8.1/dist/transformers.min.js"
+    ],
     "sha256": "aa5002b70e789798da263f5f99c62bd3e8fcd0c119258a493c40c180648365fa",
     "size": 888173
   },
   {
     "path": "ort-tts/ort-wasm-simd-threaded.jsep.mjs",
     "url": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0-dev.20250409-89f8206ba4/dist/ort-wasm-simd-threaded.jsep.mjs",
+    "fallback_urls": [
+      "https://unpkg.com/onnxruntime-web@1.22.0-dev.20250409-89f8206ba4/dist/ort-wasm-simd-threaded.jsep.mjs"
+    ],
     "sha256": "08fb86ec433c78bfb032c5d84a68b8e8e5a8d81268fa39e24314179a5767a5b9",
     "size": 44484
   },
@@ -154,6 +187,9 @@
   {
     "path": "licenses/transformers-tts.LICENSE.txt",
     "url": "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1/LICENSE",
+    "fallback_urls": [
+      "https://unpkg.com/@huggingface/transformers@3.8.1/LICENSE"
+    ],
     "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
     "size": 11358
   },
