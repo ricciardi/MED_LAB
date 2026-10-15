@@ -129,11 +129,15 @@ Com o ambiente virtual e a configuração corretos:
 ```bash
 flask --app app init-db
 flask --app app create-admin
+flask --app app source-report
+flask --app app catalog-report
 ```
 
-O primeiro comando cria o esquema inicial, importa os oito casos fictícios e restaura o inventário e os rascunhos reais incluídos no ZIP, quando presentes e compatíveis com a configuração. Para restaurar também as fichas baseadas somente em fatos ND, é necessário optar explicitamente por `CASE_ALLOW_CLINICAL_FACTS=true`; mantenha `CASE_REUSE_SCOPE=noncommercial` no escopo desta instalação. A restauração é idempotente, preserva casos e revisões existentes, respeita exclusões e mantém `review_required`, sem publicar rascunhos. O segundo comando solicita os dados da nova conta e a senha de forma interativa. Não existe conta administrativa com senha pública. Use uma conta nova desta instalação.
+O primeiro comando cria o esquema inicial, importa os oito casos fictícios e restaura o inventário e as fichas reais incluídos no ZIP, quando presentes e compatíveis com a configuração. Antes de executá-lo, configure `CASE_ALLOW_CLINICAL_FACTS=true` para restaurar também as fichas baseadas somente em fatos ND e mantenha `CASE_REUSE_SCOPE=noncommercial` no escopo desta instalação. Fichas novas com autorização provisória explícita válida (`useAuthorization`) já exportada ficam disponíveis na biblioteca, conservando `review_required`; rascunhos sem autorização continuam privados. Não é necessário um comando adicional de publicação para as fichas autorizadas. A restauração respeita exclusões e preserva edições, revisões e suspensões deliberadas existentes. Um rascunho anterior sem autorização só recebe a nova autorização quando seu conteúdo coincide integralmente com o exportado, exceto por ela.
 
-A restauração dos metadados não substitui a conferência do XML: no servidor novo, a fonte começa com verificação pendente, mesmo quando a ficha em português já está vinculada. As contagens de fontes verificadas da máquina de preparação não são uma verificação feita no destino. Confira os relatórios e revalide fonte e conteúdo antes de publicar.
+O segundo comando solicita os dados da nova conta e a senha de forma interativa. Não existe conta administrativa com senha pública. Use uma conta nova desta instalação. Os dois relatórios seguintes permitem conferir fontes e disponibilidade real do catálogo. Em uma instalação existente, use `upgrade-db` após o backup, como descrito na seção de atualização; a mesma regra de autorização se aplica, sem necessidade de recriar o administrador.
+
+A restauração dos metadados não substitui a conferência do XML: no servidor novo, a fonte começa com verificação pendente, mesmo quando a ficha em português já está vinculada e disponível provisoriamente. As contagens de fontes verificadas da máquina de preparação não são uma verificação feita no destino. A autorização de uso não afirma revisão clínica concluída nem verificação local da fonte; confira esses estados separadamente nos relatórios.
 
 O endereço administrativo padrão é `https://SEU_DOMINIO/gestao-medlab/login`; se `ADMIN_PATH` mudar, ajuste esse endereço. Não há link administrativo na navegação pública. O caminho discreto reduz sua exposição, mas a proteção efetiva continua sendo autenticação e permissão de administrador no servidor.
 
@@ -344,7 +348,7 @@ flask --app app source-report
 flask --app app catalog-report
 ```
 
-Nesse caminho, a sincronização confere snapshots e checkpoints antes de refletir o progresso; é diferente de restaurar apenas metadados do ZIP. Compare `source-report`, `import-report` e `catalog-report` ao `ACERVO-SNAPSHOT.json` do pacote recebido. O pacote não publica fichas nem inicia a DeepSeek. Para continuar, comece com `--limit 5 --retry-errors` no comando `import-real-cases --all-records --adapt`, confira o relatório e só então aumente o lote.
+Nesse caminho, a sincronização confere snapshots e checkpoints antes de refletir o progresso; é diferente de restaurar apenas metadados do ZIP. Compare `source-report`, `import-report` e `catalog-report` ao `ACERVO-SNAPSHOT.json` do pacote recebido. A restauração disponibiliza fichas novas com autorização provisória explícita válida já exportada, mantendo revisão clínica pendente; os demais rascunhos permanecem privados e suspensões deliberadas existentes são preservadas. Nenhuma dessas etapas inicia a DeepSeek. Para continuar a preparação paga, comece com `--limit 5 --retry-errors` no comando `import-real-cases --all-records --adapt`, confira o relatório e só então aumente o lote.
 
 ## 9. Cache de prompts e consumo observado
 
@@ -359,7 +363,7 @@ python scripts/package_release.py \
   --case-drafts instance/exports/real-case-shards
 ```
 
-O ZIP inclui os lotes em `medlab/data/real_case_drafts/`. `init-db` e `upgrade-db` verificam todos os checksums antes de iniciar e restauram cada lote de forma atômica. Se houver uma interrupção posterior, repetir o comando conserva os lotes concluídos e as revisões locais. Nenhuma ficha é publicada automaticamente. A lista JSON única continua aceita para bibliotecas menores, com limite de 20 MiB por arquivo. Se 100 fichas excederem esse limite, reduza `--shard-size`; não aumente o limite de leitura do servidor.
+O ZIP inclui os lotes em `medlab/data/real_case_drafts/`. `init-db` e `upgrade-db` verificam todos os checksums antes de iniciar e restauram cada lote de forma atômica. Se houver uma interrupção posterior, repetir o comando conserva os lotes concluídos e as revisões locais. Fichas novas com autorização provisória explícita válida já exportada ficam disponíveis, mantendo `review_required`; rascunhos sem autorização continuam privados. A restauração preserva suspensões deliberadas, edições e revisões existentes, conforme a seção 4. A lista JSON única continua aceita para bibliotecas menores, com limite de 20 MiB por arquivo. Se 100 fichas excederem esse limite, reduza `--shard-size`; não aumente o limite de leitura do servidor.
 
 Durante a preparação, `processed/ai-stages/` conserva respostas de etapas da IA, identificadas por modelo, instruções e hashes de entrada/fonte. As etapas são revalidadas ao retomar; uma resposta rejeitada não se transforma em ficha aprovada. Reparos recebem o candidato e a causa concreta da falha, com tentativas limitadas pela configuração (padrão duas). Uma falha do banco preserva os resultados já concluídos no disco; a próxima execução os incorpora sem nova geração. Essa pasta é privada, não deve ficar em `public_html` nem no Git.
 
