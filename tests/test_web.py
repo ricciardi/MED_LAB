@@ -39,7 +39,8 @@ def evaluation_payload():
 @pytest.fixture
 def ai(monkeypatch):
     service = Mock()
-    service.respond.return_value = {"answer": "O desconforto começou ontem.", "intent": "Início dos sintomas"}
+    service.respond.return_value = {"answer": "O desconforto começou ontem.", "intent": "Início dos sintomas",
+                                    "simulation_state": {"version": 1, "startedAfterTurn": 0, "details": []}}
     service.evaluate.return_value = evaluation_payload()
     monkeypatch.setattr("medlab.web.get_ai_service", lambda: service)
     return service

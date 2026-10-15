@@ -48,9 +48,11 @@ class FakeService:
             with self.lock:
                 type(self).active -= 1
 
-    def respond(self, case, question, history):
+    def respond(self, case, question, history, simulation_state=None):
         self.paid(2)
-        return {"answer": "Não sei lhe dizer.", "intent": "Conversa geral"}
+        state = deepcopy(simulation_state) if simulation_state is not None else {"version":1,"startedAfterTurn":len(history),"details":[]}
+        state["details"].append({"topic":"Preocupações do paciente", "detail":f"Detalhe fictício {len(history)+1}", "turn":len(history)+1})
+        return {"answer": "Não sei lhe dizer.", "intent": "Conversa geral", "simulation_state":state}
 
     def evaluate(self, case, session):
         self.paid(1)
@@ -127,7 +129,7 @@ def test_changed_code_or_cases_requires_a_new_directory(case_data, tmp_path):
 
 def test_failure_keeps_paid_usage_without_exception_secrets(case_data, tmp_path):
     class Failure(FakeService):
-        def respond(self, *args):
+        def respond(self, *args, **kwargs):
             self.paid(1)
             raise AIError("test-private-secret must never appear")
     report = harness.EvaluationRun(config(), [case_data], tmp_path, service_factory=Failure).run(assessments=False, generation=False)
@@ -161,7 +163,7 @@ def test_observed_service_records_provider_output_before_answer_validation(case_
     monkeypatch.setattr("medlab.ai.requests.post", Mock(return_value=response))
     with pytest.raises(AIError):
         service.respond(case_data, "O que você sente?", [])
-    assert len(records) == 1
+    assert len(records) == 2  # One bounded repair preserves both paid attempts.
     request = records[0][2]
     assert request["output"] == {"intents": ["Invalid category"]}
     assert request["usage"]["requests"] == 1 and request["usage"]["cacheHitTokens"] == 80
@@ -185,6 +187,25 @@ def test_reusing_conversations_only_spends_on_new_assessments(case_data, tmp_pat
     assert "conversation" not in report["byOperation"]
     assert len(list((review / "requests").glob("*.json"))) == 3
     assert (review / "conversation-baseline.json").exists()
+    baseline_last = json.loads((baseline / "operations" / f"{case_data['caseId']}-turn-06.json").read_text())
+    assert len(baseline_last["input"]["simulationContext"]["details"]) == 5
+    assert len(baseline_last["output"]["simulation_state"]["details"]) == 6
+    for path in (review / "operations").glob("*.json"):
+        record = json.loads(path.read_text())
+        assert record["input"]["simulationContext"] == baseline_last["output"]["simulation_state"]
+
+
+def test_legacy_evaluation_replay_does_not_invent_simulation_provenance(case_data):
+    history = [{"question":"Como está?","answer":"Estou cansada.","intent":"Estado geral"}]
+    assert "simulationContext" not in harness.evaluation_session(case_data, history)
+    original = deepcopy(history)
+    state = {"version":1,"startedAfterTurn":0,"details":[{"topic":"Estado geral","detail":"Estou cansada.","turn":1}]}
+    history[0]["simulation_state"] = state
+    result = harness.evaluation_session(case_data, history)
+    assert result["simulationContext"] == state
+    result["simulationContext"]["details"].clear()
+    assert history[0]["simulation_state"]["details"]
+    assert original[0]["answer"] == history[0]["answer"]
 
 
 def test_reused_conversations_cannot_belong_to_a_modified_case(case_data, tmp_path):

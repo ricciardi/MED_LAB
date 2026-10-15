@@ -7,10 +7,10 @@ from uuid import uuid4
 from flask import Blueprint, Response, abort, current_app, flash, jsonify, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy import case as sql_case, func, or_, select, update
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from .extensions import db
-from .models import ClinicalCase, Consultation, PerformedExam, Turn, User, utcnow
+from .models import ClinicalCase, Consultation, ConsultationSimulation, PerformedExam, Turn, User, utcnow
 from .security import api_login_required, consume_limit, login_rate_allowed, safe_next
 from .catalogue import filtered_cases, public_summary, public_title
 from .case_schema import UNKNOWN_FACT
@@ -43,6 +43,11 @@ def public_session(training):
             "treatment": training.treatment or "",
             "url": url_for("web.consultation", session_id=training.id),
             "result_url": url_for("web.result", session_id=training.id)}
+
+
+def simulation_context(training):
+    record = db.session.get(ConsultationSimulation, training.id)
+    return copy.deepcopy(record.payload) if record is not None else None
 
 
 def own_session(session_id):
@@ -252,6 +257,7 @@ def consultation(session_id):
 @api_login_required
 def message(session_id):
     from .ai import AIError
+    from .patient_dialogue import PatientDialogueError, validate_simulation_state
     training = own_session(session_id)
     payload = request.get_json(silent=True)
     if not isinstance(payload, dict):
@@ -285,21 +291,48 @@ def message(session_id):
             return jsonify(error="Limite de perguntas atingido. Finalize a consulta."), 400
         history = [{"question": t.question, "answer": t.answer, "intentClassification": t.intent} for t in training.turns]
         case_data = copy.deepcopy(training.case_snapshot)
+        previous_state = simulation_context(training)
         db.session.commit()
         service = get_ai_service()
         with capture_usage(service, "conversation", user_id=current_user.id, consultation_id=session_id):
-            response = service.respond(case_data, question.strip(), history)
+            response = service.respond(case_data, question.strip(), history,
+                                       simulation_state=copy.deepcopy(previous_state))
+            if response.get("simulation_state") is None:
+                raise AIError("Não foi possível preservar os detalhes da simulação. Tente novamente.")
+            try:
+                next_state = validate_simulation_state(response["simulation_state"], len(history) + 1)
+            except PatientDialogueError:
+                raise AIError("Os detalhes da simulação não puderam ser confirmados. Tente novamente.") from None
+            # Preserve the accepted session history even if a provider response
+            # tries to rewrite it. New details belong only to this new turn.
+            previous_details = previous_state["details"] if previous_state is not None else []
+            expected_start = previous_state["startedAfterTurn"] if previous_state is not None else len(history)
+            if (next_state["startedAfterTurn"] != expected_start
+                    or next_state["details"][:len(previous_details)] != previous_details
+                    or any(item["turn"] != len(history) + 1 for item in next_state["details"][len(previous_details):])):
+                raise AIError("A simulação tentou alterar detalhes de uma resposta anterior. Tente novamente.")
         if not lock_is_owned(session_id, token):
             db.session.rollback()
             return jsonify(error="A solicitação expirou. Atualize a página antes de tentar novamente."), 409
         turn = Turn(consultation_id=session_id, question=question.strip(), answer=response["answer"],
                     intent=response["intent"], request_id=request_id)
         db.session.add(turn)
+        db.session.flush()
+        simulation = db.session.get(ConsultationSimulation, session_id)
+        if simulation is None:
+            simulation = ConsultationSimulation(consultation_id=session_id, payload=next_state)
+            db.session.add(simulation)
+        else:
+            # Assign a whole new JSON value; nested mutation is not tracked.
+            simulation.payload = copy.deepcopy(next_state)
         db.session.commit()
         return jsonify(answer=response["answer"], intent=response["intent"], turn_id=turn.id, turn_count=len(history) + 1)
     except AIError as exc:
         db.session.rollback()
         return jsonify(error=str(exc)), 503
+    except SQLAlchemyError:
+        db.session.rollback()
+        return jsonify(error="Não foi possível salvar esta resposta. Sua consulta foi preservada; tente novamente."), 503
     finally:
         release_lock(session_id, token)
 
@@ -414,6 +447,9 @@ def finish(session_id):
             "userSubmissions": [{"data": {"mainDiagnoses": [{"diagnosisName": diagnosis}],
                 "differentialDiagnoses": [{"diagnosisName": differential}] if differential else []}}],
             "userTreatments": [{"data": {"treatmentPlan": treatment}}]}
+        context = simulation_context(training)
+        if context is not None:
+            session_data["simulationContext"] = context
         case_data = copy.deepcopy(training.case_snapshot)
         # Save the learner's draft before an external request so a failed evaluation loses no reasoning.
         training.diagnosis, training.differential, training.treatment = diagnosis, differential, treatment
@@ -445,7 +481,7 @@ def result(session_id):
     if training.status != "completed":
         return redirect(url_for("web.consultation", session_id=session_id))
     return render_template("result.html", training=public_session(training), evaluation=training.evaluation,
-        reference=training.case_snapshot, turns=training.turns,
+        reference=training.case_snapshot, turns=training.turns, simulation_context=simulation_context(training),
         case_images=exam_media_items(training, include_all=True),
         submission={"diagnosis": training.diagnosis, "differential": training.differential, "treatment": training.treatment},
         performed_exams=[{"name": e.name, "result": e.result, "type": e.exam_type} for e in training.exams])

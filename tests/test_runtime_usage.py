@@ -50,8 +50,8 @@ def live_ai(app, monkeypatch):
             section["score"] = 0
     assessment.update(summary="Revisão educacional.", strengths=[])
     audit = {"checks": [{"path": field["path"], "claims": []} for field in _evaluation_claim_fields(assessment)]}
-    post = Mock(side_effect=[provider_response({"intents": ["Início dos sintomas"]}),
-        provider_response({"answer": "PRIVATE_RESPONSE_SENTINEL: começou ontem."}),
+    post = Mock(side_effect=[provider_response({"answer": "PRIVATE_RESPONSE_SENTINEL: começou ontem.",
+        "intents": ["Início dos sintomas"], "newDetails": []}),
         provider_response(assessment), provider_response(audit)])
     monkeypatch.setattr("medlab.ai.requests.post", post)
     return service, post
@@ -76,18 +76,18 @@ def test_conversation_and_evaluation_persist_real_deltas_without_retry_duplicati
     assert send_question(client, identifier).status_code == 200
     assert finish(client, identifier).status_code == 302
     assert finish(client, identifier).status_code == 302
-    assert post.call_count == 4
+    assert post.call_count == 3
     with app.app_context():
         rows = db.session.scalars(db.select(AIUsage).order_by(AIUsage.id)).all()
         assert [row.operation for row in rows] == ["conversation", "evaluation"]
-        assert [row.requests for row in rows] == [2, 2]
-        assert [row.prompt_tokens for row in rows] == [20, 20]
-        assert [row.completion_tokens for row in rows] == [4, 4]
-        assert [row.cache_hit_tokens for row in rows] == [8, 8]
+        assert [row.requests for row in rows] == [1, 2]
+        assert [row.prompt_tokens for row in rows] == [10, 20]
+        assert [row.completion_tokens for row in rows] == [2, 4]
+        assert [row.cache_hit_tokens for row in rows] == [4, 8]
         assert all(row.successful and row.usage_complete and row.cache_usage_complete for row in rows)
         assert all(row.consultation_id == identifier and row.user_id == db.session.get(Consultation, identifier).user_id for row in rows)
         totals = usage_summary()
-        assert totals["requests"] == 4 and totals["total_tokens"] == 48 and totals["cache_rate"] == 40
+        assert totals["requests"] == 3 and totals["total_tokens"] == 36 and totals["cache_rate"] == 40
         stored = json.dumps([{column.name: str(getattr(row, column.name)) for column in AIUsage.__table__.columns} for row in rows])
         for forbidden in ("PRIVATE_RESPONSE_SENTINEL", "PRIVATE_QUESTION_SENTINEL", "PRIVATE_DIAGNOSIS_SENTINEL", "private-provider-key-for-tests"):
             assert forbidden not in stored
@@ -101,6 +101,8 @@ def test_failed_turn_preserves_reported_usage_after_route_rollback(app, client, 
         post.side_effect = requests.Timeout("RAW_PRIVATE_PROVIDER_ERROR")
     else:
         second = provider_response({}, usage=None, status=503) if failure == "partial_http_failure" else provider_response("not JSON")
+        # The first output lacks answer/newDetails, so a single bounded repair
+        # follows. Its reported usage must survive even if that repair fails.
         post.side_effect = [provider_response({"intents": ["Início dos sintomas"]}), second]
     response = send_question(client, identifier)
     assert response.status_code == 503 and "RAW_PRIVATE_PROVIDER_ERROR" not in response.text
@@ -203,8 +205,8 @@ def test_private_usage_report_is_unavailable_to_students_and_public(app, client,
     response = client.get("/gestao-teste/uso-ia")
     assert response.status_code == 200
     assert 'name="robots" content="noindex,nofollow"' in response.text
-    assert 'data-usage-total="requests">2<' in response.text
-    assert 'data-usage-total="prompt_tokens">20<' in response.text
+    assert 'data-usage-total="requests">1<' in response.text
+    assert 'data-usage-total="prompt_tokens">10<' in response.text
     assert 'data-usage-total="cache_rate">40,0' in response.text
     assert "PRIVATE_QUESTION_SENTINEL" not in response.text and "PRIVATE_RESPONSE_SENTINEL" not in response.text
     assert "private-provider-key-for-tests" not in response.text

@@ -17,6 +17,8 @@ A alternância automática não elimina o tempo de processamento: há uma pausa 
 
 As vozes disponíveis, os tamanhos dos modelos e os resultados de áudio estão documentados em [Créditos e limites da voz local](CREDITOS_VOZ.md). Os testes reais da IA estão em [Testes DeepSeek](TESTES_DEEPSEEK.md).
 
+O conteúdo da fala usa o [paciente simulado com memória](PACIENTE_SIMULADO.md): respostas podem desenvolver experiências plausíveis relacionadas ao caso, preservando fatos documentados e detalhes já estabelecidos na consulta. A mesma memória é usada por texto e por voz; trocar o modo de entrada não reinicia o personagem.
+
 ## Verificação integrada em 15/10/2026
 
 Um ciclo no navegador usou detecção de pausa, gravação, Whisper e Kokoro reais com entrada WAV sintética e resposta DeepSeek previamente registrada, em banco isolado e sem microfone físico. Houve uma mensagem, um turno e uma reprodução, sem duplicação. A captura terminou antes do envio; a escuta reabriu 353 ms após o fim do áudio e pausou após 15 segundos sem fala. Reiniciar e parar pelo botão também deixou zero faixas de captura ativas. O console não apresentou erros. Esse replay verifica a integração e não mede nova latência de API nem valida o microfone físico ou o Samsung.

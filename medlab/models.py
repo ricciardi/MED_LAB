@@ -132,6 +132,14 @@ class Consultation(db.Model):
     clinical_case = db.relationship("ClinicalCase")
     turns = db.relationship("Turn", order_by="Turn.id", cascade="all, delete-orphan", lazy="select")
     exams = db.relationship("PerformedExam", order_by="PerformedExam.id", cascade="all, delete-orphan", lazy="select")
+    simulation = db.relationship("ConsultationSimulation", uselist=False, cascade="all, delete-orphan", lazy="select")
+
+
+class ConsultationSimulation(db.Model):
+    """Session-only elaborations; never a change to the source case or its review."""
+    consultation_id = db.Column(db.String(36), db.ForeignKey("consultation.id", ondelete="CASCADE"), primary_key=True)
+    payload = db.Column(db.JSON, nullable=False)
+    updated_at = db.Column(db.DateTime, default=utcnow, onupdate=utcnow, nullable=False)
 
 
 class Turn(db.Model):

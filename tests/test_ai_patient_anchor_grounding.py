@@ -5,7 +5,8 @@ from unittest.mock import Mock
 import pytest
 from medlab.ai import AIError, AIService, _spoken_fact
 from medlab.case_schema import UNKNOWN_FACT
-from test_ai import seed, service, reply
+from test_ai import seed, service, reply, patient_reply
+from medlab.patient_dialogue import patient_context
 
 
 def test_unassigned_terms_are_not_patient_facts_but_explicit_asymptomatic_status_is_kept(seed):
@@ -16,25 +17,26 @@ def test_unassigned_terms_are_not_patient_facts_but_explicit_asymptomatic_status
     assert seed==before
 
 
-def test_unassigned_mass_and_duration_never_become_confirmed_symptoms(seed,service,monkeypatch):
+def test_unassigned_mass_and_duration_are_not_canonical_patient_facts(seed):
     seed['patientProfile']['chief_complaint']='Menções clínicas extraídas; relação com o paciente ainda não revisada: inchaço; Uma semana.'
     seed['patientProfile']['present_illness_history']=seed['patientProfile']['chief_complaint']
-    post=Mock(return_value=reply({'intents':['Queixa principal']}));monkeypatch.setattr('medlab.ai.requests.post',post)
-    assert service.respond(seed,'O que trouxe vocês?',[])['answer']=='Não sei lhe dizer.'
-    assert post.call_count==1
+    profile = patient_context(seed)['patientProfile']
+    assert 'chief_complaint' not in profile and 'present_illness_history' not in profile
 
 
-@pytest.mark.parametrize('answer',['Vim só para uma consulta de rotina.','Vim fazer um check-up.','Começou ontem.','Hoje piorou.'])
-def test_unsupported_routine_reason_or_calendar_anchor_rejected(seed,service,monkeypatch,answer):
-    seed['patientProfile']['chief_complaint']='Sem sintomas.'
-    monkeypatch.setattr('medlab.ai.requests.post',Mock(side_effect=[reply({'intents':['Queixa principal']}),reply({'answer':answer})]))
-    with pytest.raises(AIError,match='data ou motivo'):service.respond(seed,'O que trouxe você?',[])
+@pytest.mark.parametrize('answer', ['Tenho 92 anos.', 'Tenho 92 anos e estou preocupada.'])
+def test_documented_age_cannot_be_changed_by_elaboration(seed, service, monkeypatch, answer):
+    post = Mock(return_value=reply(patient_reply(answer, ['Informações pessoais'])))
+    monkeypatch.setattr('medlab.ai.requests.post', post)
+    with pytest.raises(AIError):
+        service.respond(seed, 'Qual sua idade?', [])
+    assert post.call_count == 2
 
 
 def test_documented_calendar_anchor_and_routine_are_preserved(seed,service,monkeypatch):
     seed['patientProfile']['chief_complaint']='Consulta de rotina hoje, sem sintomas.'
     answer='Vim para uma consulta de rotina hoje.'
-    monkeypatch.setattr('medlab.ai.requests.post',Mock(side_effect=[reply({'intents':['Queixa principal']}),reply({'answer':answer})]))
+    monkeypatch.setattr('medlab.ai.requests.post',Mock(return_value=reply(patient_reply(answer, ['Queixa principal']))))
     assert service.respond(seed,'O que trouxe você?',[])['answer']==answer
 
 
@@ -103,62 +105,56 @@ def test_numeric_fallback_example_agrees_with_unassessable_rubric(seed,service,m
     assert next(item for item in result['sections'] if item['key']=='treatment')['score'] is None
 
 
-def test_unclear_question_is_clarified_without_sending_case_facts(seed,service,monkeypatch):
-    post=Mock(return_value=reply({'intents':['Características dos sintomas'],'needsClarification':True}))
+def test_unclear_question_can_request_clarification_using_full_context(seed,service,monkeypatch):
+    answer = 'Não entendi o que quis dizer com qucira. Pode repetir essa parte?'
+    post=Mock(return_value=reply(patient_reply(answer,['Características dos sintomas'])))
     monkeypatch.setattr('medlab.ai.requests.post',post)
-    result=service.respond(seed,'O incômodo na qucira aparece sempre?',[])
-    assert 'Pode repetir' in result['answer']
+    assert service.respond(seed,'O incômodo na qucira aparece sempre?',[])['answer'] == answer
     assert post.call_count==1
     sent=json.loads(post.call_args.kwargs['json']['messages'][1]['content'])
-    assert 'facts' not in sent and 'patientProfile' not in sent
+    assert 'patientProfile' in sent and 'diagnoses' not in sent
 
 
 @pytest.mark.parametrize('invalid',[None,'false',0,[],{}])
-def test_malformed_clarification_flag_does_not_trigger_patient(seed,service,monkeypatch,invalid):
-    post=Mock(return_value=reply({'intents':['Queixa principal'],'needsClarification':invalid}))
+def test_old_classifier_flags_are_not_accepted_as_new_patient_output(seed,service,monkeypatch,invalid):
+    post=Mock(return_value=reply({**patient_reply('Olá', ['Queixa principal']), 'needsClarification':invalid}))
     monkeypatch.setattr('medlab.ai.requests.post',post)
-    with pytest.raises(AIError,match='classificar'): service.respond(seed,'O que sente?',[])
-    assert post.call_count==1
+    with pytest.raises(AIError): service.respond(seed,'O que sente?',[])
+    assert post.call_count==2
 
 
-def test_mixed_trigger_question_keeps_known_topic_and_excludes_unknown(seed,service,monkeypatch):
+def test_mixed_trigger_keeps_original_question_and_known_facts(seed,service,monkeypatch):
     p=seed['patientProfile'];p.setdefault('symptom_details',{}).update({'Fatores desencadeantes':'Palpitações aos esforços.','Sintomas associados':UNKNOWN_FACT})
-    post=Mock(side_effect=[reply({'intents':['Fatores desencadeantes','Sintomas associados'],'needsClarification':False}),reply({'answer':'As palpitações aparecem quando faço esforço.'})])
+    post=Mock(return_value=reply(patient_reply('As palpitações aparecem quando faço esforço.', ['Fatores desencadeantes','Sintomas associados'])))
     monkeypatch.setattr('medlab.ai.requests.post',post)
-    response=service.respond(seed,'Sente mais alguma coisa? Ocorre no esforço?',[])
+    question = 'Sente mais alguma coisa? Ocorre no esforço?'
+    response=service.respond(seed,question,[])
     assert 'quando faço esforço' in response['answer']
     sent=json.loads(post.call_args.kwargs['json']['messages'][1]['content'])
-    assert 'O que costuma desencadear' in sent['question']
-    assert 'Sintomas associados' not in sent['facts']
+    assert sent['question'] == question
+    assert sent['patientProfile']['symptom_details']['Fatores desencadeantes'] == 'Palpitações aos esforços.'
 
 
-@pytest.mark.parametrize('answer',[
-    'Não tenho nenhuma doença crônica.',
-    'Nunca tive doença.',
-    'Não tenho diabetes.',
-    'Não tenho hipertensão importante.',
-    'Não tenho problemas importantes, nem diabetes.',
-    'Não tenho histórico relevante e nunca tive diabetes.',
-])
-def test_qualified_history_does_not_authorize_general_or_individual_denial(seed,service,monkeypatch,answer):
+def test_qualified_history_remains_canonical_and_negative_elaboration_is_separate(seed,service,monkeypatch):
     seed['patientProfile']['past_medical_history']='Sem história pregressa significativa.'
-    post=Mock(side_effect=[reply({'intents':['Doenças crônicas']}),reply({'answer':answer})])
+    details = [{'topic':'Doenças crônicas', 'detail':'Não tem diabetes.'}]
+    post=Mock(return_value=reply(patient_reply('Não tenho diabetes.', ['Doenças crônicas'], details)))
     monkeypatch.setattr('medlab.ai.requests.post',post)
-    with pytest.raises(AIError,match='qualificada'):service.respond(seed,'Antes disso tinha alguma doença?',[])
+    result=service.respond(seed,'Tem diabetes?',[])
+    assert result['simulation_state']['details'] == [{**details[0], 'turn':1}]
+    assert seed['patientProfile']['past_medical_history']=='Sem história pregressa significativa.'
+    sent=json.loads(post.call_args.kwargs['json']['messages'][1]['content'])
+    assert sent['patientProfile']['past_medical_history']=='Sem história pregressa significativa.'
 
 
-@pytest.mark.parametrize('answer',[
-    'Não tenho histórico de problemas de saúde importantes.',
-    'Não tenho antecedentes relevantes.',
-    'Não sei lhe dizer sobre diabetes.',
-])
-def test_qualified_history_preserves_qualifier_or_unknown(seed,service,monkeypatch,answer):
+@pytest.mark.parametrize('answer',['Não tenho histórico de problemas de saúde importantes.','Não tenho antecedentes relevantes.'])
+def test_qualified_history_preserves_documented_qualifier(seed,service,monkeypatch,answer):
     seed['patientProfile']['past_medical_history']='Sem história pregressa significativa.'
-    monkeypatch.setattr('medlab.ai.requests.post',Mock(side_effect=[reply({'intents':['Doenças crônicas']}),reply({'answer':answer})]))
+    monkeypatch.setattr('medlab.ai.requests.post',Mock(return_value=reply(patient_reply(answer,['Doenças crônicas']))))
     assert service.respond(seed,'Antes disso tinha alguma doença?',[])['answer']==answer
 
 
-def test_explicit_individual_negative_is_not_mistaken_for_qualified_history(seed,service,monkeypatch):
+def test_explicit_individual_negative_is_preserved(seed,service,monkeypatch):
     seed['patientProfile']['past_medical_history']='Nega diabetes.'
-    monkeypatch.setattr('medlab.ai.requests.post',Mock(side_effect=[reply({'intents':['Doenças crônicas']}),reply({'answer':'Não tenho diabetes.'})]))
+    monkeypatch.setattr('medlab.ai.requests.post',Mock(return_value=reply(patient_reply('Não tenho diabetes.',['Doenças crônicas']))))
     assert service.respond(seed,'Tem diabetes?',[])['answer']=='Não tenho diabetes.'

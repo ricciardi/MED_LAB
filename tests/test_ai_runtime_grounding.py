@@ -7,46 +7,46 @@ import pytest
 
 from medlab.ai import AIError, _session_evidence
 from medlab.case_schema import UNKNOWN_FACT
-from test_ai import evaluation, reply, seed, service
+from test_ai import evaluation, patient_reply, reply, seed, service
 from test_importer import real_case
 
 
 @pytest.mark.parametrize("intent,question", [("Alergias", "Tem alergia?"), ("Transfusões", "Já recebeu sangue?"), ("Vacinação", "Quando foi sua vacina?")])
-def test_undocumented_history_returns_unknown_without_generation(service, monkeypatch, intent, question):
+def test_missing_category_still_generates_contextual_patient_response(service, monkeypatch, intent, question):
     case = real_case()
     case["patientProfile"]["respondent"] = "Familiar que acompanha o paciente."
     case["patientProfile"]["other_medical_history"] = "Usa um medicamento informado no relato."
-    post = Mock(return_value=reply({"intents": [intent]}))
+    post = Mock(return_value=reply(patient_reply("Sobre isso, não tenho uma informação segura para contar.", [intent])))
     monkeypatch.setattr("medlab.ai.requests.post", post)
-    answer = service.respond(case, question, [])
-    assert answer == {"answer": "Não sei lhe dizer.", "intent": intent}
-    assert post.call_count == 1  # No paid patient call can infer a negative.
+    result = service.respond(case, question, [])
+    assert result["answer"] == "Sobre isso, não tenho uma informação segura para contar."
+    assert result["intent"] == intent and post.call_count == 1
+    data = json.loads(post.call_args.kwargs["json"]["messages"][1]["content"])
+    assert data["patientProfile"]["other_medical_history"] == case["patientProfile"]["other_medical_history"]
 
 
-def test_gender_and_respondent_are_stable_context_without_unrequested_clinical_history(seed, service, monkeypatch):
+def test_gender_and_respondent_are_stable_full_patient_context(seed, service, monkeypatch):
     seed["patientProfile"].update(gender="Menina", respondent="A mãe responde pela criança.")
-    post = Mock(side_effect=[reply({"intents": ["Queixa principal"]}), reply({"answer": "Ela está com tosse."})])
+    post = Mock(return_value=reply(patient_reply("Ela está com tosse.", ["Queixa principal"])))
     monkeypatch.setattr("medlab.ai.requests.post", post)
     service.respond(seed, "O que trouxe vocês?", [])
     sent = json.loads(post.call_args.kwargs["json"]["messages"][1]["content"])
     assert sent["speaker"] == {"patientGender": "Menina", "respondent": "A mãe responde pela criança."}
-    assert "past_medical_history" not in sent["facts"]
+    assert "past_medical_history" in sent["patientProfile"]
     assert "diagnoses" not in sent
 
 
-def test_mixed_unknown_onset_never_infers_date_from_known_progression(seed, service, monkeypatch):
+def test_question_is_not_rewritten_or_lost_when_one_category_is_missing(seed, service, monkeypatch):
     seed["patientProfile"].setdefault("symptom_details", {}).update({
         "Início dos sintomas": UNKNOWN_FACT, "Evolução do quadro": "A falta de ar piorou depois do atendimento de ontem."})
-    post = Mock(side_effect=[reply({"intents": ["Início dos sintomas", "Evolução do quadro"]}),
-                             reply({"answer": "A falta de ar piorou depois do atendimento de ontem."})])
+    post = Mock(return_value=reply(patient_reply("A falta de ar piorou depois do atendimento de ontem.", ["Início dos sintomas", "Evolução do quadro"])))
     monkeypatch.setattr("medlab.ai.requests.post", post)
-    answer = service.respond(seed, "Quando começou e como mudou?", [])
-    assert answer["answer"] == "Não sei dizer quando isso começou. A falta de ar piorou depois do atendimento de ontem."
+    result = service.respond(seed, "Quando começou e como mudou?", [])
+    assert result["answer"] == "A falta de ar piorou depois do atendimento de ontem."
     sent = json.loads(post.call_args.kwargs["json"]["messages"][1]["content"])
-    assert sent["unknownTopics"] == ["Início dos sintomas"]
-    assert sent["intents"] == ["Evolução do quadro"]
-    assert "Quando começou" not in sent["question"]
-    assert "Início dos sintomas" not in sent["facts"]
+    assert sent["question"] == "Quando começou e como mudou?"
+    assert "Início dos sintomas" not in sent["patientProfile"]["symptom_details"]
+    assert sent["patientProfile"]["symptom_details"]["Evolução do quadro"] == "A falta de ar piorou depois do atendimento de ontem."
 
 
 def test_exam_evidence_only_proves_order_and_labels_automatic_result():
