@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% set registering = mode == 'register' %}
+{% block title %}{{ 'Criar conta' if registering else 'Entrar' }} — MED LAB{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block content %}
+<main id="main" class="auth-layout container">
+  <section class="auth-story"><p class="eyebrow">CONHECIMENTO QUE SE TORNA CUIDADO</p><h1>Uma boa prática<br>começa com<br><em>curiosidade.</em></h1><p>Um espaço para perguntar, descobrir e desenvolver a confiança de quem está sempre aprendendo.</p><div class="auth-quote-art"><div class="auth-orbit"></div><span class="auth-cross cross-a">+</span><span class="auth-cross cross-b">+</span><div class="auth-art-icon">{{ icon('heart',54) }}</div><span class="auth-art-caption">Ouvir é o primeiro cuidado.</span></div><div class="auth-trust">{{ icon('shield',18) }}<span>Ambiente educacional. Pacientes simulados.</span></div></section>
+  <section class="auth-form-panel"><span class="pill pill-soft">{{ 'SEU PRÓXIMO PASSO' if registering else 'BOM TER VOCÊ DE VOLTA' }}</span><h2>{{ 'Vamos começar?' if registering else 'Continue evoluindo.' }}</h2><p class="auth-intro">{{ 'Crie sua conta e dê espaço à sua melhor prática.' if registering else 'Entre na sua conta para retomar sua jornada.' }}</p>
+    {% if errors and (errors.get('form') or errors.get('login')) %}<div class="inline-alert" role="alert">{{ icon('info',18) }}{{ (errors.get('form') or errors.get('login')) }}</div>{% endif %}
+    <form method="post" class="auth-form" data-validate-form novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if registering %}<div class="form-field"><label for="name">Seu nome</label><input id="name" name="name" type="text" autocomplete="name" placeholder="Como podemos chamar você?" value="{{ request.form.get('name', '') }}" required minlength="2" maxlength="100" {% if errors and errors.get('name') %}aria-invalid="true" aria-describedby="name-error"{% endif %}><span class="field-error" id="name-error">{{ errors.get('name', '') if errors else '' }}</span></div>{% endif %}
+      <div class="form-field"><label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" placeholder="voce@exemplo.com" value="{{ request.form.get('email', '') }}" required {% if errors and errors.get('email') %}aria-invalid="true" aria-describedby="email-error"{% endif %}><span class="field-error" id="email-error">{{ errors.get('email', '') if errors else '' }}</span></div>
+      <div class="form-field"><label for="password">Senha</label><div class="password-wrap"><input id="password" name="password" type="password" autocomplete="{{ 'new-password' if registering else 'current-password' }}" placeholder="{{ 'Pelo menos 10 caracteres' if registering else 'Sua senha' }}" required {% if registering %}minlength="10" maxlength="128"{% endif %} {% if errors and errors.get('password') %}aria-invalid="true" aria-describedby="password-error"{% endif %}><button type="button" data-toggle-password="password" aria-label="Mostrar senha">{{ icon('eye',19) }}</button></div><span class="field-error" id="password-error">{{ errors.get('password', '') if errors else '' }}</span></div>
+      {% if registering %}<div class="form-field"><label for="password_confirm">Confirme sua senha</label><div class="password-wrap"><input id="password_confirm" name="password_confirm" type="password" autocomplete="new-password" placeholder="Digite a senha novamente" required><button type="button" data-toggle-password="password_confirm" aria-label="Mostrar confirmação de senha">{{ icon('eye',19) }}</button></div><span class="field-error" id="password_confirm-error">{{ errors.get('password_confirm', '') if errors else '' }}</span></div>{% endif %}
+      <button type="submit" class="button button-primary button-full">{{ 'Criar minha conta' if registering else 'Entrar no MED LAB' }} {{ icon('arrow',19) }}</button>
+    </form>
+    <p class="auth-switch">{{ 'Já tem uma conta?' if registering else 'Sua jornada começa por aqui.' }} <a href="{{ url_for('web.login') if registering else url_for('web.register') }}">{{ 'Entrar' if registering else 'Criar conta' }} {{ icon('arrow',14) }}</a></p>
+    <div class="auth-disclaimer">{{ icon('info',16) }}<p>O MED LAB é uma ferramenta de aprendizado. As simulações não substituem orientação profissional ou atendimento médico. <a href="/privacidade">Conheça nossa política de privacidade.</a></p></div>
+  </section>
+</main>
+{% endblock %}

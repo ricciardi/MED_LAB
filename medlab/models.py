@@ -1,0 +1,97 @@
+import hashlib
+import hmac
+from datetime import datetime, timezone
+from uuid import uuid4
+
+from flask import current_app
+from flask_login import UserMixin
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from .extensions import db
+
+
+def utcnow():
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(254), unique=True, nullable=False, index=True)
+    password_hash = db.Column(db.String(255), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False, nullable=False)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
+    created_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password, method="pbkdf2:sha256:600000")
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def get_id(self):
+        # Changing a password invalidates existing signed sessions immediately.
+        fingerprint = hmac.new(str(current_app.secret_key).encode(), self.password_hash.encode(), hashlib.sha256).hexdigest()
+        return f"{self.id}:{fingerprint}"
+
+
+class ClinicalCase(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    slug = db.Column(db.String(100), unique=True, nullable=False)
+    title = db.Column(db.String(180), nullable=False)
+    specialty = db.Column(db.String(80), nullable=False)
+    difficulty = db.Column(db.String(30), nullable=False)
+    summary = db.Column(db.Text, nullable=False)
+    data = db.Column(db.JSON, nullable=False)
+    is_published = db.Column(db.Boolean, default=False, nullable=False, index=True)
+    is_generated = db.Column(db.Boolean, default=False, nullable=False)
+    created_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=utcnow, onupdate=utcnow, nullable=False)
+
+
+class Consultation(db.Model):
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid4()))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
+    case_id = db.Column(db.Integer, db.ForeignKey("clinical_case.id"), nullable=False, index=True)
+    case_snapshot = db.Column(db.JSON, nullable=False)
+    status = db.Column(db.String(20), default="active", nullable=False, index=True)
+    created_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+    completed_at = db.Column(db.DateTime)
+    diagnosis = db.Column(db.Text)
+    differential = db.Column(db.Text)
+    treatment = db.Column(db.Text)
+    evaluation = db.Column(db.JSON)
+    score = db.Column(db.Integer)
+    busy_since = db.Column(db.DateTime)
+    lock_token = db.Column(db.String(36))
+    user = db.relationship("User")
+    clinical_case = db.relationship("ClinicalCase")
+    turns = db.relationship("Turn", order_by="Turn.id", cascade="all, delete-orphan", lazy="select")
+    exams = db.relationship("PerformedExam", order_by="PerformedExam.id", cascade="all, delete-orphan", lazy="select")
+
+
+class Turn(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    consultation_id = db.Column(db.String(36), db.ForeignKey("consultation.id"), nullable=False, index=True)
+    question = db.Column(db.Text, nullable=False)
+    answer = db.Column(db.Text, nullable=False)
+    intent = db.Column(db.String(300), nullable=False)
+    request_id = db.Column(db.String(64), nullable=False)
+    created_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+    __table_args__ = (db.UniqueConstraint("consultation_id", "request_id", name="uq_turn_request"),)
+
+
+class PerformedExam(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    consultation_id = db.Column(db.String(36), db.ForeignKey("consultation.id"), nullable=False, index=True)
+    name = db.Column(db.String(180), nullable=False)
+    exam_type = db.Column(db.String(30), nullable=False)
+    result = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+    __table_args__ = (db.UniqueConstraint("consultation_id", "name", "exam_type", name="uq_exam_session"),)
+
+
+class RateLimit(db.Model):
+    key = db.Column(db.String(80), primary_key=True)
+    bucket = db.Column(db.BigInteger, primary_key=True)
+    hits = db.Column(db.Integer, default=0, nullable=False)

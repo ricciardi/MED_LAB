@@ -1,0 +1,394 @@
+import copy
+import re
+import secrets
+from datetime import timedelta
+from uuid import uuid4
+
+from flask import Blueprint, abort, current_app, flash, jsonify, redirect, render_template, request, session, url_for
+from flask_login import current_user, login_required, login_user, logout_user
+from sqlalchemy import or_, select, update
+from sqlalchemy.exc import IntegrityError
+
+from .extensions import db
+from .models import ClinicalCase, Consultation, PerformedExam, Turn, User, utcnow
+from .security import api_login_required, consume_limit, login_rate_allowed, safe_next
+
+bp = Blueprint("web", __name__)
+
+
+def get_ai_service():
+    from .ai import AIService
+    return AIService(current_app.config)
+
+
+def public_case(case):
+    profile = case.data.get("patientProfile", {})
+    return {"id": case.id, "title": case.title, "specialty": case.specialty,
+            "difficulty": case.difficulty, "summary": case.summary,
+            "complaint": profile.get("chief_complaint", case.summary),
+            "patient_name": profile.get("name", "Paciente"), "age": profile.get("age_value"),
+            "estimated_minutes": 15, "generated": case.is_generated}
+
+
+def public_session(training):
+    case = training.case_snapshot
+    return {"id": training.id, "title": case.get("caseTitle", "Consulta"),
+            "patient_name": case.get("patientProfile", {}).get("name", "Paciente"),
+            "specialty": case.get("specialty", "Clínica médica"), "status": training.status,
+            "status_label": "Concluída" if training.status == "completed" else "Em andamento",
+            "created_at": training.created_at, "score": training.score,
+            "diagnosis": training.diagnosis or "", "differential": training.differential or "",
+            "treatment": training.treatment or "",
+            "url": url_for("web.consultation", session_id=training.id),
+            "result_url": url_for("web.result", session_id=training.id)}
+
+
+def own_session(session_id):
+    training = db.session.execute(select(Consultation).where(
+        Consultation.id == session_id, Consultation.user_id == current_user.id
+    )).scalar_one_or_none()
+    if not training:
+        abort(404)
+    return training
+
+
+def acquire_lock(training):
+    token = str(uuid4())
+    stale = utcnow() - timedelta(minutes=3)
+    result = db.session.execute(update(Consultation).where(
+        Consultation.id == training.id, Consultation.status == "active",
+        or_(Consultation.busy_since.is_(None), Consultation.busy_since < stale)
+    ).values(busy_since=utcnow(), lock_token=token))
+    db.session.commit()
+    return token if result.rowcount else None
+
+
+def release_lock(session_id, token):
+    db.session.execute(update(Consultation).where(
+        Consultation.id == session_id, Consultation.lock_token == token
+    ).values(busy_since=None, lock_token=None))
+    db.session.commit()
+
+
+def lock_is_owned(session_id, token):
+    result = db.session.execute(update(Consultation).where(
+        Consultation.id == session_id, Consultation.lock_token == token, Consultation.status == "active"
+    ).values(busy_since=utcnow()))
+    return bool(result.rowcount)
+
+
+def ai_quota():
+    return consume_limit("ai-daily", str(current_user.id), current_app.config["MAX_DAILY_AI_REQUESTS"], 86400)
+
+
+@bp.get("/")
+def landing():
+    return render_template("landing.html")
+
+
+@bp.route("/cadastro", methods=["GET", "POST"])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for("web.dashboard"))
+    errors = {}
+    if request.method == "POST":
+        if not consume_limit("register", request.remote_addr or "unknown", 8, 3600):
+            abort(429)
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+        if not 2 <= len(name) <= 100:
+            errors["name"] = "Informe seu nome, entre 2 e 100 caracteres."
+        if len(email) > 254 or not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", email):
+            errors["email"] = "Informe um e-mail válido."
+        if not 10 <= len(password) <= 128:
+            errors["password"] = "Use uma senha de 10 a 128 caracteres."
+        if password != request.form.get("password_confirm", ""):
+            errors["password_confirm"] = "As senhas precisam ser iguais."
+        if not errors:
+            user = User(name=name, email=email)
+            user.set_password(password)
+            try:
+                db.session.add(user)
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+                errors["email"] = "Este e-mail já tem cadastro. Acesse sua conta."
+            else:
+                flash("Sua conta está pronta. Entre para começar a praticar.", "success")
+                return redirect(url_for("web.login"))
+    return render_template("auth.html", mode="register", errors=errors), (400 if errors else 200)
+
+
+@bp.route("/entrar", methods=["GET", "POST"])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("web.dashboard"))
+    errors = {}
+    if request.method == "POST":
+        email = request.form.get("email", "").strip().lower()[:254]
+        if not login_rate_allowed(email):
+            abort(429)
+        user = db.session.execute(select(User).where(User.email == email)).scalar_one_or_none()
+        password = request.form.get("password", "")[:128]
+        if user and user.is_active and user.check_password(password):
+            session.clear()
+            login_user(user, remember=False)
+            return redirect(safe_next(request.args.get("next")))
+        errors["login"] = "E-mail ou senha incorretos. Confira seus dados."
+    return render_template("auth.html", mode="login", errors=errors), (400 if errors else 200)
+
+
+@bp.post("/sair")
+@login_required
+def logout():
+    logout_user()
+    session.clear()
+    flash("Você saiu da sua conta.", "info")
+    return redirect(url_for("web.landing"))
+
+
+@bp.get("/painel")
+@login_required
+def dashboard():
+    trainings = db.session.execute(select(Consultation).where(Consultation.user_id == current_user.id)
+                                  .order_by(Consultation.created_at.desc())).scalars().all()
+    scores = [t.score for t in trainings if t.status == "completed" and t.score is not None]
+    cases = db.session.execute(select(ClinicalCase).where(ClinicalCase.is_published.is_(True)).limit(3)).scalars().all()
+    return render_template("dashboard.html", stats={"completed": len(scores),
+        "active": sum(t.status == "active" for t in trainings), "total": len(trainings),
+        "average_score": round(sum(scores) / len(scores)) if scores else None},
+        recent_sessions=[public_session(t) for t in trainings[:5]], recommended_cases=[public_case(c) for c in cases])
+
+
+@bp.get("/casos")
+@login_required
+def cases():
+    specialty = request.args.get("specialty", "")[:80]
+    difficulty = request.args.get("difficulty", "")[:30]
+    query = select(ClinicalCase).where(ClinicalCase.is_published.is_(True))
+    specialties = db.session.execute(select(ClinicalCase.specialty).where(ClinicalCase.is_published.is_(True)).distinct()).scalars().all()
+    if specialty:
+        query = query.where(ClinicalCase.specialty == specialty)
+    if difficulty:
+        query = query.where(ClinicalCase.difficulty == difficulty)
+    found = db.session.execute(query.order_by(ClinicalCase.id)).scalars().all()
+    return render_template("cases.html", cases=[public_case(c) for c in found], specialties=sorted(specialties),
+                           selected_specialty=specialty, selected_difficulty=difficulty)
+
+
+@bp.post("/casos/iniciar")
+@login_required
+def start_session():
+    if not consume_limit("session-start", str(current_user.id), 30, 86400):
+        abort(429)
+    if not current_app.config["DEEPSEEK_API_KEY"] and not current_app.config["DEMO_MODE"]:
+        flash("A prática estará disponível assim que a equipe configurar a inteligência artificial.", "info")
+        return redirect(url_for("web.cases"))
+    query = select(ClinicalCase).where(ClinicalCase.is_published.is_(True))
+    case_id = request.form.get("case_id", type=int)
+    if case_id:
+        query = query.where(ClinicalCase.id == case_id)
+    else:
+        for field in ("specialty", "difficulty"):
+            value = request.form.get(field, "")
+            if value:
+                query = query.where(getattr(ClinicalCase, field) == value)
+    available = db.session.execute(query).scalars().all()
+    if not available:
+        flash("Não há casos disponíveis para estes filtros.", "info")
+        return redirect(url_for("web.cases"))
+    recent_ids = set(db.session.execute(select(Consultation.case_id).where(Consultation.user_id == current_user.id)
+                                       .order_by(Consultation.created_at.desc()).limit(5)).scalars().all())
+    candidates = [c for c in available if c.id not in recent_ids] or available
+    case = secrets.choice(candidates)
+    training = Consultation(user_id=current_user.id, case_id=case.id, case_snapshot=copy.deepcopy(case.data))
+    db.session.add(training)
+    db.session.commit()
+    return redirect(url_for("web.consultation", session_id=training.id))
+
+
+@bp.get("/historico")
+@login_required
+def history():
+    page = max(1, request.args.get("page", 1, type=int))
+    pagination = db.paginate(select(Consultation).where(Consultation.user_id == current_user.id)
+                            .order_by(Consultation.created_at.desc()), page=page, per_page=20, error_out=False)
+    return render_template("history.html", sessions=[public_session(t) for t in pagination.items], pagination=pagination)
+
+
+@bp.get("/sessao/<session_id>")
+@login_required
+def consultation(session_id):
+    training = own_session(session_id)
+    if training.status == "completed":
+        return redirect(url_for("web.result", session_id=training.id))
+    case = training.case_snapshot
+    profile = case.get("patientProfile", {})
+    performed = {(e.exam_type, e.name): e.result for e in training.exams}
+    catalog = lambda key, kind: [{"name": name, "type": kind, "result": performed.get((kind, name))} for name in case.get(key, {})]
+    return render_template("consultation.html", training=public_session(training), patient={
+        "name": profile.get("name", "Paciente"), "age": profile.get("age_value", ""),
+        "gender": profile.get("gender", ""), "occupation": profile.get("occupation", ""),
+        "chief_complaint": profile.get("chief_complaint", ""),
+        "initials": "".join(w[0] for w in profile.get("name", "Paciente").split()[:2])},
+        turns=[{"question": t.question, "answer": t.answer, "intent": t.intent} for t in training.turns],
+        physical_exams=catalog("physicalExams", "physical_exam"), auxiliary_exams=catalog("auxiliaryLabs", "auxiliary_exam"),
+        performed_exams=[{"name": e.name, "result": e.result, "type": e.exam_type} for e in training.exams])
+
+
+@bp.post("/sessao/<session_id>/mensagem")
+@api_login_required
+def message(session_id):
+    from .ai import AIError
+    training = own_session(session_id)
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return jsonify(error="Envie uma pergunta válida."), 400
+    question, request_id = payload.get("question"), payload.get("request_id")
+    if not isinstance(question, str) or not 2 <= len(question.strip()) <= 2000:
+        return jsonify(error="Escreva uma pergunta entre 2 e 2.000 caracteres."), 400
+    if not isinstance(request_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{8,64}", request_id):
+        return jsonify(error="Identificador da pergunta inválido. Atualize a página."), 400
+    existing = db.session.execute(select(Turn).where(Turn.consultation_id == session_id, Turn.request_id == request_id)).scalar_one_or_none()
+    if existing:
+        if existing.question != question.strip():
+            return jsonify(error="Esta pergunta já foi enviada com outro conteúdo."), 409
+        return jsonify(answer=existing.answer, intent=existing.intent, turn_count=len(training.turns))
+    if training.status != "active":
+        return jsonify(error="Esta consulta já foi concluída."), 409
+    if len(training.turns) >= current_app.config["MAX_SESSION_TURNS"]:
+        return jsonify(error="Você atingiu o limite de 40 perguntas. Finalize a consulta para receber sua avaliação."), 400
+    token = acquire_lock(training)
+    if not token:
+        return jsonify(error="Uma ação está em andamento. Aguarde a conclusão."), 409
+    try:
+        if not ai_quota():
+            return jsonify(error="Seu limite diário de interações foi atingido. Retome amanhã."), 429
+        # Recheck after the lock to serialize both question limits and idempotency.
+        db.session.refresh(training)
+        existing = db.session.execute(select(Turn).where(Turn.consultation_id == session_id, Turn.request_id == request_id)).scalar_one_or_none()
+        if existing:
+            return jsonify(answer=existing.answer, intent=existing.intent, turn_count=len(training.turns))
+        if len(training.turns) >= current_app.config["MAX_SESSION_TURNS"]:
+            return jsonify(error="Limite de perguntas atingido. Finalize a consulta."), 400
+        history = [{"question": t.question, "answer": t.answer, "intentClassification": t.intent} for t in training.turns]
+        case_data = copy.deepcopy(training.case_snapshot)
+        db.session.commit()
+        response = get_ai_service().respond(case_data, question.strip(), history)
+        if not lock_is_owned(session_id, token):
+            db.session.rollback()
+            return jsonify(error="A solicitação expirou. Atualize a página antes de tentar novamente."), 409
+        db.session.add(Turn(consultation_id=session_id, question=question.strip(), answer=response["answer"],
+                            intent=response["intent"], request_id=request_id))
+        db.session.commit()
+        return jsonify(answer=response["answer"], intent=response["intent"], turn_count=len(history) + 1)
+    except AIError as exc:
+        db.session.rollback()
+        return jsonify(error=str(exc)), 503
+    finally:
+        release_lock(session_id, token)
+
+
+@bp.post("/sessao/<session_id>/exame")
+@api_login_required
+def exam(session_id):
+    training = own_session(session_id)
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return jsonify(error="Exame inválido."), 400
+    name, kind = payload.get("name"), payload.get("type")
+    if not isinstance(name, str) or kind not in {"physical_exam", "auxiliary_exam"}:
+        return jsonify(error="Exame inválido."), 400
+    catalog = training.case_snapshot.get("physicalExams" if kind == "physical_exam" else "auxiliaryLabs", {})
+    if name not in catalog:
+        return jsonify(error="Este exame não está disponível neste caso."), 400
+    if training.status != "active":
+        return jsonify(error="Esta consulta já foi concluída."), 409
+    token = acquire_lock(training)
+    if not token:
+        return jsonify(error="Aguarde a ação em andamento."), 409
+    try:
+        found = db.session.execute(select(PerformedExam).where(PerformedExam.consultation_id == session_id,
+            PerformedExam.name == name, PerformedExam.exam_type == kind)).scalar_one_or_none()
+        if not found:
+            db.session.add(PerformedExam(consultation_id=session_id, name=name, exam_type=kind, result=catalog[name]))
+            db.session.commit()
+        return jsonify(name=name, type=kind, result=catalog[name])
+    finally:
+        release_lock(session_id, token)
+
+
+@bp.post("/sessao/<session_id>/finalizar")
+@login_required
+def finish(session_id):
+    from .ai import AIError
+    training = own_session(session_id)
+    if training.status == "completed":
+        return redirect(url_for("web.result", session_id=session_id))
+    diagnosis = request.form.get("diagnosis", "").strip()
+    differential = request.form.get("differential", "").strip()
+    treatment = request.form.get("treatment", "").strip()
+    if not 3 <= len(diagnosis) <= 2000 or not 10 <= len(treatment) <= 5000 or len(differential) > 2000:
+        flash("Informe sua hipótese (3 a 2.000 caracteres) e conduta (10 a 5.000 caracteres).", "error")
+        return redirect(url_for("web.consultation", session_id=session_id))
+    if not training.turns:
+        flash("Converse com o paciente antes de concluir a consulta.", "info")
+        return redirect(url_for("web.consultation", session_id=session_id))
+    token = acquire_lock(training)
+    if not token:
+        flash("Uma ação está em andamento. Aguarde antes de finalizar.", "info")
+        return redirect(url_for("web.consultation", session_id=session_id))
+    try:
+        if not ai_quota():
+            flash("Seu limite diário foi atingido. Sua consulta está salva; você pode concluí-la amanhã.", "info")
+            return redirect(url_for("web.consultation", session_id=session_id))
+        db.session.refresh(training)
+        history = [{"question": t.question, "answer": t.answer, "intentClassification": t.intent} for t in training.turns]
+        session_data = {"sessionId": training.id, "caseId": training.case_snapshot.get("caseId"), "history": history,
+            "performedExams": [{"itemName": e.name, "result": e.result, "examType": e.exam_type} for e in training.exams],
+            "userSubmissions": [{"data": {"mainDiagnoses": [{"diagnosisName": diagnosis}],
+                "differentialDiagnoses": [{"diagnosisName": differential}] if differential else []}}],
+            "userTreatments": [{"data": {"treatmentPlan": treatment}}]}
+        case_data = copy.deepcopy(training.case_snapshot)
+        # Save the learner's draft before an external request so a failed evaluation loses no reasoning.
+        training.diagnosis, training.differential, training.treatment = diagnosis, differential, treatment
+        db.session.commit()
+        evaluation = get_ai_service().evaluate(case_data, session_data)
+        if not lock_is_owned(session_id, token):
+            db.session.rollback()
+            flash("A avaliação expirou. Sua consulta permanece salva; tente novamente.", "error")
+            return redirect(url_for("web.consultation", session_id=session_id))
+        training = db.session.get(Consultation, session_id)
+        training.evaluation, training.score = evaluation, evaluation["score"]
+        training.status, training.completed_at = "completed", utcnow()
+        db.session.commit()
+        return redirect(url_for("web.result", session_id=session_id))
+    except AIError as exc:
+        db.session.rollback()
+        flash(str(exc) + " Sua consulta foi preservada para tentar novamente.", "error")
+        return redirect(url_for("web.consultation", session_id=session_id))
+    finally:
+        release_lock(session_id, token)
+
+
+@bp.get("/sessao/<session_id>/resultado")
+@login_required
+def result(session_id):
+    training = own_session(session_id)
+    if training.status != "completed":
+        return redirect(url_for("web.consultation", session_id=session_id))
+    return render_template("result.html", training=public_session(training), evaluation=training.evaluation,
+        reference=training.case_snapshot, turns=training.turns,
+        submission={"diagnosis": training.diagnosis, "differential": training.differential, "treatment": training.treatment},
+        performed_exams=[{"name": e.name, "result": e.result, "type": e.exam_type} for e in training.exams])
+
+
+@bp.get("/privacidade")
+def privacy():
+    return render_template("privacy.html")
+
+
+@bp.get("/saude")
+def health():
+    return jsonify(status="ok", service="MED LAB")

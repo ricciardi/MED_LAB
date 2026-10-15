@@ -1,334 +1,89 @@
-# 🏥 EasyMED
+# MED LAB
 
-![EasyMED Project Banner](https://placehold.co/1200x250/2E7D32/ffffff?text=EasyMED%3A+Multi-Agent+Virtual+Standardized+Patient+Framework)
+Plataforma de simulação clínica em português, com pacientes virtuais, avaliação do raciocínio e histórico de aprendizado. Aplicação **Python/Flask para hospedagem cPanel com Passenger**, com interface clara e responsiva para computador, tablet e celular.
 
+O projeto transforma o núcleo de pesquisa EasyMED deste repositório em um produto web. Preserva o processo **identificação da intenção → paciente simulado → avaliação em seis dimensões**. O código de pesquisa continua em `EasyMED/` e `SPBench/`; a aplicação utiliza sua própria implementação em português, com validação de dados e integração DeepSeek.
 
-<p align="center">
+## O que está implementado
 
-<img src="https://img.shields.io/badge/Python-3.10+-blue">
-<img src="https://img.shields.io/badge/License-MIT-green">
-<img src="https://img.shields.io/badge/Status-Research-orange">
+- Landing page, cadastro, login, logout e painel do estudante.
+- Biblioteca com oito casos fictícios em português, filtros e escolha aleatória que prioriza casos diferentes dos cinco mais recentes.
+- Consulta com diálogo, exame físico, exames complementares, hipótese diagnóstica, diferenciais e plano terapêutico.
+- Avaliação com nota, evidências, acertos, oportunidades de melhoria e próximos passos nas dimensões de anamnese, exame físico, exames complementares, raciocínio diagnóstico, plano terapêutico e desempenho global.
+- Persistência de contas, diálogos, exames solicitados, respostas e avaliações. Cada consulta guarda uma cópia do caso usado, preservando o histórico quando o material é atualizado.
+- Administração separada, sem link na navegação pública: gestão de alunos, edição de casos e geração por IA como rascunho, com revisão antes da publicação. Casos gerados usam o mesmo esquema e processo de avaliação dos casos iniciais.
+- DeepSeek configurável no servidor, com chave fora do navegador, limites de uso, tratamento de falhas e modo de demonstração explícito.
+- SQLite para instalações pequenas ou MySQL/MariaDB via PyMySQL, sem necessidade de Node, Redis ou serviços de fila.
 
-</p>
+## Executar localmente
 
-**EasyMED** is a research-oriented **multi-agent virtual standardized patient (VSP) framework** for medical education.  
-It decomposes clinical interaction into coordinated modules for **intent recognition**, **patient simulation**, and **educational evaluation**, enabling more controllable multi-turn dialogue, structured information disclosure, and pedagogically meaningful feedback.
-
-This repository accompanies the paper:
-
-> **Human or LLM as Standardized Patients? A Comparative Study in Medical Education**
-
----
-
-
-## Overview
-
-Standardized patients (SPs) are essential for training medical students in history taking, communication, and clinical reasoning. However, conventional human-SP training is often expensive, labor-intensive, and difficult to scale. EasyMED is proposed as a controllable and reusable virtual standardized patient framework that supports clinical skills training through structured multi-turn interaction.
-
-Unlike end-to-end dialogue simulators, EasyMED explicitly separates the system into coordinated functional agents. This modular design improves interaction stability, supports intent-aware response generation, and facilitates structured post-hoc educational assessment.
-
-EasyMED is designed for:
-
-- medical history-taking practice
-- virtual standardized patient simulation
-- educational evaluation of clinical dialogue
-- reproducible research on medical dialogue agents
-
----
-
-## Highlights
-
-- **Multi-agent architecture** for controllable virtual standardized patient simulation  
-- **Intent-aware interaction** for fine-grained information disclosure  
-- **Case-grounded response generation** based on structured patient records  
-- **Trajectory-level educational evaluation** for consultation quality analysis  
-- **SPBench integration** for research benchmarking and reproducible evaluation  
-- Compatible with **OpenAI-style APIs**, including OpenAI, Azure OpenAI, and local compatible backends
-
----
-
-## Framework Architecture
-
-<p align="center">
-  <img src="assets/Agent_flow.png" alt="EasyMED framework" width="900"/>
-</p>
-
-<p align="center">
-  <em>Figure 1. Overview of the EasyMED framework. The system separates intent recognition, patient simulation, and educational evaluation into coordinated agents for controllable virtual standardized patient interaction.</em>
-</p>
-
----
-
-## Main Components
-
-EasyMED consists of three major modules.
-
-### 1. Patient Agent
-The Patient Agent simulates a virtual patient in multi-turn doctor–patient interaction.  
-It generates responses grounded in the structured case record while preserving realism and avoiding unnecessary leakage of case information.
-
-### 2. Intent Recognition Agent
-The Intent Recognition Agent identifies the clinical intent behind each learner question.  
-This module helps the system determine which part of the patient record should be disclosed and supports more faithful and controlled patient simulation.
-
-### 3. Evaluation Agent
-The Evaluation Agent reviews the full consultation trajectory after the interaction ends.  
-It compares the student’s questioning process, collected information, and submitted decisions against case-specific reference items to generate structured educational feedback.
-
----
-
-## SPBench
-
-This repository also includes **SPBench**, a benchmark for evaluating virtual standardized patient systems.
-
-SPBench is designed to assess the quality of simulated patient interaction from an educational perspective. Rather than focusing only on static question answering, it evaluates **interaction-level patient behavior** in multi-turn consultation settings.
-
-The benchmark supports the evaluation of generated dialogue quality along multiple expert-defined dimensions, including:
-
-- query comprehension
-- case consistency
-- controlled disclosure
-- response completeness
-- logical coherence
-- language naturalness
-- conversational consistency
-- patient demeanor
-
-SPBench can be used to compare EasyMED with other virtual patient or LLM-based simulation baselines.
-
----
-
-## Repository Structure
-
-```text
-EasyMED/
-├── consultation.py                    # VirtualPatient implementation
-├── intent_recognition.py              # IntentRecognizer implementation
-├── evaluation.py                      # ClinicalEvaluator implementation
-└── requirements.txt
-
-SPBench/
-├── create_conversation.py             # Generate dialogues with VirtualPatient
-├── create_conversation_with_intent.py # Generate dialogues with turn-level intent labels
-├── evaluate_sp.py                     # Evaluate dialogue quality on SPBench
-├── SPBench_case/                      # Patient case JSON files
-└── SPBench_taking/                    # Benchmark question lists
-
-.env.example                           # Example environment variable configuration
-README.md
-
----
-```
-
-## Quick start
-
-### 1 · Clone the repository
+Requer Python 3.10 ou superior.
 
 ```bash
-git clone https://github.com/FreedomIntelligence/EasyMED.git
-cd EasyMED
-```
-
-### 2 · Install dependencies
-
-```bash
-pip install -r EasyMED/requirements.txt
-```
-
-### 3 · Set your API key
-
-```bash
-# Copy and edit the example file
+git clone https://github.com/ricciardi/MED_LAB.git
+cd MED_LAB
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
 cp .env.example .env
-
-# Or export directly in your shell
-export EASYMED_API_KEY=sk-...
-export EASYMED_BASE_URL=https://api.openai.com/v1   # optional
-export EASYMED_MODEL=gpt-4o                         # optional
+python -c 'import secrets; print(secrets.token_hex(32))'
 ```
 
-EasyMED works with **any OpenAI-compatible API** (OpenAI, Azure OpenAI, local vLLM, etc.).
+Edite `.env`: use o segredo gerado em `SECRET_KEY`, configure `DEEPSEEK_API_KEY` e mantenha `DEMO_MODE=false`. Para apresentação local sem chave, defina `DEMO_MODE=true`: as respostas usam regras fixas e as avaliações são identificadas como **demonstração sem IA**. Esse modo não gera casos novos. Em HTTP local, use `SESSION_COOKIE_SECURE=false`; em produção HTTPS, mantenha `true`.
 
----
-
-## EasyMED modules
-
-### VirtualPatient — `EasyMED/consultation.py`
-
-```python
-from EasyMED.consultation import VirtualPatient
-import json
-
-patient = VirtualPatient()        # reads EASYMED_* env vars
-
-with open("SPBench/SPBench_case/01.json", encoding="utf-8") as f:
-    case_data = json.load(f)
-
-history = []
-while True:
-    question = input("Doctor: ")
-    answer   = patient.chat(case_data, question, history)
-    print(f"Patient: {answer}\n")
-    history.append({"question": question, "answer": answer})
+```bash
+flask --app app init-db
+flask --app app create-admin
+flask --app app run --host 127.0.0.1 --port 5055
 ```
 
-### IntentRecognizer — `EasyMED/intent_recognition.py`
+Acesse `http://127.0.0.1:5055`. A administração padrão fica em `/gestao-medlab/login`; personalize `ADMIN_PATH` no ambiente. O endereço discreto complementa a autenticação e a verificação de permissão. Não existe senha administrativa padrão.
 
-```python
-from EasyMED.intent_recognition import IntentRecognizer
+`init-db` importa os oito casos iniciais uma única vez, sem sobrescrever edições existentes. Os cinquenta perfis originais do SPBench permanecem como material de pesquisa: não são publicados automaticamente, pois não contêm todos os gabaritos exigidos pela aplicação.
 
-recognizer = IntentRecognizer()
+## Publicar no cPanel
 
-intent = recognizer.recognize(
-    question="How is your sleep lately?",
-    history=[{"question": "Where does it hurt?", "answer": "My head hurts."}],
-)
-print(intent)   # e.g. "General Condition"
+Siga [Instalação e operação no cPanel](docs/CPANEL.md), incluindo configuração do interpretador, HTTPS, variáveis, banco e backup. Use um domínio ou subdomínio dedicado, com a aplicação servida na raiz `/` e código fora de `public_html`.
+
+```bash
+python scripts/package_release.py
 ```
 
-**32 intent categories:**
+O pacote `dist/medlab-cpanel.zip` inclui o ponto WSGI `passenger_wsgi.py:application`, código, casos, testes, documentação e manifesto SHA256. Não inclui `.env`, senhas, banco local, ambiente virtual ou capturas de tela. A hospedagem deve disponibilizar Python 3.10+, Passenger e acesso HTTPS de saída à API.
 
-> Personal Information · Chief Complaint · Onset Time · Triggering Factors ·
-> Symptom Location · Symptom Characteristics · Duration and Frequency ·
-> Aggravating / Relieving Factors · Associated Symptoms · Disease Progression ·
-> Prior Diagnosis and Treatment · General Condition · Bowel and Bladder Function ·
-> Weight Change · Chronic Disease History · Infectious Disease History ·
-> Surgical and Trauma History · Transfusion History · Allergy History ·
-> Vaccination History · Medication History · Travel History · Lifestyle Habits ·
-> Occupational History · Sexual History · Marital and Reproductive History ·
-> Family History · Menstrual History · Patient Understanding ·
-> Patient Concerns · Patient Expectations · Small Talk
+## Configuração da IA
 
-### ClinicalEvaluator — `EasyMED/evaluation.py`
+| Variável | Padrão / finalidade |
+| --- | --- |
+| `DEEPSEEK_API_KEY` | Chave privada da instalação |
+| `AI_BASE_URL` | `https://api.deepseek.com` |
+| `AI_MODEL` | `deepseek-flash`, configurável |
+| `AI_TIMEOUT` | 40 segundos por chamada, até 45 |
+| `MAX_DAILY_AI_REQUESTS` | 120 operações de diálogo/avaliação por aluno por dia; um diálogo pode fazer duas chamadas ao provedor |
+| `DEMO_MODE` | `false`; `true` usa somente demonstração local, mesmo com uma chave configurada |
 
-```python
-from EasyMED.evaluation import ClinicalEvaluator
-import json
+A integração usa [JSON Output da DeepSeek](https://api-docs.deepseek.com/guides/json_mode/) e modelo configurável conforme a [documentação do provedor](https://api-docs.deepseek.com/quick_start/pricing/). A geração envia apenas os dados do caso e a atividade simulada necessária; nome da conta, email e senha não fazem parte dos prompts. As respostas de IA passam por validação estrutural antes de serem salvas. Falhas não são substituídas silenciosamente por avaliações demonstrativas.
 
-evaluator = ClinicalEvaluator()
+## Testes e arquitetura
 
-with open("case_template.json", encoding="utf-8") as f:
-    template = json.load(f)
-
-session_data = {
-    "sessionId": "student01_case01_1711900000",
-    "userId":    "student01",
-    "caseId":    "01",
-    "history": [
-        {
-            "question": "Where does it hurt?",
-            "answer":   "My lower right abdomen.",
-            "intentClassification": "Symptom Location"
-        },
-        ...
-    ],
-    "performedExams": [
-        {
-            "itemName": "Abdominal palpation",
-            "result":   "Tenderness at McBurney's point, rebound tenderness positive",
-            "examType": "physical_exam"
-        },
-    ],
-    "userSubmissions": [
-        {"data": {
-            "mainDiagnoses": [{"diagnosisName": "Acute appendicitis"}],
-            "differentialDiagnoses": [
-                {"disease": "Right-sided salpingitis", "status": "exclude"}
-            ],
-        }}
-    ],
-    "userTreatments": [
-        {"data": {"treatmentPlan": "1. Emergency appendectomy\n2. Anti-infective therapy"}},
-    ],
-}
-
-result = evaluator.evaluate(session_data, template)
-for section, text in result.items():
-    print(f"=== {section} ===")
-    print(text)
+```bash
+python -m pip install -r requirements-dev.txt
+python -m pytest -q
 ```
 
----
+Os testes cobrem autenticação, autorização, isolamento entre usuários, CSRF, histórico, aleatoriedade, limites de uso, recuperação após falha, geração e publicação, esquema dos casos e contratos do provedor. Chamadas ao provedor são simuladas nos testes: uma chave válida é necessária para validar a API real no servidor.
 
-## SPBench
+Consulte [Arquitetura e decisões](docs/ARQUITETURA.md). A aplicação inclui senhas com hash, cookies protegidos, invalidação de sessões após troca de senha, limites persistentes no banco, proteção CSRF e bloqueio de operações simultâneas na mesma consulta.
 
-See **[SPBench/README.md](SPBench/README.md)** for the complete guide on:
+## Escopo educacional
 
-- SPBench case data format
-- Generating dialogues with `create_conversation.py`
-- Adding intent labels with `create_conversation_with_intent.py`
-- Evaluating dialogue quality with `evaluate_sp.py`
+Os oito casos iniciais são fictícios, acompanhados de referências e rubricas didáticas. Ainda não receberam validação clínica humana. Casos gerados por IA são salvos como rascunhos e exigem revisão administrativa antes de chegar aos estudantes. A avaliação apoia o estudo; não representa certificação de competência ou orientação para atendimento de pacientes reais.
 
----
+Esta versão não inclui recuperação de senha por email: o operador usa `flask --app app reset-password EMAIL` com entrada protegida no Terminal. A publicação, o banco MySQL e o funcionamento real da DeepSeek devem ser verificados na hospedagem de destino.
 
-## Case data format
+## Origem e atribuição
 
-Each case file (`SPBench_case/<id>.json`) follows this structure:
-
-```json
-{
-  "caseId":          "01",
-  "caseTitle":       "Acute Appendicitis",
-  "caseDescription": "28-year-old male presenting with right lower quadrant pain.",
-  "patientProfile": {
-    "name":                      "John Smith",
-    "age_value":                 28,
-    "age_unit":                  "years old",
-    "gender":                    "Male",
-    "occupation":                "Teacher",
-    "chief_complaint":           "Right lower abdominal pain for 6 hours",
-    "present_illness_history":   "...",
-    "past_medical_history":      "None",
-    "personal_history":          "Non-smoker, non-drinker",
-    "family_history":            "No family history of similar condition",
-    "other_medical_history":     "None",
-    "surgery_injury_history":    "None",
-    "transfusion_history":       "None",
-    "infection_history":         "None",
-    "allergy_history":           "None",
-    "menstrual_history":         "N/A",
-    "reproductive_history":      "N/A"
-  },
-  "mustConsultionItems":    ["Chief Complaint", "Onset Time", "Triggering Factors", "Associated Symptoms"],
-  "optionalConsultionItems":["General Condition", "Family History"],
-  "mustPhysicalExams":      ["Temperature", "Blood Pressure", "Abdominal palpation"],
-  "optionalPhysicalExams":  ["Rectal examination"],
-  "mustAuxiliaryLabs":      ["CBC", "Abdominal ultrasound"],
-  "optionalAuxiliaryLabs":  ["Abdominal CT"],
-  "physicalExams":          {
-    "Temperature": "38.2°C",
-    "Abdominal palpation": "McBurney's point tenderness (+), rebound tenderness (+)"
-  },
-  "auxiliaryLabs":          {
-    "CBC": "WBC 12.3×10⁹/L",
-    "Abdominal ultrasound": "Swollen appendix, diameter 8 mm"
-  },
-  "diagnoses": {
-    "mainDiagnosis": {"disease": "Acute appendicitis"},
-    "differentialDiagnoses": [
-      {"disease": "Right-sided salpingitis"},
-      {"disease": "Right ureteral stone"}
-    ]
-  },
-  "treatments": "1. Emergency appendectomy\n2. Pre-operative anti-infective therapy (ceftriaxone 2 g IV)\n3. Fluid resuscitation"
-}
-```
-
----
-
-## Environment variables
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `EASYMED_API_KEY` | ✅ | — | OpenAI-compatible API key |
-| `EASYMED_BASE_URL` | ❌ | OpenAI default | Custom API endpoint |
-| `EASYMED_MODEL` | ❌ | `gpt-4o` | Model name |
-
----
-
-# Citation
-
-If you use EasyMED in your research, please cite:
+Baseado no [EasyMED](https://github.com/FreedomIntelligence/EasyMED), de FreedomIntelligence. O [README original](docs/README-original.md) preserva a documentação, atribuição e declaração de licença MIT do projeto de origem. Os módulos e perfis originais permanecem no repositório.
 
 ```bibtex
 @article{zhang2025human,
@@ -338,21 +93,3 @@ If you use EasyMED in your research, please cite:
   year={2025}
 }
 ```
-
----
-
-# License
-
-This project is released under the **MIT License**.
-
----
-
-# Acknowledgements
-
-We thank the clinical experts, standardized patient instructors, medical students, and collaborators who contributed to the construction and evaluation of this project.
-
----
-
-# Contact
-
-For questions or collaborations, please open an issue on GitHub.
