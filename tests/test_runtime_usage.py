@@ -10,12 +10,13 @@ from sqlalchemy import inspect
 from sqlalchemy.dialects import mysql
 from sqlalchemy.schema import CreateTable
 
-from medlab.ai import AIService
+from medlab.ai import AIService, _evaluation_claim_fields
 from medlab.extensions import db
 from medlab.migrations import upgrade_database
 from medlab.models import AIUsage, ClinicalCase, Consultation, Turn, User, utcnow
 from medlab.usage import capture_usage, usage_summary
 from test_web import evaluation_payload
+from test_fictional_audit import response as fictional_audit_response
 
 
 USAGE = {"prompt_tokens": 10, "completion_tokens": 2, "total_tokens": 12,
@@ -37,9 +38,21 @@ def live_ai(app, monkeypatch):
     # Deliberately reuse one instance to verify per-operation deltas, not a
     # cumulative duplicate when conversation is followed by evaluation.
     monkeypatch.setattr("medlab.web.get_ai_service", lambda: service)
+    assessment = evaluation_payload()
+    refs = {"consultation": {"id": "Q1", "quote": "quando começou?"},
+        "diagnosis": {"id": "D1", "quote": "PRIVATE_DIAGNOSIS_SENTINEL"},
+        "treatment": {"id": "T1", "quote": "Plano sintético para o teste."},
+        "overall": {"id": "Q1", "quote": "quando começou?"}}
+    for section in assessment["sections"]:
+        section.update(feedback="Revisão dos critérios.", strengths=[])
+        section["evidenceRefs"] = [refs[section["key"]]] if section["key"] in refs else []
+        if not section["evidenceRefs"]:
+            section["score"] = 0
+    assessment.update(summary="Revisão educacional.", strengths=[])
+    audit = {"checks": [{"path": field["path"], "claims": []} for field in _evaluation_claim_fields(assessment)]}
     post = Mock(side_effect=[provider_response({"intents": ["Início dos sintomas"]}),
         provider_response({"answer": "PRIVATE_RESPONSE_SENTINEL: começou ontem."}),
-        provider_response(evaluation_payload())])
+        provider_response(assessment), provider_response(audit)])
     monkeypatch.setattr("medlab.ai.requests.post", post)
     return service, post
 
@@ -63,18 +76,18 @@ def test_conversation_and_evaluation_persist_real_deltas_without_retry_duplicati
     assert send_question(client, identifier).status_code == 200
     assert finish(client, identifier).status_code == 302
     assert finish(client, identifier).status_code == 302
-    assert post.call_count == 3
+    assert post.call_count == 4
     with app.app_context():
         rows = db.session.scalars(db.select(AIUsage).order_by(AIUsage.id)).all()
         assert [row.operation for row in rows] == ["conversation", "evaluation"]
-        assert [row.requests for row in rows] == [2, 1]
-        assert [row.prompt_tokens for row in rows] == [20, 10]
-        assert [row.completion_tokens for row in rows] == [4, 2]
-        assert [row.cache_hit_tokens for row in rows] == [8, 4]
+        assert [row.requests for row in rows] == [2, 2]
+        assert [row.prompt_tokens for row in rows] == [20, 20]
+        assert [row.completion_tokens for row in rows] == [4, 4]
+        assert [row.cache_hit_tokens for row in rows] == [8, 8]
         assert all(row.successful and row.usage_complete and row.cache_usage_complete for row in rows)
         assert all(row.consultation_id == identifier and row.user_id == db.session.get(Consultation, identifier).user_id for row in rows)
         totals = usage_summary()
-        assert totals["requests"] == 3 and totals["total_tokens"] == 36 and totals["cache_rate"] == 40
+        assert totals["requests"] == 4 and totals["total_tokens"] == 48 and totals["cache_rate"] == 40
         stored = json.dumps([{column.name: str(getattr(row, column.name)) for column in AIUsage.__table__.columns} for row in rows])
         for forbidden in ("PRIVATE_RESPONSE_SENTINEL", "PRIVATE_QUESTION_SENTINEL", "PRIVATE_DIAGNOSIS_SENTINEL", "private-provider-key-for-tests"):
             assert forbidden not in stored
@@ -112,11 +125,11 @@ def test_failed_evaluation_records_consumption_and_preserves_submission(app, cli
     _, post = live_ai
     identifier = start_session()
     assert send_question(client, identifier).status_code == 200
-    post.side_effect = [provider_response({"score": "invalid"})]
+    post.side_effect = [provider_response({"score": "invalid"}) for _ in range(2)]
     assert finish(client, identifier).status_code == 302
     with app.app_context():
         row = db.session.scalar(db.select(AIUsage).where(AIUsage.operation == "evaluation"))
-        assert row.requests == 1 and row.total_tokens == 12 and row.successful is False
+        assert row.requests == 2 and row.total_tokens == 24 and row.successful is False
         training = db.session.get(Consultation, identifier)
         assert training.status == "active" and training.evaluation is None
         assert training.diagnosis == "PRIVATE_DIAGNOSIS_SENTINEL"
@@ -136,14 +149,14 @@ def test_demo_never_calls_or_appears_as_api_consumption(app, client, start_sessi
 @pytest.mark.parametrize("valid", [False, True])
 def test_admin_generation_captures_success_or_rejected_output(app, client, login, monkeypatch, case_data, valid):
     app.config.update(DEMO_MODE=False, DEEPSEEK_API_KEY="private-provider-key-for-tests")
-    post = Mock(return_value=provider_response(case_data if valid else {}))
+    post = Mock(side_effect=[provider_response(case_data), provider_response(fictional_audit_response(case_data))]) if valid else Mock(return_value=provider_response({}))
     monkeypatch.setattr("medlab.ai.requests.post", post)
     login("admin@example.invalid", admin=True)
     response = client.post("/gestao-teste/casos/gerar", data={"specialty": "Clínica médica", "difficulty": "Iniciante"})
     assert response.status_code == 302
     with app.app_context():
         row = db.session.scalar(db.select(AIUsage))
-        assert row.operation == "generation" and row.requests == 1 and row.successful is valid
+        assert row.operation == "generation" and row.requests == 2 and row.successful is valid
         assert row.consultation_id is None and db.session.get(User, row.user_id).is_admin is True
 
 

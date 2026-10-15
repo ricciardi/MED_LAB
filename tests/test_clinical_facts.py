@@ -10,7 +10,7 @@ from medlab.ai import AIError, AIService
 from medlab.case_schema import (CaseValidationError, allowed_license_codes, source_license_allowed,
                                source_reuse_basis, validate_case)
 from medlab.importer import CaseImporter, PMCClient, SourceRejected
-from test_importer import ARTICLE, AUDIT, SPEC, adaptation, cloud_session, fake_ai, provenance, source_file
+from test_importer import ARTICLE, AUDIT, AUDIT_RESPONSE, SPEC, adaptation, cloud_session, fake_ai, provenance, source_file
 from test_importer_license_formats import license_session
 
 
@@ -98,7 +98,7 @@ def factual_inputs():
     script["changes"] = ["Roteiro original composto somente a partir de fatos clínicos."]
     script["factualEvidence"] = [{"path": item["path"], "factIds": ["F001" if item["path"].startswith("/patientProfile") else "F002"]}
                                  for item in script.pop("evidence")]
-    audit = {**AUDIT, "atomicFactsOnly": True, "originalWording": True}
+    audit = {**deepcopy(AUDIT_RESPONSE), "atomicFactsOnly": True, "originalWording": True}
     service = AIService({"DEEPSEEK_API_KEY": "test-key", "CASE_REUSE_SCOPE": "noncommercial", "CASE_ALLOW_CLINICAL_FACTS": True})
     service._request = Mock(side_effect=[facts, script, audit])
     return service, base, facts, script, audit
@@ -142,8 +142,10 @@ def test_factual_pipeline_fails_closed_on_unsupported_or_expressive_outputs(fail
         script["case"]["summary"] = ARTICLE
     elif failure == "not_original":
         audit["originalWording"] = False
+        audit["issues"] = [{"flag": "originalWording", "path": "/patientProfile", "reason": "A redação preserva expressão narrativa do artigo."}]
     elif failure == "not_atomic":
         audit["atomicFactsOnly"] = False
+        audit["issues"] = [{"flag": "atomicFactsOnly", "path": "/facts", "reason": "Há raciocínio editorial entre os fatos."}]
     with pytest.raises(AIError):
         service.adapt_case({"articleText": ARTICLE}, base, SPEC)
 

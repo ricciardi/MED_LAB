@@ -17,6 +17,15 @@ from medlab.importer import CaseImporter, DATASET_REVISION, ImportError, PMCClie
 ARTICLE = "An adult patient described cough for three weeks. The final diagnosis was pneumonia. Clinical history is documented in this source article."
 SPEC = "Pneumologia"
 AUDIT = {k: True for k in ("portuguese", "factsSupported", "unknownsPreserved", "deidentified", "patientBeforeDiagnosis")}
+AUDIT_RESPONSE = {**AUDIT, "sourceChecklist": {
+    "finalDiagnosis": {"sourceFact": "Pneumonia", "casePaths": ["/diagnoses/mainDiagnosis/disease"], "covered": True},
+    "confirmatoryFindings": {"sourceFact": UNKNOWN_FACT, "casePaths": [], "covered": True},
+    "definitiveTreatment": {"sourceFact": UNKNOWN_FACT, "casePaths": [], "covered": True},
+}, "patientKnowledge": [
+    {"path": path, "knowledge": "reported", "sourceSpanIds": ["S0001"],
+     "rationale": "A fonte descreve a tosse relatada pelo paciente antes da investigação."}
+    for path in ("/patientProfile/chief_complaint", "/patientProfile/present_illness_history")
+]}
 
 
 def provenance(pmcid="PMC123", **changes):
@@ -85,6 +94,37 @@ def fake_ai():
 
 def importer(tmp_path, **kwargs):
     return CaseImporter({"DEEPSEEK_API_KEY": "test-key"}, tmp_path / "work", ai_service=kwargs.get("ai_service", fake_ai()), pmc_client=kwargs.get("pmc_client", fake_pmc()))
+
+
+def test_saved_draft_recovers_checkpoint_without_paid_regeneration(tmp_path, source_file):
+    worker = importer(tmp_path)
+    worker.run(source_file, limit=1, adapt=True, all_records=True)
+    record_path = tmp_path / "work/records/PMC123.json"
+    record = json.loads(record_path.read_text())
+    record.update(status="verified", error="interrupted")
+    record.pop("caseId")
+    record_path.write_text(json.dumps(record))
+    worker.ai.reset_mock()
+    progress = []
+    report = worker.run(source_file, adapt=False, all_records=True, on_progress=progress.append)
+    recovered = json.loads(record_path.read_text())
+    assert recovered["status"] == "draft" and "error" not in recovered
+    assert recovered["usageRecoveryIncomplete"] is True
+    assert recovered["aiUsage"]["usageComplete"] is False
+    assert report["aiUsage"]["usageComplete"] is False
+    assert report["recoveredDrafts"] == 1
+    assert progress[0]["status"] == "draft"
+    worker.ai.adapt_case.assert_not_called()
+
+
+def test_missing_completed_draft_requires_restore(tmp_path, source_file):
+    worker = importer(tmp_path)
+    worker.run(source_file, limit=1, adapt=True, all_records=True)
+    (tmp_path / "work/drafts/PMC123.json").unlink()
+    worker.ai.reset_mock()
+    with pytest.raises(ImportError, match="Restaure"):
+        worker.run(source_file, adapt=True, all_records=True)
+    worker.ai.adapt_case.assert_not_called()
 
 
 def response(raw, status=200):
@@ -288,7 +328,7 @@ def test_schema_refuses_unsupported_real_case_claims(mutate):
 
 def test_real_adaptation_requires_literal_evidence_and_independent_language_audit():
     service = AIService({"DEEPSEEK_API_KEY": "test"})
-    service._request = Mock(side_effect=[adaptation(), deepcopy(AUDIT)])
+    service._request = Mock(side_effect=[adaptation(), deepcopy(AUDIT_RESPONSE)])
     result = service.adapt_case({"articleText": ARTICLE, "case_prompt": "Cough", "final_diagnosis": "Pneumonia"}, provenance(), SPEC)
     assert result["reviewStatus"] == "review_required"
     assert result["catalogType"] == "published_case" and result["provenance"]["language"] == "pt-BR"
@@ -298,7 +338,7 @@ def test_real_adaptation_requires_literal_evidence_and_independent_language_audi
 
 @pytest.mark.parametrize("bad", ["no_evidence", "invented_excerpt", "missing_unknown", "english", "unsupported"])
 def test_adaptation_does_not_fabricate_success_on_bad_source_or_translation(bad):
-    data, audit = adaptation(), deepcopy(AUDIT)
+    data, audit = adaptation(), deepcopy(AUDIT_RESPONSE)
     if bad == "no_evidence":
         data["evidence"] = []
     elif bad == "invented_excerpt":
@@ -307,8 +347,10 @@ def test_adaptation_does_not_fabricate_success_on_bad_source_or_translation(bad)
         data["missingFacts"] = []
     elif bad == "english":
         audit["portuguese"] = False
+        audit["issues"] = [{"flag": "portuguese", "path": "/patientProfile", "reason": "Há conteúdo clínico em inglês."}]
     else:
         audit["factsSupported"] = False
+        audit["issues"] = [{"flag": "factsSupported", "path": "/patientProfile", "reason": "Há dado sem apoio na fonte."}]
     service = AIService({"DEEPSEEK_API_KEY": "test"})
     service._request = Mock(side_effect=[data, audit])
     with pytest.raises(AIError):
@@ -317,7 +359,7 @@ def test_adaptation_does_not_fabricate_success_on_bad_source_or_translation(bad)
 
 def evaluation():
     sections = [{"key": key, "title": title, "score": 80 if key in {"consultation", "overall"} else 40,
-                 "feedback": "Feedback com evidência.", "strengths": [], "improvements": [], "evidence": ["Evidência registrada."]} for key, title in SECTION_TITLES.items()]
+                 "feedback": "Feedback com evidência.", "strengths": [], "improvements": [], "evidence": ["Evidência registrada."], "evidenceRefs": []} for key, title in SECTION_TITLES.items()]
     for section in sections:
         if section["key"] in {"physical", "auxiliary", "treatment"}:
             section.update(score=None, assessable=False)
@@ -326,8 +368,17 @@ def evaluation():
 
 def test_evaluation_excludes_missing_dimensions_and_preserves_six_sections():
     service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._audit_evaluation = Mock(return_value=[])
     service._request = Mock(return_value=evaluation())
-    result = service.evaluate(real_case(), {})
+    response = evaluation()
+    for section in response["sections"]:
+        if section["key"] in {"consultation", "overall"}:
+            section["evidenceRefs"] = [{"id": "Q1", "quote": "Você está com tosse?"}]
+        elif section["key"] == "diagnosis":
+            section["evidenceRefs"] = [{"id": "D1", "quote": "Pneumonia"}]
+    service._request.return_value = response
+    result = service.evaluate(real_case(), {"history": [{"question": "Você está com tosse?", "answer": "Sim."}],
+        "userSubmissions": [{"data": {"diagnosis": "Pneumonia"}}]})
     assert result["score"] == 60 and len(result["sections"]) == 6
     assert [s["score"] for s in result["sections"]] == [80, None, None, 40, None, 60]
     assert "não são negativos clínicos" in service._request.call_args.args[0]
@@ -365,6 +416,7 @@ def test_fictional_generation_cannot_impersonate_a_published_case():
     case = json.loads((Path(__file__).parents[1] / "medlab/data/cases_pt.json").read_text())[0]
     case.update(catalogType="published_case", provenance={"fake": "unverified"})
     service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._audit_fictional_case = Mock(return_value=[])
     service._request = Mock(return_value=case)
     result = service.generate_case(case["specialty"], case["difficulty"])
     assert result["catalogType"] == "fictional" and "provenance" not in result

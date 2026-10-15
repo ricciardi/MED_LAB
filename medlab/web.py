@@ -4,7 +4,7 @@ import secrets
 from datetime import timedelta
 from uuid import uuid4
 
-from flask import Blueprint, abort, current_app, flash, jsonify, redirect, render_template, request, session, url_for
+from flask import Blueprint, Response, abort, current_app, flash, jsonify, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy import func, or_, select, update
 from sqlalchemy.exc import IntegrityError
@@ -14,6 +14,7 @@ from .models import ClinicalCase, Consultation, PerformedExam, Turn, User, utcno
 from .security import api_login_required, consume_limit, login_rate_allowed, safe_next
 from .catalogue import filtered_cases, public_summary, public_title
 from .usage import capture_usage
+from .exam_media import exam_media_items, read_exam_media
 
 bp = Blueprint("web", __name__)
 
@@ -220,7 +221,9 @@ def consultation(session_id):
     case = training.case_snapshot
     profile = case.get("patientProfile", {})
     performed = {(e.exam_type, e.name): e.result for e in training.exams}
-    catalog = lambda key, kind: [{"name": name, "type": kind, "result": performed.get((kind, name))} for name in case.get(key, {})]
+    catalog = lambda key, kind: [{"name": name, "type": kind, "result": performed.get((kind, name)),
+        "media": exam_media_items(training, exam_name=name, exam_type=kind) if (kind, name) in performed else []}
+        for name in case.get(key, {})]
     return render_template("consultation.html", training=public_session(training), patient={
         "name": profile.get("name", "Paciente"), "age": profile.get("age_value", ""),
         "gender": profile.get("gender", ""), "occupation": profile.get("occupation", ""),
@@ -346,9 +349,24 @@ def exam(session_id):
         if not found:
             db.session.add(PerformedExam(consultation_id=session_id, name=name, exam_type=kind, result=catalog[name]))
             db.session.commit()
-        return jsonify(name=name, type=kind, result=catalog[name])
+        db.session.expire(training, ["exams"])
+        return jsonify(name=name, type=kind, result=catalog[name],
+                       media=exam_media_items(training, exam_name=name, exam_type=kind))
     finally:
         release_lock(session_id, token)
+
+
+@bp.get("/sessao/<session_id>/imagem/<asset_id>")
+@login_required
+def exam_image(session_id, asset_id):
+    training = own_session(session_id)
+    asset = read_exam_media(training, asset_id)
+    if asset is None:
+        abort(404)
+    # The response has no source filename, redirects or shared-cache validators.
+    return Response(asset["data"], mimetype=asset["mime_type"], headers={
+        "Cache-Control": "private, no-store", "Content-Disposition": "inline",
+        "Cross-Origin-Resource-Policy": "same-origin", "X-Content-Type-Options": "nosniff"})
 
 
 @bp.post("/sessao/<session_id>/finalizar")
@@ -414,6 +432,7 @@ def result(session_id):
         return redirect(url_for("web.consultation", session_id=session_id))
     return render_template("result.html", training=public_session(training), evaluation=training.evaluation,
         reference=training.case_snapshot, turns=training.turns,
+        case_images=exam_media_items(training, include_all=True),
         submission={"diagnosis": training.diagnosis, "differential": training.differential, "treatment": training.treatment},
         performed_exams=[{"name": e.name, "result": e.result, "type": e.exam_type} for e in training.exams])
 

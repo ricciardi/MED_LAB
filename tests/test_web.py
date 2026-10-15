@@ -307,6 +307,25 @@ def test_evaluation_saves_and_reopening_does_not_call_ai(app, client, start_sess
     assert client.post(f"/sessao/{consultation_id}/mensagem", json={"question": "Mais?", "request_id": "depois-da-avaliacao"}).status_code == 409
 
 
+def test_limited_feedback_is_visible_with_rubric_and_reference(client, start_session, ai):
+    consultation_id = start_session()
+    client.post(f"/sessao/{consultation_id}/mensagem", json={"question": "Quando começou?", "request_id": "limited-feedback"})
+    payload = evaluation_payload()
+    payload["verification"] = {"status": "limited", "message": "Comentários não confirmados foram retirados."}
+    payload["sections"][0].update(feedbackLimited=True, reviewCriteria=["Critério reservado de teste."],
+        feedback="Feedback limitado nesta dimensão.", strengths=[], improvements=[])
+    ai.evaluate.return_value = payload
+    client.post(f"/sessao/{consultation_id}/finalizar", data={
+        "diagnosis": "Hipótese fictícia", "treatment": "Plano fictício de teste",
+    })
+    result = client.get(f"/sessao/{consultation_id}/resultado")
+    html = result.get_data(as_text=True)
+    assert result.status_code == 200
+    assert html.count("data-feedback-limited") == 1
+    assert "Critérios da rubrica para revisar" in html and "Critério reservado de teste." in html
+    assert "Diagnóstico reservado do cenário" in html and "Comentários não confirmados foram retirados." in html
+
+
 def test_failed_evaluation_does_not_complete_or_save_a_fake_score(app, client, start_session, ai):
     consultation_id = start_session()
     client.post(f"/sessao/{consultation_id}/mensagem", json={"question": "Quando começou?", "request_id": "pre-falha"})

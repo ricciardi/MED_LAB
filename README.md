@@ -10,11 +10,12 @@ O projeto transforma o núcleo de pesquisa EasyMED deste repositório em um prod
 
 - Landing page, cadastro, login, logout e painel do estudante.
 - Biblioteca com oito casos fictícios em português, filtros e escolha aleatória que prioriza casos diferentes dos cinco mais recentes.
-- Seis fichas de relatos reais preparadas em português por Codex, com revisão independente assistida, mantidas como rascunhos privados; revisão clínica humana pendente e nenhum caso real publicado.
+- Fichas de relatos reais preparadas em português por Codex e por DeepSeek, com evidência da fonte, checkpoints e revisão obrigatória antes da publicação.
 - Catálogo de estudo com as 55 especialidades reconhecidas pelo CFM e 15 tipos de queixa; a disponibilidade depende dos casos efetivamente publicados.
 - Consulta com diálogo, exame físico, exames complementares, hipótese diagnóstica, diferenciais e plano terapêutico.
 - Avaliação com nota, evidências, acertos, oportunidades de melhoria e próximos passos nas dimensões de anamnese, exame físico, exames complementares, raciocínio diagnóstico, plano terapêutico e desempenho global.
 - Persistência de contas, diálogos, exames solicitados, respostas e avaliações. Cada consulta guarda uma cópia do caso usado, preservando o histórico quando o material é atualizado.
+- Figuras originais do PMC em armazenamento privado, associadas a paciente/exame/momento, com revisão de privacidade e atribuição; [limites e operação das mídias](docs/MIDIAS_CLINICAS.md).
 - Inventário privado de fontes com registro idempotente, progresso de preparação em português, vínculo ao caso, exclusões duráveis e exportação portátil de metadados.
 - Administração separada, sem link na navegação pública: gestão de alunos, edição de casos e geração por IA como rascunho, com revisão antes da publicação. Casos gerados usam o mesmo esquema e processo de avaliação dos casos iniciais.
 - DeepSeek configurável no servidor, com chave fora do navegador, limites de uso, tratamento de falhas e modo de demonstração explícito.
@@ -47,7 +48,7 @@ flask --app app run --host 127.0.0.1 --port 5055
 
 Acesse `http://127.0.0.1:5055`. A administração padrão fica em `/gestao-medlab/login`; personalize `ADMIN_PATH` no ambiente. O endereço discreto complementa a autenticação e a verificação de permissão. Não existe senha administrativa padrão.
 
-`init-db` importa os oito casos iniciais uma única vez, sem sobrescrever edições existentes. Quando o ZIP inclui `medlab/data/source_registry.jsonl` e `medlab/data/real_case_drafts.json`, `init-db` e `upgrade-db` também restauram o inventário, os bloqueios de reimportação e os rascunhos reais compatíveis com a política configurada. A restauração é idempotente, conserva a revisão local e não publica rascunhos. Metadados portáteis não comprovam verificação do XML na instalação de destino: fontes restauradas começam com verificação pendente, mesmo quando já existe ficha em português. Não são transferidos usuários, conversas ou bancos. Os cinquenta perfis originais do SPBench permanecem como material de pesquisa: não são publicados automaticamente, pois não contêm todos os gabaritos exigidos pela aplicação.
+`init-db` importa os oito casos iniciais uma única vez, sem sobrescrever edições existentes. Quando o ZIP inclui `medlab/data/source_registry.jsonl` e o diretório fragmentado `medlab/data/real_case_drafts/` (ou uma lista JSON menor), `init-db` e `upgrade-db` também restauram o inventário, os bloqueios de reimportação e os rascunhos reais compatíveis com a política configurada. A restauração é idempotente, conserva a revisão local e não publica rascunhos. Metadados portáteis não comprovam verificação do XML na instalação de destino: fontes restauradas começam com verificação pendente, mesmo quando já existe ficha em português. Não são transferidos usuários, conversas ou bancos. Os cinquenta perfis originais do SPBench permanecem como material de pesquisa: não são publicados automaticamente, pois não contêm todos os gabaritos exigidos pela aplicação.
 
 ## Publicar no cPanel
 
@@ -58,12 +59,13 @@ python scripts/prepare_voice_assets.py
 python scripts/package_release.py
 # Para incluir o inventário e os rascunhos previamente preparados:
 flask --app app export-sources --output instance/exports/source_registry.jsonl
+flask --app app export-real-drafts --output instance/exports/real-case-shards
 python scripts/package_release.py \
   --source-registry instance/exports/source_registry.jsonl \
-  --case-drafts instance/exports/real_case_drafts.json
+  --case-drafts instance/exports/real-case-shards
 ```
 
-O segundo comando de empacotamento exige a lista JSON privada dos rascunhos já preparada; ele valida casos, fontes correspondentes e exclusões, sem gerar conteúdo. O pacote `dist/medlab-cpanel.zip` inclui o ponto WSGI `passenger_wsgi.py:application`, código, casos, testes, documentação, runtimes de voz do navegador e manifesto SHA256. Não inclui `.env`, senhas, banco local, ambiente virtual, capturas de tela nem o cache de fontes clínicas. A hospedagem deve disponibilizar Python 3.10+, Passenger e acesso HTTPS de saída à DeepSeek.
+O comando de empacotamento aceita o diretório com manifesto e arquivos de até 20 MiB (ou uma lista JSON privada pequena); ele valida casos, fontes correspondentes e exclusões, sem gerar conteúdo. O pacote `dist/medlab-cpanel.zip` inclui o ponto WSGI `passenger_wsgi.py:application`, código, casos, testes, documentação, runtimes de voz do navegador e manifesto SHA256. Não inclui `.env`, senhas, banco local, ambiente virtual, capturas de tela nem o cache de fontes clínicas. A hospedagem deve disponibilizar Python 3.10+, Passenger e acesso HTTPS de saída à DeepSeek.
 
 ## Configuração da IA
 
@@ -103,9 +105,9 @@ python scripts/source_inventory.py
 
 O arquivo não traz especialidades. A lista brasileira de 55 é o escopo de estudo do MED LAB; a distribuição dos registros ainda precisa ser produzida e revisada. A meta de **300 por especialidade equivale a 16.500 casos únicos**. Após os filtros, restam **14.476 fontes ativas**, deixando um déficit mínimo de **2.024**, antes de avaliar completude clínica e distribuição por área. Esse total de fontes não equivale a simulações disponíveis. Consulte o [inventário e as fontes clínicas](docs/BASES_CLINICAS.md).
 
-A verificação das fontes foi concluída na instalação de preparação: **10.761 para adaptação licenciada e 3.715 para o fluxo opcional de fatos clínicos ND**. Foram excluídos explicitamente 13 registros — 11 artigos retratados e 2 fontes indisponíveis — com identificadores mínimos que impedem reimportação. Há **seis fichas reais em português preparadas por Codex**, revisadas por outro agente e mantidas privadas em `review_required`; **14.470 fontes aguardam preparação**. A revisão clínica humana permanece pendente. São **zero casos reais publicados e oito fictícios publicados**. A chave DeepSeek autenticou, mas a indisponibilidade do provedor impediu validar a geração por essa API; as seis fichas não foram produzidas pela DeepSeek.
+A verificação das fontes foi concluída na instalação de preparação: **10.761 para adaptação licenciada e 3.715 para o fluxo opcional de fatos clínicos ND**. Foram excluídos explicitamente 13 registros — 11 artigos retratados e 2 fontes indisponíveis — com identificadores mínimos que impedem reimportação. Há fichas preparadas de forma assistida por Codex e fichas produzidas por DeepSeek em pilotos reais, todas sujeitas a revisão clínica humana. A preparação continua por lotes; para a situação atual, consulte `flask --app app source-report`, `flask --app app import-report` e `flask --app app catalog-report`. Fonte verificada, ficha em português, revisão e publicação são contagens distintas.
 
-O arquivo administrativo separado `dist/medlab-acervo-retomada.tar.gz` reúne CSV, snapshots, progresso e as seis fichas para retomar o trabalho: cerca de **270 MB comprimidos e 1,05 GB extraídos**, sem chave ou banco. Ele é opcional para preparar mais casos e não é baixado pelo estudante. Restaure somente em instalação nova, seguindo a [conferência de checksum e retomada privada](docs/CPANEL.md#restaurar-o-pacote-privado-de-retomada).
+O arquivo administrativo separado `dist/medlab-acervo-retomada.tar.gz` reúne CSV, snapshots, checkpoints, etapas intermediárias de IA e exportações fragmentadas das fichas, sem chave ou banco. É opcional para preparar mais casos e não é baixado pelo estudante. O manifesto do snapshot informa seu conteúdo e checksum; pacotes anteriores não representam o progresso atual. Restaure somente em instalação nova, seguindo a [conferência de integridade e retomada privada](docs/CPANEL.md#restaurar-o-pacote-privado-de-retomada). Imagens possuem [pacote privado próprio](docs/MIDIAS_CLINICAS.md).
 
 `CASE_ALLOW_CLINICAL_FACTS` é `false` por padrão. A opção `true` está habilitada somente na instalação local autorizada: um extrator produz fatos atômicos, e um gerador separado recebe apenas esses fatos para escrever paciente e rubrica. A licença original permanece na referência, sem atribuir ND automaticamente à ficha nova. Evidências usam hashes/localizadores; a ficha exige auditoria e revisão antes de publicar.
 
@@ -117,9 +119,9 @@ flask --app app import-report
 flask --app app catalog-report
 ```
 
-O primeiro comando registra fontes ainda não excluídas e verifica até o limite do lote. A administração mostra o inventário operacional e as contagens reais. `--all-records` remove a cota de 300 por área; `--limit` continua limitando o lote. `--source-workers 1..8` controla a consulta ao PMC. `--adapt-workers 1..16` controla casos preparados em paralelo; valores acima de 1 exigem `--adapt --all-records`. Gravações no banco permanecem sequenciais. Cada ficha concluída entra como rascunho privado, com origem e revisão obrigatória. A adaptação usa DeepSeek, exige `DEMO_MODE=false` e consome créditos; o relatório registra tokens observados, sem presumir custo zero quando faltam dados de uso. Falhas gerais do provedor interrompem novas chamadas e preservam resultados válidos já recebidos. Veja [execução, exclusão e retomada no cPanel](docs/CPANEL.md#8-adquirir-fontes-de-casos-reais).
+O primeiro comando registra fontes ainda não excluídas e verifica até o limite do lote. A administração mostra as contagens reais. `--all-records` remove a cota de 300 por área; `--limit` continua limitando o lote. `--source-workers 1..8` controla a consulta ao PMC. A preparação paralela exige `--adapt --all-records` e respeita `AI_IMPORT_WORKER_LIMIT` (16 por padrão; no cPanel simples, comece com 1 a 4). Gravações no banco permanecem sequenciais. Cada ficha concluída entra privada em `review_required`. A adaptação usa DeepSeek, exige `DEMO_MODE=false` e consome créditos; os relatórios mostram o uso efetivamente informado. Falhas gerais do provedor interrompem novas chamadas e preservam resultados válidos já recebidos. Veja [execução e retomada no cPanel](docs/CPANEL.md#8-adquirir-fontes-de-casos-reais).
 
-O procedimento está pronto para retomada explícita quando o provedor voltar; nenhum lote permanece em execução ou agendado automaticamente.
+Os checkpoints em `processed/ai-stages/` preservam resultados intermediários para evitar regeneração desnecessária. A retomada revalida hashes, versão do prompt e fonte; resultado rejeitado não equivale a ficha concluída. A exportação `export-real-drafts` divide os rascunhos em arquivos limitados, com manifesto e checksums, para restauração idempotente em hospedagens pequenas. Os comandos são explícitos; instalar o aplicativo não inicia lotes automaticamente.
 
 ## Testes e arquitetura
 
@@ -128,7 +130,9 @@ python -m pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 
-Os testes cobrem autenticação, autorização, isolamento entre usuários, CSRF, histórico, aleatoriedade, limites de uso, recuperação após falha, geração e publicação, esquema dos casos e contratos do provedor. Chamadas ao provedor são simuladas nos testes: uma chave válida é necessária para validar a API real no servidor.
+Os testes automatizados cobrem autenticação, autorização, isolamento, CSRF, histórico, limites, recuperação de falhas, esquema, proveniência, checkpoints, arquivos fragmentados e mídias privadas. Esses testes simulam o provedor. Pilotos separados exercitaram chamadas reais de preparação e visão DeepSeek; isso não substitui revisão clínica nem garante disponibilidade futura ou funcionamento em outra instalação.
+
+O [relatório de testes reais DeepSeek](docs/TESTES_DEEPSEEK.md) distingue chamadas pagas, revalidações locais, falhas e limitações semânticas do paciente e do avaliador. As notas são estimativas educacionais da IA, sem certificação de competência.
 
 Consulte [Arquitetura e decisões](docs/ARQUITETURA.md). A aplicação inclui senhas com hash, cookies protegidos, invalidação de sessões após troca de senha, limites persistentes no banco, proteção CSRF e bloqueio de operações simultâneas na mesma consulta.
 

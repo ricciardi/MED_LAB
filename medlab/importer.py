@@ -71,8 +71,10 @@ def _add_usage(first, second):
     first = first if isinstance(first, dict) else {}
     second = second if isinstance(second, dict) else {}
     value = {key: max(0, int(first.get(key, 0))) + max(0, int(second.get(key, 0))) for key in USAGE_KEYS}
-    return {**value, "usageComplete": value["requests"] == value["usageReports"],
-            "cacheUsageComplete": value["requests"] == value["cacheUsageReports"]}
+    return {**value, "usageComplete": value["requests"] == value["usageReports"]
+            and first.get("usageComplete") is not False and second.get("usageComplete") is not False,
+            "cacheUsageComplete": value["requests"] == value["cacheUsageReports"]
+            and first.get("cacheUsageComplete") is not False and second.get("cacheUsageComplete") is not False}
 
 
 def _now():
@@ -411,7 +413,8 @@ class CaseImporter:
         if not ignore.exists():
             ignore.write_text("*\n", encoding="utf-8")
         try:
-            self.ai = ai_service or AIService(config, request_timeout=config.get("AI_IMPORT_TIMEOUT", 120))
+            self.ai = ai_service or AIService(config, request_timeout=config.get("AI_IMPORT_TIMEOUT", 120),
+                                             stage_cache_dir=self.work_dir / "ai-stages")
         except AIError as exc:
             raise ImportError(str(exc)) from None
         self.reuse_scope = config.get("CASE_REUSE_SCOPE", "commercial")
@@ -449,6 +452,47 @@ class CaseImporter:
                       allowClinicalFacts=self.allow_clinical_facts)
         _atomic_json(self.work_dir / "records" / (record["pmcid"] + ".json"), record)
 
+    def _recover_draft_record(self, record):
+        """Reconcile a draft saved just before a crash, without another AI call."""
+        path = self.work_dir / "drafts" / (record["pmcid"] + ".json")
+        if not path.is_file():
+            if record["status"] == "draft":
+                raise ImportError("Um rascunho concluído está ausente. Restaure o arquivo antes de retomar para evitar uma nova geração paga.")
+            return False
+        case = next(self.iter_drafts(pmcids=[record["pmcid"]]))
+        origin = case["provenance"]
+        if origin.get("datasetRevision") != DATASET_REVISION or origin.get("dataset") != "MedCaseReasoning":
+            raise ImportError("O rascunho recuperado não corresponde à origem desta importação.")
+        if record["status"] == "draft":
+            if record.get("caseId") != case["caseId"] or record.get("specialty") != case["specialty"]:
+                raise ImportError("O registro do rascunho está inconsistente. Revise a recuperação antes de continuar.")
+            return False
+        record.update(status="draft", caseId=case["caseId"], specialty=case["specialty"],
+                      license=origin["license"]["code"], reuseBasis=origin.get("reuseBasis", "licensed_adaptation"),
+                      sourceCheckedAt=origin["checkedAt"])
+        record.pop("error", None)
+        record.pop("availabilityError", None)
+        # The draft was persisted before its record. The process may have died
+        # before saving this attempt's provider counters; known tokens remain
+        # useful, but cannot be represented as the complete cost of this case.
+        record["aiUsage"] = {**_add_usage(record.get("aiUsage"), {}),
+                             "usageComplete": False, "cacheUsageComplete": False}
+        record["usageRecoveryIncomplete"] = True
+        self._save_record(record)
+        return True
+
+    def _checkpoint_outcome(self, outcome):
+        """Persist completed work even if a consumer/database callback stops."""
+        record, case, usage = outcome["record"], outcome["case"], outcome["usage"]
+        if outcome["interrupted"] and not usage["requests"]:
+            return False
+        if case is not None:
+            _atomic_json(self.work_dir / "drafts" / (record["pmcid"] + ".json"), case)
+        if usage["requests"] or record.get("aiUsage"):
+            record["aiUsage"] = _add_usage(record.get("aiUsage"), usage)
+        self._save_record(record)
+        return True
+
     def run(self, source_path, specialties=None, target_per_specialty=300, limit=50,
             adapt=False, retry_errors=False, refresh_sources=False, on_progress=None,
             all_records=False, source_workers=1, adapt_workers=1, excluded_pmcids=None):
@@ -468,8 +512,11 @@ class CaseImporter:
             raise ImportError("O limite do lote deve estar entre 1 e 100.000 registros.")
         if isinstance(source_workers, bool) or not isinstance(source_workers, int) or not 1 <= source_workers <= 8:
             raise ImportError("Use entre 1 e 8 conexões de verificação de fontes.")
-        if isinstance(adapt_workers, bool) or not isinstance(adapt_workers, int) or not 1 <= adapt_workers <= 16:
-            raise ImportError("Use entre 1 e 16 tarefas de adaptação.")
+        worker_limit = self.config.get("AI_IMPORT_WORKER_LIMIT", 16)
+        if isinstance(worker_limit, bool) or not isinstance(worker_limit, int) or not 1 <= worker_limit <= 256:
+            raise ImportError("AI_IMPORT_WORKER_LIMIT deve estar entre 1 e 256.")
+        if isinstance(adapt_workers, bool) or not isinstance(adapt_workers, int) or not 1 <= adapt_workers <= worker_limit:
+            raise ImportError(f"Use entre 1 e {worker_limit} tarefas de adaptação.")
         if adapt_workers > 1 and (not adapt or not all_records):
             raise ImportError("Adaptação paralela exige adapt=True e all_records=True.")
         if adapt_workers > 1 and self._injected_ai and self._ai_service_factory is None:
@@ -492,12 +539,13 @@ class CaseImporter:
             ready = Counter(case["specialty"] for case in self.iter_drafts(excluded_pmcids=excluded))
             available = bool(str(self.config.get("DEEPSEEK_API_KEY") or "").strip()) and not self.ai.is_demo
             processed, seen, duplicates, invalid_ids, total, excluded_count = 0, set(), 0, 0, 0, 0
+            recovered_drafts = 0
             completed, stop_reason, stop_message = 0, None, None
             stop = _AIStop()
             task_counts = {"submitted": 0, "finished": 0, "interrupted": 0, "cancelledBeforeStart": 0}
             run_usage = _add_usage({}, {})
             def work_items():
-                nonlocal processed, duplicates, invalid_ids, total, excluded_count
+                nonlocal processed, duplicates, invalid_ids, total, excluded_count, recovered_drafts
                 for source in iter_source(source_path):
                     total += 1
                     pmcid = str(source.get("pmcid", "")).strip()
@@ -514,6 +562,10 @@ class CaseImporter:
                     if processed >= limit or stop.event.is_set():
                         continue
                     record = self._record(pmcid)
+                    if self._recover_draft_record(record):
+                        recovered_drafts += 1
+                        if on_progress:
+                            on_progress({key: record.get(key) for key in ("pmcid", "status", "specialty", "error")})
                     status = record["status"]
                     if status == "draft":
                         continue
@@ -545,11 +597,8 @@ class CaseImporter:
                         # No request was sent: leave this record untouched.
                         continue
                 if case is not None:
-                    _atomic_json(self.work_dir / "drafts" / (record["pmcid"] + ".json"), case)
                     ready[case["specialty"]] += 1
-                if usage["requests"] or record.get("aiUsage"):
-                    record["aiUsage"] = _add_usage(record.get("aiUsage"), usage)
-                self._save_record(record)
+                self._checkpoint_outcome(outcome)
                 completed += 1
                 if on_progress:
                     on_progress({key: record.get(key) for key in ("pmcid", "status", "specialty", "error")})
@@ -565,7 +614,7 @@ class CaseImporter:
                            "adaptationBlocked": bool(adapt and not available), "allRecords": bool(all_records),
                            "sourceWorkers": source_workers, "adaptWorkers": adapt_workers,
                            "caseTasks": task_counts, "aiUsageThisRun": run_usage,
-                           "excludedThisRun": excluded_count})
+                           "excludedThisRun": excluded_count, "recoveredDrafts": recovered_drafts})
             _atomic_json(self.work_dir / "report.json", report)
             return report
 
@@ -641,7 +690,8 @@ class CaseImporter:
             ai = (self._ai_service_factory(request_guard=stop.check, on_unavailable=stop.trip)
                   if self._ai_service_factory else AIService(self.config,
                   request_timeout=self.config.get("AI_IMPORT_TIMEOUT", 120),
-                  request_guard=stop.check, on_unavailable=stop.trip))
+                  request_guard=stop.check, on_unavailable=stop.trip,
+                  stage_cache_dir=self.work_dir / "ai-stages"))
             return self._process_case(item, ai, stop, **options)
 
         iterator = iter(items)
@@ -679,8 +729,19 @@ class CaseImporter:
                 # unwinds the main thread. Existing requests are allowed to end.
                 if pending:
                     stop.trip(AIUnavailableError("run_cancelled"))
+                    for future in tuple(pending):
+                        if future.cancel():
+                            pending.remove(future)
+                    # The generator runs on the coordinator thread. Preserve
+                    # already dispatched results on disk, without invoking a
+                    # failed DB callback or scheduling additional paid work.
                     for future in pending:
-                        future.cancel()
+                        try:
+                            self._checkpoint_outcome(future.result())
+                        except Exception:
+                            # Do not replace the original consumer failure.
+                            # Individually cached AI stages remain recoverable.
+                            continue
 
     def _verify_batch(self, items, workers, refresh):
         """Bounded source I/O, separate from adaptation; callers own checkpoints."""

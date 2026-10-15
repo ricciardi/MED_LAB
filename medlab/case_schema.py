@@ -127,7 +127,7 @@ def validate_case(data):
         "learningObjectives", "references", "rubric",
     }
     optional = {"simulationOnly", "reviewStatus", "origin", "reviewNote", "catalogType",
-                "caseType", "publicPresentation", "provenance"}
+                "caseType", "publicPresentation", "provenance", "examMedia"}
     if not isinstance(data, dict) or not required <= data.keys() or data.keys() - required - optional:
         _fail("estrutura")
     case = deepcopy(data)
@@ -256,7 +256,34 @@ def validate_case(data):
                 _fail("rubric." + key + ": faltam fatos para avaliar")
     elif "provenance" in case:
         _fail("provenance: somente relatos reais adaptados")
+    if "examMedia" in case:
+        _validate_exam_media(case)
     return case
+
+
+def _validate_exam_media(case):
+    """Structural links only: the private media store separately approves each binding."""
+    entries = case["examMedia"]
+    if not isinstance(entries, list) or len(entries) > 12 or (entries and case["catalogType"] != "published_case"):
+        _fail("examMedia")
+    maps = {"physical": "physicalExams", "auxiliary": "auxiliaryLabs"}
+    seen = set()
+    diagnosis = normalized(case["diagnoses"]["mainDiagnosis"]["disease"])
+    for entry in entries:
+        if not isinstance(entry, dict) or set(entry) != {"examName", "group", "assetId", "captionPt"}:
+            _fail("examMedia.estrutura")
+        if not isinstance(entry["group"], str) or entry["group"] not in maps:
+            _fail("examMedia.group")
+        entry["examName"] = _text(entry["examName"], "examMedia.examName", 160)
+        if entry["examName"] not in case[maps[entry["group"]]]:
+            _fail("examMedia.examName: o exame deve existir no caso")
+        asset = entry["assetId"]
+        if not isinstance(asset, str) or not re.fullmatch(r"pmcmedia-[0-9a-f]{32}", asset) or asset in seen:
+            _fail("examMedia.assetId")
+        seen.add(asset)
+        entry["captionPt"] = _text(entry["captionPt"], "examMedia.captionPt", 800)
+        if diagnosis in normalized(entry["captionPt"]):
+            _fail("examMedia.captionPt: descreva a imagem sem antecipar o diagnóstico")
 
 
 def _validate_provenance(value):

@@ -6,7 +6,7 @@ from unittest.mock import Mock
 from medlab.ai import _prompt_json
 from medlab.case_schema import INTENT_CATEGORIES
 from test_ai import evaluation, reply, seed, service
-from test_importer import ARTICLE, AUDIT, SPEC, adaptation, evaluation as source_evaluation, provenance, real_case
+from test_importer import ARTICLE, AUDIT_RESPONSE, SPEC, adaptation, evaluation as source_evaluation, provenance, real_case
 
 
 def messages(call):
@@ -50,7 +50,7 @@ def test_different_intents_do_not_expand_patient_prefix_with_answer_key(seed, se
                        seed["diagnoses"]["mainDiagnosis"]["disease"], seed["physicalExams"]["Sinais vitais"]):
             assert secret not in serialized
         assert not {"cache_control", "prompt_cache_key", "prompt_cache_retention"} & payload.keys()
-    assert json.loads(messages(post.call_args_list[-1])[1]["content"])["facts"] == {"Conversa geral": {}}
+    assert post.call_count == 3  # No patient-generation call for an unknown/general request.
 
 
 def test_map_order_is_canonical_but_lists_text_and_chronology_are_preserved(service, monkeypatch):
@@ -93,7 +93,12 @@ def test_evaluator_omits_provenance_but_preserves_missing_facts_and_clinical_mom
                                   xmlSha256="d" * 64, authors=["PRIVATE_AUTHOR"], citation="PRIVATE_CITATION")
     changed["provenance"]["evidence"][0]["excerpt"] = "PRIVATE_QUOTATION"
     changed["references"][0]["title"] = "PRIVATE_REFERENCE"
-    post = Mock(side_effect=[reply(source_evaluation()), reply(source_evaluation())])
+    empty = source_evaluation()
+    for section in empty["sections"]:
+        section["evidenceRefs"] = []
+        if section["score"] is not None:
+            section["score"] = 0
+    post = Mock(side_effect=[reply(empty), reply(deepcopy(empty))])
     monkeypatch.setattr("medlab.ai.requests.post", post)
     service.evaluate(case, {})
     service.evaluate(changed, {})
@@ -111,7 +116,7 @@ def test_evaluator_omits_provenance_but_preserves_missing_facts_and_clinical_mom
 
 
 def test_source_preparation_template_is_identical_across_articles(service, monkeypatch):
-    post = Mock(side_effect=[reply(adaptation()), reply(AUDIT), reply(adaptation()), reply(AUDIT)])
+    post = Mock(side_effect=[reply(adaptation()), reply(AUDIT_RESPONSE), reply(adaptation()), reply(AUDIT_RESPONSE)])
     monkeypatch.setattr("medlab.ai.requests.post", post)
     source = {"articleText": ARTICLE, "case_prompt": "Cough", "final_diagnosis": "Pneumonia"}
     first = service.adapt_case(source, provenance("PMC123"), SPEC)

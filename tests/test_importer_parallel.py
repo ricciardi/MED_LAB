@@ -152,3 +152,38 @@ def test_parallel_validation_rejects_unsafe_quota_or_worker_settings(tmp_path, o
     importer, source, _ = setup(tmp_path)
     with pytest.raises(ImportError):
         importer.run(source, **options)
+
+
+def test_local_worker_opt_in_remains_bounded(tmp_path, monkeypatch):
+    importer, source, _ = setup(tmp_path, count=2)
+    importer.config["AI_IMPORT_WORKER_LIMIT"] = 32
+    monkeypatch.setattr("medlab.ai.requests.post", lambda *a, **kw: response(usage=USAGE))
+    assert importer.run(source, adapt=True, all_records=True, adapt_workers=32)["adaptedDrafts"] == 2
+    with pytest.raises(ImportError):
+        importer.run(source, adapt=True, all_records=True, adapt_workers=33)
+
+
+def test_consumer_failure_preserves_completed_inflight_drafts(tmp_path, monkeypatch):
+    importer, source, _ = setup(tmp_path, count=3)
+    auditing = threading.Barrier(3)
+    callback_failed = threading.Event()
+    def post(*args, **kwargs):
+        stage, pmcid = request_identity(kwargs)
+        if stage == "audit":
+            auditing.wait(timeout=3)
+            if pmcid != "PMC1":
+                assert callback_failed.wait(timeout=3)
+        return response(usage=USAGE)
+    def failed_callback(record):
+        callback_failed.set()
+        raise RuntimeError("database unavailable")
+    monkeypatch.setattr("medlab.ai.requests.post", post)
+    with pytest.raises(RuntimeError, match="database unavailable"):
+        importer.run(source, adapt=True, all_records=True, adapt_workers=3, on_progress=failed_callback)
+    for number in range(1, 4):
+        assert (tmp_path / f"work/drafts/PMC{number}.json").is_file()
+        record = json.loads((tmp_path / f"work/records/PMC{number}.json").read_text())
+        assert record["status"] == "draft"
+        assert record["aiUsage"]["requests"] == 3
+    monkeypatch.setattr("medlab.ai.requests.post", Mock(side_effect=AssertionError("paid regeneration")))
+    assert importer.run(source, adapt=True, all_records=True, adapt_workers=3)["processedThisRun"] == 0

@@ -360,7 +360,7 @@ def _verified_provenance(work_dir, source):
     return provenance
 
 
-def sync_import_records(work_dir, *, dataset=DEFAULT_DATASET, batch_size=500, pmcids=None):
+def sync_import_records(work_dir, *, dataset=DEFAULT_DATASET, batch_size=500, pmcids=None, include_counts=True):
     """Mirror valid local checkpoints, and link existing cases without changing them."""
     dataset, batch_size = _dataset(dataset), _batch_size(batch_size)
     work_dir = Path(work_dir)
@@ -450,7 +450,8 @@ def sync_import_records(work_dir, *, dataset=DEFAULT_DATASET, batch_size=500, pm
     except SQLAlchemyError:
         db.session.rollback()
         raise SourceRegistryError("A sincronização do banco falhou. Repita o comando para retomar os lotes preservados.") from None
-    report["database"] = source_counts(dataset)
+    if include_counts:
+        report["database"] = source_counts(dataset)
     return report
 
 

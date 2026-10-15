@@ -92,6 +92,14 @@
   window.addEventListener('pageshow', event => {
     if (event.persisted) $$('button[aria-busy=true]').forEach(button => { button.disabled = false; button.removeAttribute('aria-busy'); });
   });
+  document.addEventListener('error', event => {
+    const image = event.target;
+    if (!(image instanceof HTMLImageElement) || !image.closest('.exam-media-card')) return;
+    const notice = document.createElement('p');
+    notice.className = 'exam-media-unavailable';
+    notice.textContent = 'Esta imagem está indisponível no momento. O resultado escrito permanece disponível.';
+    image.parentElement.replaceWith(notice);
+  }, true);
   const app = $('#consultation-app');
   if (!app) return;
   const sessionId = app.dataset.sessionId;
@@ -212,6 +220,48 @@
   questionInput.addEventListener('keydown', event => {
     if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); chatForm.requestSubmit(); }
   });
+  function renderExamMedia(gallery, media) {
+    gallery.replaceChildren();
+    for (const item of Array.isArray(media) ? media : []) {
+      const url = new URL(item.url, window.location.origin);
+      if (url.origin !== window.location.origin || !url.pathname.startsWith(`/sessao/${encodeURIComponent(sessionId)}/imagem/`)) continue;
+      const element = (tag, className, content) => {
+        const node = document.createElement(tag);
+        node.className = className;
+        if (content) node.textContent = content;
+        return node;
+      };
+      const link = (className, content) => {
+        const node = element('a', className, content);
+        node.href = url.href; node.target = '_blank'; node.rel = 'noopener noreferrer';
+        node.setAttribute('aria-label', `Ampliar imagem de ${item.exam_name}`);
+        return node;
+      };
+      const figure = element('figure', 'exam-media-card');
+      const heading = element('div', 'exam-media-heading');
+      heading.append(element('span', '', 'IMAGEM DO EXAME'), link('', 'Ampliar ↗'));
+      const imageLink = link('exam-media-image', '');
+      const image = element('img', '');
+      image.alt = item.caption; image.loading = 'lazy'; image.decoding = 'async'; image.src = url.href;
+      if (Number.isInteger(item.width) && Number.isInteger(item.height)) { image.width = item.width; image.height = item.height; }
+      imageLink.append(image);
+      const caption = element('figcaption', '');
+      caption.append(element('p', '', item.caption));
+      const credit = element('div', 'exam-media-credit');
+      if (item.credit) credit.append(element('span', '', item.credit));
+      if (item.license_url) {
+        const license = new URL(item.license_url);
+        if (license.protocol === 'https:' && license.hostname === 'creativecommons.org') {
+          const licenseLink = element('a', '', item.license_code);
+          licenseLink.href = license.href; licenseLink.target = '_blank'; licenseLink.rel = 'noopener noreferrer';
+          credit.append(licenseLink);
+        }
+      }
+      credit.append(element('span', '', 'Imagem original; legenda em português.'));
+      if (item.review_mode === 'machine') credit.append(element('span', '', 'Seleção e conferência por IA.'));
+      caption.append(credit); figure.append(heading, imageLink, caption); gallery.append(figure);
+    }
+  }
   $$('[data-request-exam]').forEach(button => button.addEventListener('click', async () => {
     if (busy) { showError('exam-error','Aguarde a resposta do paciente antes de solicitar um exame.'); return; }
     const item = button.closest('.exam-item');
@@ -223,6 +273,7 @@
     try {
       const result = await api('exame',{name:item.dataset.examName,type:item.dataset.examType});
       $('.exam-result p',item).textContent = result.result;
+      renderExamMedia($('[data-exam-media]',item), result.media);
       $('.exam-result',item).hidden = false;
       item.classList.add('performed');
       button.textContent = 'Realizado';

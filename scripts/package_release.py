@@ -6,7 +6,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
+import tempfile
 import zipfile
 
 
@@ -40,7 +42,8 @@ def release_files(root: Path = ROOT) -> list[Path]:
     for path in candidates:
         relative = path.relative_to(root)
         # This optional private bundle is validated and injected separately.
-        if relative.as_posix() == "medlab/data/real_case_drafts.json":
+        if (relative.as_posix() == "medlab/data/real_case_drafts.json"
+                or relative.as_posix().startswith("medlab/data/real_case_drafts/")):
             continue
         if path.is_symlink() or not path.is_file():
             continue
@@ -76,6 +79,8 @@ def write_archive(output: Path, root: Path = ROOT, source_registry: Path | None 
                 raise SystemExit("Worker desatualizado: execute python scripts/prepare_voice_assets.py antes de empacotar.")
     if source_registry is None and (root / "medlab/data/source_registry.jsonl").is_file():
         source_registry = root / "medlab/data/source_registry.jsonl"
+    if case_drafts is None and (root / "medlab/data/real_case_drafts").is_dir():
+        case_drafts = root / "medlab/data/real_case_drafts"
     if case_drafts is None and (root / "medlab/data/real_case_drafts.json").is_file():
         case_drafts = root / "medlab/data/real_case_drafts.json"
     registry_bytes = None
@@ -107,72 +112,106 @@ def write_archive(output: Path, root: Path = ROOT, source_registry: Path | None 
                 raise ValueError("Empty registry")
         except Exception:
             raise SystemExit("O inventário deve ser uma exportação metadata-only válida e sem duplicatas do MED LAB.") from None
-    drafts_bytes = None
+    draft_files = []
     if case_drafts is not None:
         import sys
         sys.path.insert(0, str(ROOT))
         from medlab.case_schema import validate_case
+        from medlab.draft_bundle import bundle_shards, MAX_SHARD_BYTES
         try:
-            if case_drafts.stat().st_size > 20 * 1024 * 1024:
-                raise ValueError("Draft bundle is too large")
-            drafts_bytes = case_drafts.read_bytes()
-            payloads = json.loads(drafts_bytes.decode("utf-8"))
-            if not isinstance(payloads, list):
-                raise ValueError("Draft bundle must be a list")
+            manifest_bytes = (case_drafts / "manifest.json").read_bytes() if case_drafts.is_dir() else None
+            shards = bundle_shards(case_drafts) if manifest_bytes is not None else [case_drafts]
+            expected_hashes = {}
+            if manifest_bytes is not None:
+                if (case_drafts / "manifest.json").read_bytes() != manifest_bytes:
+                    raise ValueError("Draft manifest changed during validation")
+                expected_hashes = {item["file"]: item["sha256"] for item in json.loads(manifest_bytes)["shards"]}
             seen_cases, seen_sources = set(), set()
-            for payload in payloads:
-                data = validate_case(payload)
-                if data["catalogType"] != "published_case" or payload.get("reviewStatus") != "review_required":
-                    raise ValueError("Only private real drafts may be bundled")
-                origin = data["provenance"]
-                identity = (origin["dataset"], origin["pmcid"])
-                record = registry_records.get(identity)
-                if (data["caseId"] in seen_cases or identity in seen_sources or record is None
-                        or origin["sourceRecordId"] != record["pmcid"]
-                        or origin["datasetRevision"] != record["dataset_revision"]):
-                    raise ValueError("Duplicate, excluded or unregistered draft source")
-                seen_cases.add(data["caseId"])
-                seen_sources.add(identity)
+            for shard in shards:
+                if shard.stat().st_size > MAX_SHARD_BYTES:
+                    raise ValueError("Draft shard is too large")
+                validated_bytes = shard.read_bytes()
+                validated_sha = hashlib.sha256(validated_bytes).hexdigest()
+                if len(validated_bytes) > MAX_SHARD_BYTES or (expected_hashes and validated_sha != expected_hashes[shard.name]):
+                    raise ValueError("Draft shard changed during validation")
+                payloads = json.loads(validated_bytes)
+                if not isinstance(payloads, list):
+                    raise ValueError("Draft bundle must be a list")
+                for payload in payloads:
+                    data = validate_case(payload)
+                    if data["catalogType"] != "published_case" or payload.get("reviewStatus") != "review_required":
+                        raise ValueError("Only private real drafts may be bundled")
+                    origin = data["provenance"]
+                    identity = (origin["dataset"], origin["pmcid"])
+                    record = registry_records.get(identity)
+                    if (data["caseId"] in seen_cases or identity in seen_sources or record is None
+                            or origin["sourceRecordId"] != record["pmcid"]
+                            or origin["datasetRevision"] != record["dataset_revision"]):
+                        raise ValueError("Duplicate, excluded or unregistered draft source")
+                    seen_cases.add(data["caseId"])
+                    seen_sources.add(identity)
+                relative = ("medlab/data/real_case_drafts/" + shard.name if case_drafts.is_dir()
+                            else "medlab/data/real_case_drafts.json")
+                draft_files.append((shard, relative, validated_sha))
+            if case_drafts.is_dir():
+                draft_files.append((case_drafts / "manifest.json", "medlab/data/real_case_drafts/manifest.json",
+                                    hashlib.sha256(manifest_bytes).hexdigest()))
         except Exception:
             raise SystemExit("Os rascunhos devem ser casos reais válidos, privados, únicos e vinculados ao inventário incluído, sem fontes excluídas.") from None
     paths = release_files(root)
     output.parent.mkdir(parents=True, exist_ok=True)
     manifest = []
-    with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
-        for path in paths:
-            relative = path.relative_to(root).as_posix()
-            content = path.read_bytes()
-            manifest.append(f"{hashlib.sha256(content).hexdigest()}  {relative}")
-            entry = zipfile.ZipInfo(relative, date_time=(2026, 1, 1, 0, 0, 0))
-            entry.compress_type = zipfile.ZIP_DEFLATED
-            entry.external_attr = 0o100644 << 16
-            archive.writestr(entry, content)
-        if registry_bytes is not None:
-            relative = "medlab/data/source_registry.jsonl"
-            manifest.append(f"{hashlib.sha256(registry_bytes).hexdigest()}  {relative}")
-            entry = zipfile.ZipInfo(relative, date_time=(2026, 1, 1, 0, 0, 0))
-            entry.compress_type = zipfile.ZIP_DEFLATED
-            entry.external_attr = 0o100600 << 16
-            archive.writestr(entry, registry_bytes)
-        if drafts_bytes is not None:
-            relative = "medlab/data/real_case_drafts.json"
-            manifest.append(f"{hashlib.sha256(drafts_bytes).hexdigest()}  {relative}")
-            entry = zipfile.ZipInfo(relative, date_time=(2026, 1, 1, 0, 0, 0))
-            entry.compress_type = zipfile.ZIP_DEFLATED
-            entry.external_attr = 0o100600 << 16
-            archive.writestr(entry, drafts_bytes)
-        entry = zipfile.ZipInfo("MANIFEST.sha256", date_time=(2026, 1, 1, 0, 0, 0))
-        entry.compress_type = zipfile.ZIP_DEFLATED
-        entry.external_attr = 0o100644 << 16
-        archive.writestr(entry, "\n".join(manifest) + "\n")
-    return len(paths) + (registry_bytes is not None) + (drafts_bytes is not None), hashlib.sha256(output.read_bytes()).hexdigest()
+    descriptor, temporary = tempfile.mkstemp(prefix=".medlab-release-", dir=output.parent)
+    try:
+        with os.fdopen(descriptor, "wb") as destination:
+            with zipfile.ZipFile(destination, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+                for path in paths:
+                    relative = path.relative_to(root).as_posix()
+                    content = path.read_bytes()
+                    manifest.append(f"{hashlib.sha256(content).hexdigest()}  {relative}")
+                    entry = zipfile.ZipInfo(relative, date_time=(2026, 1, 1, 0, 0, 0))
+                    entry.compress_type = zipfile.ZIP_DEFLATED
+                    entry.external_attr = 0o100644 << 16
+                    archive.writestr(entry, content)
+                if registry_bytes is not None:
+                    relative = "medlab/data/source_registry.jsonl"
+                    manifest.append(f"{hashlib.sha256(registry_bytes).hexdigest()}  {relative}")
+                    entry = zipfile.ZipInfo(relative, date_time=(2026, 1, 1, 0, 0, 0))
+                    entry.compress_type = zipfile.ZIP_DEFLATED
+                    entry.external_attr = 0o100600 << 16
+                    archive.writestr(entry, registry_bytes)
+                for draft_path, relative, validated_sha in draft_files:
+                    with draft_path.open("rb") as handle:
+                        drafts_bytes = handle.read(MAX_SHARD_BYTES + 1)
+                    if len(drafts_bytes) > MAX_SHARD_BYTES or hashlib.sha256(drafts_bytes).hexdigest() != validated_sha:
+                        raise SystemExit("Os rascunhos mudaram durante o empacotamento. A entrega anterior foi preservada; repita após concluir as alterações.")
+                    manifest.append(f"{hashlib.sha256(drafts_bytes).hexdigest()}  {relative}")
+                    entry = zipfile.ZipInfo(relative, date_time=(2026, 1, 1, 0, 0, 0))
+                    entry.compress_type = zipfile.ZIP_DEFLATED
+                    entry.external_attr = 0o100600 << 16
+                    archive.writestr(entry, drafts_bytes)
+                entry = zipfile.ZipInfo("MANIFEST.sha256", date_time=(2026, 1, 1, 0, 0, 0))
+                entry.compress_type = zipfile.ZIP_DEFLATED
+                entry.external_attr = 0o100644 << 16
+                archive.writestr(entry, "\n".join(manifest) + "\n")
+            destination.flush()
+            os.fsync(destination.fileno())
+        os.replace(temporary, output)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+    digest = hashlib.sha256()
+    with output.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return len(paths) + (registry_bytes is not None) + len(draft_files), digest.hexdigest()
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / "dist" / "medlab-cpanel.zip")
     parser.add_argument("--source-registry", type=Path, help="Exportação privada metadata-only a incluir e registrar no init-db/upgrade-db.")
-    parser.add_argument("--case-drafts", type=Path, help="Lista privada de rascunhos reais validados, vinculados ao inventário incluído; serão restaurados sem publicar.")
+    parser.add_argument("--case-drafts", type=Path, help="Lista JSON ou diretório de lotes privados com manifesto, vinculados ao inventário; restauração sem publicar.")
     arguments = parser.parse_args()
     count, digest = write_archive(arguments.output, source_registry=arguments.source_registry, case_drafts=arguments.case_drafts)
     print(f"Pacote: {arguments.output.resolve()}")

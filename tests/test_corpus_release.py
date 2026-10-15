@@ -44,6 +44,59 @@ def test_inventory_has_manifest_and_private_mode(tmp_path):
         assert '.env' not in archive.namelist()
         assert f'{hashlib.sha256(inventory.read_bytes()).hexdigest()}  {name}' in archive.read('MANIFEST.sha256').decode()
         assert count == len(archive.namelist()) - 1
+    assert output.stat().st_mode & 0o777 == 0o600
+
+
+@pytest.mark.parametrize("sharded", [False, True])
+def test_release_rejects_draft_changes_after_validation_and_preserves_prior_zip(tmp_path, monkeypatch, sharded):
+    import scripts.package_release as package
+    from medlab.draft_bundle import write_bundle
+    root = minimal_release(tmp_path)
+    inventory, drafts, _, _, payload = real_draft_export(tmp_path)
+    if sharded:
+        drafts = tmp_path / "shards"
+        write_bundle([payload], drafts)
+    changed = drafts / "cases-00001.json" if sharded else drafts
+    original = package.release_files
+    def mutate_after_validation(directory):
+        changed.write_text('{"unvalidated": true}')
+        return original(directory)
+    monkeypatch.setattr(package, "release_files", mutate_after_validation)
+    target = tmp_path / "existing.zip"
+    target.write_bytes(b"Previous valid delivery")
+    with pytest.raises(SystemExit, match="mudaram durante"):
+        package.write_archive(target, root, inventory, drafts)
+    assert target.read_bytes() == b"Previous valid delivery"
+    assert not list(tmp_path.glob(".medlab-release-*"))
+
+
+def test_release_io_failure_preserves_previous_delivery_and_cleans_temporary(tmp_path, monkeypatch):
+    root = minimal_release(tmp_path)
+    target = tmp_path / "existing.zip"
+    target.write_bytes(b"Previous delivery")
+    read = Path.read_bytes
+    def fail_on_app(path):
+        if path == root / "app.py":
+            raise OSError("Synthetic disk error")
+        return read(path)
+    monkeypatch.setattr(Path, "read_bytes", fail_on_app)
+    with pytest.raises(OSError, match="Synthetic"):
+        write_archive(target, root)
+    assert target.read_bytes() == b"Previous delivery"
+    assert not list(tmp_path.glob(".medlab-release-*"))
+
+
+def test_release_checksum_never_reads_entire_archive_into_memory(tmp_path, monkeypatch):
+    root = minimal_release(tmp_path)
+    target = tmp_path / "delivery.zip"
+    read = Path.read_bytes
+    def no_full_archive_read(path):
+        if path == target:
+            raise AssertionError("Archive checksum must stream")
+        return read(path)
+    monkeypatch.setattr(Path, "read_bytes", no_full_archive_read)
+    _, digest = write_archive(target, root)
+    assert len(digest) == 64 and target.is_file()
 
 
 def test_optional_real_draft_bundle_ships_with_private_permissions(tmp_path):

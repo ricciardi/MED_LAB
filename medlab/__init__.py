@@ -40,6 +40,7 @@ def create_app(config=None):
         AI_MODEL=os.getenv("AI_MODEL", "deepseek-flash"),
         AI_TIMEOUT=int(os.getenv("AI_TIMEOUT", "40")),
         AI_IMPORT_TIMEOUT=int(os.getenv("AI_IMPORT_TIMEOUT", "120")),
+        AI_IMPORT_WORKER_LIMIT=int(os.getenv("AI_IMPORT_WORKER_LIMIT", "16")),
         DEMO_MODE=env_bool("DEMO_MODE"),
         CASE_REUSE_SCOPE=os.getenv("CASE_REUSE_SCOPE", "noncommercial").strip().lower(),
         CASE_ALLOW_CLINICAL_FACTS=env_bool("CASE_ALLOW_CLINICAL_FACTS", False),

@@ -54,7 +54,23 @@ def restore_bundled_drafts(bundle_path=None):
     from .source_registry import _BASE_PROVENANCE
 
     bundle = Path(bundle_path) if bundle_path is not None else Path(__file__).parent / "data" / "real_case_drafts.json"
+    sharded = Path(__file__).parent / "data" / "real_case_drafts"
+    if bundle_path is None and sharded.is_dir():
+        bundle = sharded
     report = {"new": 0, "unchanged": 0, "skipped_policy": 0, "skipped_excluded": 0}
+    if bundle.is_dir():
+        from .draft_bundle import bundle_shards
+        try:
+            shards = bundle_shards(bundle)
+        except (OSError, ValueError, TypeError, KeyError):
+            raise click.ClickException("O manifesto dos rascunhos é inválido. Nenhum lote foi iniciado.") from None
+        for shard in shards:
+            current = restore_bundled_drafts(shard)
+            for key in report:
+                report[key] += current[key]
+            # Each bounded shard is atomic; interruption resumes idempotently.
+            db.session.remove()
+        return report
     if not bundle.is_file():
         return report
     try:
@@ -131,6 +147,27 @@ def restore_bundled_drafts(bundle_path=None):
 
 
 def register_commands(app):
+    @app.cli.command("export-real-drafts")
+    @click.option("--output", type=click.Path(file_okay=False, path_type=Path), required=True)
+    @click.option("--shard-size", type=click.IntRange(1, 500), default=100, show_default=True)
+    def export_real_drafts(output, shard_size):
+        """Exporta fichas reais privadas em lotes pequenos, sem usuários ou conversas."""
+        from .draft_bundle import write_bundle
+        from .source_registry import excluded_pmcids
+        excluded = excluded_pmcids()
+        def cases():
+            query = select(ClinicalCase).where(ClinicalCase.is_published.is_(False)).order_by(ClinicalCase.slug)
+            for case in db.session.scalars(query).yield_per(50):
+                data = case.data
+                if (data.get("catalogType") == "published_case" and data.get("reviewStatus") == "review_required"
+                        and data.get("provenance", {}).get("pmcid") not in excluded):
+                    yield data
+        try:
+            manifest = write_bundle(cases(), output, shard_size=shard_size)
+        except (OSError, ValueError, TypeError, KeyError):
+            raise click.ClickException("Não foi possível exportar os rascunhos. Use um diretório vazio e confira as fichas; um manifesto só é criado após concluir todos os lotes.") from None
+        click.echo(f"Exportados {manifest['cases']} rascunhos privados em {len(manifest['shards'])} lotes; nenhum caso foi publicado.")
+
     @app.cli.command("init-db")
     def init_db():
         """Cria tabelas e importa casos iniciais, sem apagar dados existentes."""
@@ -189,7 +226,7 @@ def register_commands(app):
     @click.option("--limit", type=click.IntRange(1, 100000), default=50, show_default=True, help="Máximo de registros que exigem trabalho neste lote.")
     @click.option("--all-records", is_flag=True, help="Processa todo o acervo elegível, inclusive além de 300 casos por especialidade.")
     @click.option("--source-workers", type=click.IntRange(1, 8), default=1, show_default=True, help="Conexões paralelas para verificar fontes.")
-    @click.option("--adapt-workers", type=click.IntRange(1, 16), default=1, show_default=True, help="Casos preparados em paralelo por IA; acima de 1 exige --adapt e --all-records. Gravações no banco permanecem sequenciais.")
+    @click.option("--adapt-workers", type=click.IntRange(1, 256), default=1, show_default=True, help="Casos preparados em paralelo por IA, até AI_IMPORT_WORKER_LIMIT (padrão 16). Acima de 1 exige --adapt e --all-records. Gravações no banco permanecem sequenciais.")
     @click.option("--adapt", is_flag=True, help="Classifica, traduz e audita com DeepSeek. Consome créditos do provedor.")
     @click.option("--retry-errors", is_flag=True, help="Tenta novamente registros que falharam anteriormente.")
     @click.option("--refresh-sources", is_flag=True, help="Reconsulta fontes ainda não adaptadas, incluindo rejeitadas.")
@@ -209,7 +246,7 @@ def register_commands(app):
                 nonlocal added
                 if item['status'] == 'draft':
                     added += store_import_drafts(importer, pmcids=[item['pmcid']])
-                sync_import_records(work_dir, pmcids=[item['pmcid']])
+                sync_import_records(work_dir, pmcids=[item['pmcid']], include_counts=False)
                 click.echo(f"{item['pmcid']}: {item['status']}" + (f" · {item['specialty']}" if item.get("specialty") else ""))
             report = importer.run(source, specialties=specialties or None, target_per_specialty=target_per_specialty,
                 limit=limit, adapt=adapt, retry_errors=retry_errors, refresh_sources=refresh_sources,

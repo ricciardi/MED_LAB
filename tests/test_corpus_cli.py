@@ -238,7 +238,7 @@ def test_successful_import_recovers_drafts_after_run_and_progress_deduplicates(c
         "adapt": True, "retry_errors": True, "refresh_sources": True, "all_records": True, "source_workers": 3,
         "adapt_workers": 4, "excluded_pmcids": set()}]
     assert sync.call_count == 2
-    assert sync.call_args_list[0].kwargs == {"pmcids": ["PMC123"]}
+    assert sync.call_args_list[0].kwargs == {"pmcids": ["PMC123"], "include_counts": False}
     assert sync.call_args_list[1].kwargs == {}
     with application.app_context():
         draft = db.session.scalar(db.select(ClinicalCase))
