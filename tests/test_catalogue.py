@@ -214,6 +214,7 @@ def test_upgrade_limits_database_results_to_pages_and_preserves_transaction(app,
     import medlab.cli as commands
     monkeypatch.setattr(commands, 'restore_bundled_inventory', lambda: None)
     monkeypatch.setattr(commands, 'restore_bundled_drafts', lambda: None)
+    monkeypatch.setattr(commands, 'basic_case_bundles', lambda: [])
     with app.app_context():
         for index in range(205):
             data = deepcopy(case_data); data.pop('caseType', None)

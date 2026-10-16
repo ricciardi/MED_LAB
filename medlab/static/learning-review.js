@@ -17,8 +17,21 @@
     && (!Object.hasOwn(value,'exampleQuestion') || (text(value.exampleQuestion) && Array.from(value.exampleQuestion).length <= 500));
   const interviewLabels = {strength:'Ponto forte', partial:'Pode aprofundar', missed:'A investigar', uncertain:'Requer conferência'};
   const examLabels = {appropriate:'Pertinente', unnecessary:'Desnecessário', premature:'Precoce', consider:'Vale considerar', not_needed:'Sem necessidade indicada', uncertain:'Indicação a conferir'};
+  const basicLabels = {complete:'Demonstrado', partial:'Parcial', not_met:'Não demonstrado', not_applicable:'Não aplicável'};
+  const exemptionLabels = {source_unavailable:'Informação não disponível no cenário.',already_known:'Informação já conhecida no contexto da consulta.',context_not_relevant:'Item não pertinente a este contexto.',declined:'Preferência por não responder respeitada.',urgent_priority:'Outras prioridades exigiam atenção neste momento.',respondent_limitation:'Limitação do paciente ou informante considerada.',record_uncertain:'O registro não permite concluir com segurança.'};
+  function validBasic(value) {
+    return value && text(value.title) && Array.isArray(value.groups) && Array.isArray(value.criteria)
+      && value.groups.every(group => group && text(group.id) && text(group.title) && texts(group.criterionIds)
+        && typeof group.assessable === 'boolean' && (group.assessable ? typeof group.score === 'number'
+          && Number.isFinite(group.score) && group.score >= 0 && group.score <= 100 : group.score === null))
+      && value.criteria.every(item => item && text(item.id) && text(item.groupId) && text(item.title)
+        && Object.hasOwn(basicLabels,item.status) && text(item.reason) && texts(item.evidenceRefs)
+        && evidence(item.evidence) && evidence(item.contextEvidence)
+        && (item.exemption === null || Object.hasOwn(exemptionLabels,item.exemption)));
+  }
   function valid(value) {
     return value && value.version === 1 && value.status === 'educational' && text(value.summary)
+      && (!Object.hasOwn(value,'basicQuestions') || validBasic(value.basicQuestions))
       && guidance(value.diagnosis) && guidance(value.plan)
       && Array.isArray(value.interview) && value.interview.every(item => item && text(item.criterionId)
         && text(item.criterion) && Object.hasOwn(interviewLabels,item.status) && texts(item.actionIds)
@@ -72,10 +85,42 @@
     recordedEvidence(card,item.evidence);
     return card;
   }
+  function basicQuestions(value) {
+    const review = element('section','basic-question-review');
+    review.append(element('h3','learning-section-title',value.title),element('p','','Itens não aplicáveis ficam fora do cálculo; cada grupo avaliável tem o mesmo peso nesta dimensão.'));
+    for (const group of value.groups) {
+      const details = element('details','basic-question-group');
+      const summary = element('summary','');
+      summary.append(element('span','',group.title),element('strong','',group.assessable ? `${group.score}/100` : 'Não avaliado'));
+      details.append(summary);
+      const list = element('ol','');
+      for (const item of value.criteria.filter(item => item.groupId === group.id)) {
+        const row = element('li','');
+        const heading = element('div','basic-criterion-heading');
+        const badge = element('span','basic-criterion-status',basicLabels[item.status]);badge.dataset.status = item.status;
+        heading.append(element('h4','',item.title),badge);row.append(heading,element('p','',item.reason));
+        if (item.exemption) row.append(element('p','basic-criterion-exemption',exemptionLabels[item.exemption]));
+        if (item.evidence.length) {
+          const proof = element('div','basic-criterion-evidence');proof.append(element('span','micro-label','PERGUNTAS REGISTRADAS'));
+          for (const citation of item.evidence) proof.append(element('blockquote','',citation.text));
+          row.append(proof);
+        }
+        if (item.contextEvidence.length) {
+          const context = element('div','basic-criterion-context');context.append(element('span','micro-label','CONTEXTO CONSIDERADO'));
+          for (const citation of item.contextEvidence) context.append(element('p','',citation.text));
+          row.append(context);
+        }
+        list.append(row);
+      }
+      details.append(list);review.append(details);
+    }
+    return review;
+  }
   function render(value) {
     if (!valid(value)) throw new Error('O parecer chegou incompleto. Tente novamente; sua nota permanece salva.');
     const body = element('div','learning-review-body');
     body.append(element('p','learning-review-summary',value.summary));
+    if (value.basicQuestions) body.append(basicQuestions(value.basicQuestions));
     if (value.interview.length) {
       body.append(element('h3','learning-section-title','Perguntas e condução da entrevista'));
       const grid = element('div','learning-interview-grid');

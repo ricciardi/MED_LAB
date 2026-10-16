@@ -1,3 +1,4 @@
+# Base five-dimension evaluator regressions; the version2 wrapper is covered in test_basic_questions.py.
 """A complete grade must survive literal and semantic learner-action checks."""
 from copy import deepcopy
 from unittest.mock import Mock
@@ -73,7 +74,7 @@ def test_semantic_failure_uses_one_short_numeric_fallback_without_new_prose(seed
     bad = grade("Investigou febre.")
     service = AIService({"DEEPSEEK_API_KEY": "test"})
     service._request = Mock(side_effect=[deepcopy(bad), audit(bad, supported=False), numeric_grade()])
-    result = service.evaluate(seed, context())
+    result = service._evaluate(seed, context())
     assert result["sections"][0]["score"] == 75
     assert result["score"] == 15
     assert all(section["feedbackLimited"] for section in result["sections"])
@@ -89,7 +90,7 @@ def test_semantic_failure_uses_one_short_numeric_fallback_without_new_prose(seed
 def test_incomplete_audit_uses_factual_fallback_and_does_not_reaudit(seed):
     service = AIService({"DEEPSEEK_API_KEY": "test"})
     service._request = Mock(side_effect=[grade(), {"supported": True}, numeric_grade()])
-    result = service.evaluate(seed, context())
+    result = service._evaluate(seed, context())
     assert service._request.call_count == 3
     assert result["verification"]["status"] == "limited"
 
@@ -135,7 +136,7 @@ def test_rich_grade_still_uses_factual_physical_and_auxiliary_feedback(seed):
     service = AIService({"DEEPSEEK_API_KEY": "test"})
     service._request = Mock(return_value=grade())
     service._audit_evaluation = Mock(return_value=[])
-    result = service.evaluate(seed, context())
+    result = service._evaluate(seed, context())
     assert result["sections"][0]["feedback"] == "Perguntou o início."
     assert "feedbackLimited" not in result["sections"][0]
     assert all(result["sections"][index]["feedbackLimited"] for index in (1, 2))
@@ -155,6 +156,7 @@ def test_numeric_fallback_preserves_unassessable_dimensions(seed):
 def test_budget_reserves_time_for_one_short_fallback(seed, monkeypatch):
     service = AIService({"DEEPSEEK_API_KEY": "test"})
     monkeypatch.setattr("medlab.ai.time.monotonic", lambda: 100.0)
+    service._runtime_deadline = 160.0  # The wrapper supplies this base-stage deadline.
     deadlines = []
     def request(*args):
         deadlines.append(service._runtime_deadline)
@@ -162,10 +164,10 @@ def test_budget_reserves_time_for_one_short_fallback(seed, monkeypatch):
             raise AIUnavailableError("timeout")
         return numeric_grade()
     service._request = request
-    result = service.evaluate(seed, context())
+    result = service._evaluate(seed, context())
     assert result["verification"]["status"] == "limited"
     assert deadlines == [148.0, 160.0]
-    assert service._runtime_deadline is None
+    assert service._runtime_deadline == 160.0
 
 
 def test_execution_praise_cannot_be_supported_only_by_exam_requests():
@@ -182,7 +184,7 @@ def test_provider_unavailable_during_audit_stops_without_paid_repair(seed):
     service = AIService({"DEEPSEEK_API_KEY": "test"})
     service._request = Mock(side_effect=[grade(), AIUnavailableError("quota_exhausted")])
     with pytest.raises(AIUnavailableError, match="saldo"):
-        service.evaluate(seed, context())
+        service._evaluate(seed, context())
     assert service._request.call_count == 2
 
 
@@ -269,7 +271,7 @@ def test_expired_budget_sends_no_request_and_runtime_deadline_is_restored(seed, 
     service._runtime_deadline = None
     service._evaluate = Mock(side_effect=AIError("Safe failure"))
     with pytest.raises(AIError):
-        service.evaluate(seed, {})
+        service._evaluate(seed, {})
     assert service._runtime_deadline is None
 
 
@@ -326,7 +328,7 @@ def test_empty_display_evidence_uses_verified_refs_without_inventing_actions(see
     service = AIService({"DEEPSEEK_API_KEY": "test"})
     service._request = Mock(return_value=initial)
     service._audit_evaluation = Mock(return_value=[])
-    result = service.evaluate(seed, context())
+    result = service._evaluate(seed, context())
     assert service._request.call_count == 1
     assert result["verification"]["status"] == "checked"
     assert result["sections"][0]["evidence"] == ['Pergunta 1: “Quando começou?”']
@@ -342,4 +344,4 @@ def test_empty_evidence_does_not_allow_positive_score_without_a_student_action(s
     service = AIService({"DEEPSEEK_API_KEY": "test"})
     service._request = Mock(return_value=initial)
     with pytest.raises(AIError, match="evidências"):
-        service.evaluate(seed, context())
+        service._evaluate(seed, context())

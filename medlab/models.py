@@ -62,6 +62,8 @@ class CaseDiscovery(db.Model):
     difficulty = db.Column(db.String(30), nullable=False, index=True)
     difficulty_estimated = db.Column(db.Boolean, nullable=False)
     classification_note = db.Column(db.String(500), nullable=False)
+    learning_track = db.Column(db.String(30), nullable=False, default="", server_default="", index=True)
+    body_system = db.Column(db.String(30), nullable=False, default="", server_default="", index=True)
     search_text = db.Column(db.String(1600), nullable=False)
     exam_result_count = db.Column(db.Integer, nullable=False, default=0, index=True)
     physical_result_count = db.Column(db.Integer, nullable=False, default=0)

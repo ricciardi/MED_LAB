@@ -65,6 +65,16 @@ SPECIALTIES = (
     "Urologia",
 )
 
+BODY_SYSTEMS = {
+    "urinary": "Sistema urinário",
+    "digestive": "Sistema digestivo",
+    "hematopoietic": "Sistema hematopoiético",
+    "nervous": "Sistema nervoso",
+    "respiratory": "Sistema respiratório",
+    "cardiovascular": "Sistema cardiovascular",
+    "head": "Cabeça",
+}
+
 CASE_TYPES = [
     "Primeira consulta",
     "Sintomas respiratórios",

@@ -11,7 +11,13 @@ VOICES = (
 
 
 def case_gender(case):
-    value = str(case.get("patientProfile", {}).get("gender", "")).strip().casefold()
+    profile = case.get("patientProfile", {})
+    if "respondent_gender" in profile:
+        # The informant's explicit choice is separate from the patient's sex.
+        # Unknown stays unlocked; never infer it from names or family roles.
+        value = profile["respondent_gender"]
+        return value if value in ("female", "male", "unknown") else "unknown"
+    value = str(profile.get("gender", "")).strip().casefold()
     if value in {"feminino", "feminina", "female", "mulher", "menina", "sexo feminino", "f"}:
         return "female"
     if value in {"masculino", "masculina", "male", "homem", "menino", "sexo masculino", "m"}:

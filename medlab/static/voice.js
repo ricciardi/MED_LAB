@@ -280,7 +280,7 @@
       $('#voice-gender-field').hidden = !needsGender;
       gender.value = config.gender_locked ? lockedGender : canonicalGender(preferences.gender);
       $('#voice-gender-note').textContent = needsGender
-        ? 'O caso não informa o sexo do paciente. Escolha uma voz feminina ou masculina para esta consulta.'
+        ? 'O caso não define a voz de quem responde. Escolha uma voz feminina ou masculina para esta consulta.'
         : `Voz ${lockedGender === 'female' ? 'feminina' : 'masculina'} definida pelo caso. Você pode ajustar o timbre disponível.`;
       fillVariants(preferences.voice_id);
       auto.checked = preferences.autoplay;

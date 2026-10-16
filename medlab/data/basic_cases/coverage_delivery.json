@@ -1,0 +1,1257 @@
+{
+  "version": 1,
+  "purpose": "Cobertura educacional das imagens 1–4 fornecidas pelo usuário; todos os cenários são fictícios.",
+  "learningTrack": "basic",
+  "caseFiles": [
+    "urinary.json",
+    "digestive.json",
+    "hematopoietic.json",
+    "nervous.json"
+  ],
+  "caseCount": 28,
+  "termCount": 75,
+  "coverageMeaning": "Coberto não significa que o termo é diagnóstico ativo. Cada vínculo explicita sintoma, achado, fisiologia, anatomia, diferencial ou indicação seletiva. Os conceitos ficam nos objetivos/gabarito privados, não na queixa pública.",
+  "clinicalValidation": "Conteúdo autoral assistido, embasado em fontes institucionais; sem validação clínica humana ou calibração avaliativa. Valores de exames e identidades são sintéticos. Sem chamadas DeepSeek e sem imagem clínica gerada.",
+  "terminologyNotes": [
+    "Sialorréia é a grafia da imagem; o texto usa sialorreia.",
+    "Coágulopatia é a grafia da imagem; o termo usual é coagulopatia.",
+    "Linfangioma é nomenclatura histórica; o cenário usa malformação linfática.",
+    "Proteinorraquia e glicorraquia aparecem na mesma linha da imagem e são cobertas separadamente.",
+    "Bilirrubinúria da imagem urinária é coberta em contexto hepatobiliar, sem inventar doença renal.",
+    "Exames seletivos não realizados não são oferecidos como resultados normais inventados."
+  ],
+  "groups": [
+    {
+      "bodySystem": "urinary",
+      "sourceImage": "doenças 1.jpg",
+      "sourceImageSha256": "fa70d942bf51611a46c878778200bb3893eec94b6fd043cdf7f259046e23c163",
+      "caseCount": 8,
+      "terms": [
+        {
+          "termAsProvided": "Disúria",
+          "canonicalTerm": "Disúria",
+          "cases": [
+            {
+              "term": "Disúria",
+              "caseId": "basic-urinary-ardor-frequencia",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer disúria como dor ou ardor ao urinar."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Polaciúria",
+          "canonicalTerm": "Polaciúria",
+          "cases": [
+            {
+              "term": "Polaciúria",
+              "caseId": "basic-urinary-ardor-frequencia",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir polaciúria, com micções frequentes e pequenas, de aumento do volume diário."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Nictúria",
+          "canonicalTerm": "Nictúria",
+          "cases": [
+            {
+              "term": "Nictúria",
+              "caseId": "basic-urinary-sede-muito-xixi",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Identificar nictúria como despertar para urinar e investigar sua causa."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Poliúria",
+          "canonicalTerm": "Poliúria",
+          "cases": [
+            {
+              "term": "Poliúria",
+              "caseId": "basic-urinary-sede-muito-xixi",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer poliúria como aumento do volume total de urina, não apenas frequência."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Oligúria",
+          "canonicalTerm": "Oligúria",
+          "cases": [
+            {
+              "term": "Oligúria",
+              "caseId": "basic-urinary-urina-escura-edema",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Quantificar oligúria por idade, peso e tempo; não confundi-la com micções pequenas frequentes."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Anúria",
+          "canonicalTerm": "Anúria",
+          "cases": [
+            {
+              "term": "Anúria",
+              "caseId": "basic-urinary-sem-conseguir-urinar",
+              "role": "differential_concept",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir anúria verdadeira de retenção urinária: não urinar não demonstra que os rins deixaram de produzir urina."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Hematúria",
+          "canonicalTerm": "Hematúria",
+          "cases": [
+            {
+              "term": "Hematúria",
+              "caseId": "basic-urinary-urina-escura-edema",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer hematúria glomerular pelo sedimento, distinguindo pigmentos sem hemácias."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Hemoglobinúria",
+          "canonicalTerm": "Hemoglobinúria",
+          "cases": [
+            {
+              "term": "Hemoglobinúria",
+              "caseId": "basic-urinary-urina-marrom-cansaco",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer hemoglobinúria quando há pigmento heme urinário com poucas hemácias e evidência de hemólise."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Bilirrubinúria",
+          "canonicalTerm": "Bilirrubinúria",
+          "cases": [
+            {
+              "term": "Bilirrubinúria",
+              "caseId": "basic-digestive-olhos-amarelos",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Diferenciar bilirrubinúria, ligada a bilirrubina conjugada, de hematúria e hemoglobinúria."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Piúria",
+          "canonicalTerm": "Piúria",
+          "cases": [
+            {
+              "term": "Piúria",
+              "caseId": "basic-urinary-ardor-frequencia",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Interpretar piúria como leucócitos na urina, que exige correlação clínica."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Proteinúria",
+          "canonicalTerm": "Proteinúria",
+          "cases": [
+            {
+              "term": "Proteinúria",
+              "caseId": "basic-urinary-urina-escura-edema",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Interpretar proteinúria no conjunto de uma síndrome renal, sem assumir automaticamente síndrome nefrótica."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Pielonefrite",
+          "canonicalTerm": "Pielonefrite",
+          "cases": [
+            {
+              "term": "Pielonefrite",
+              "caseId": "basic-urinary-febre-lombar",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer pielonefrite pelo conjunto de febre, dor lombar e evidência urinária."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Cistite",
+          "canonicalTerm": "Cistite",
+          "cases": [
+            {
+              "term": "Cistite",
+              "caseId": "basic-urinary-ardor-frequencia",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[3]",
+                "referenceReasoning"
+              ],
+              "objective": "Relacionar cistite a sintomas urinários baixos, distinguindo infecção renal."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Glomerulonefrite",
+          "canonicalTerm": "Glomerulonefrite",
+          "cases": [
+            {
+              "term": "Glomerulonefrite",
+              "caseId": "basic-urinary-urina-escura-edema",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[3]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer glomerulonefrite como processo renal inflamatório com síndrome nefrítica neste cenário."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Uretrite",
+          "canonicalTerm": "Uretrite",
+          "cases": [
+            {
+              "term": "Uretrite",
+              "caseId": "basic-urinary-ardor-secrecao",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir uretrite de cistite pelo local, secreção e contexto sexual."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Urografia",
+          "canonicalTerm": "Urografia",
+          "cases": [
+            {
+              "term": "Urografia",
+              "caseId": "basic-urinary-sangue-sem-dor",
+              "role": "selective_test",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Relacionar urografia ao estudo de vias urinárias; discutir modalidade e risco sem exigir urografia excretora como rotina universal."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Cistografia",
+          "canonicalTerm": "Cistografia",
+          "cases": [
+            {
+              "term": "Cistografia",
+              "caseId": "basic-urinary-febre-lombar",
+              "role": "selective_test",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Explicar que a cistografia avalia bexiga e refluxo em situações selecionadas; não solicitá-la indiscriminadamente na fase aguda."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "bodySystem": "digestive",
+      "sourceImage": "doenças 2.jpg",
+      "sourceImageSha256": "c0e0f695fbeef9da1872d79c44f517c9229fe71cc7dececa4335dee97816a2d8",
+      "caseCount": 8,
+      "terms": [
+        {
+          "termAsProvided": "Pirose",
+          "canonicalTerm": "Pirose",
+          "cases": [
+            {
+              "term": "Pirose",
+              "caseId": "basic-digestive-queimacao-refeicoes",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer pirose como queimação retroesternal, diferente de qualquer desconforto abdominal."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Dispepsia",
+          "canonicalTerm": "Dispepsia",
+          "cases": [
+            {
+              "term": "Dispepsia",
+              "caseId": "basic-digestive-queimacao-refeicoes",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir dispepsia, incluindo plenitude epigástrica, de pirose e refluxo."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Aerofagia",
+          "canonicalTerm": "Aerofagia",
+          "cases": [
+            {
+              "term": "Aerofagia",
+              "caseId": "basic-digestive-queimacao-refeicoes",
+              "role": "history_concept",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Investigar deglutição excessiva de ar e hábitos, sem deduzir aerofagia apenas por um arroto."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Eructação",
+          "canonicalTerm": "Eructação",
+          "cases": [
+            {
+              "term": "Eructação",
+              "caseId": "basic-digestive-queimacao-refeicoes",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[3]",
+                "referenceReasoning"
+              ],
+              "objective": "Nomear eructação como eliminação de ar pela boca, descrita como arroto."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Tonsilite",
+          "canonicalTerm": "Tonsilite",
+          "cases": [
+            {
+              "term": "Tonsilite",
+              "caseId": "basic-digestive-garganta-dolorosa",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Relacionar tonsilite à inflamação das tonsilas e avaliar etiologia e complicações."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Glossodínia",
+          "canonicalTerm": "Glossodínia",
+          "cases": [
+            {
+              "term": "Glossodínia",
+              "caseId": "basic-digestive-boca-seca-ardor",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Descrever glossodínia como dor ou ardor na língua, buscando causas secundárias."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Macroglossia",
+          "canonicalTerm": "Macroglossia",
+          "cases": [
+            {
+              "term": "Macroglossia",
+              "caseId": "basic-digestive-lingua-aumentada",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer macroglossia como aumento da língua, com avaliação funcional e de via aérea."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Sialorréia",
+          "canonicalTerm": "Sialorreia",
+          "cases": [
+            {
+              "term": "Sialorréia",
+              "caseId": "basic-digestive-lingua-aumentada",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer sialorreia e distinguir escape de saliva por dificuldade de controle oral de hipersecreção comprovada."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Xerostomia",
+          "canonicalTerm": "Xerostomia",
+          "cases": [
+            {
+              "term": "Xerostomia",
+              "caseId": "basic-digestive-boca-seca-ardor",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer xerostomia e seu impacto na alimentação e saúde oral."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Ageusia",
+          "canonicalTerm": "Ageusia",
+          "cases": [
+            {
+              "term": "Ageusia",
+              "caseId": "basic-digestive-boca-seca-ardor",
+              "role": "differential_concept",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Diferenciar ageusia, perda completa do paladar, de percepção reduzida ou distorcida; não está presente aqui."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Parageusia",
+          "canonicalTerm": "Parageusia",
+          "cases": [
+            {
+              "term": "Parageusia",
+              "caseId": "basic-digestive-boca-seca-ardor",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[3]",
+                "referenceReasoning"
+              ],
+              "objective": "Relacionar parageusia à distorção do paladar, como gosto metálico, sem equipará-la a perda completa."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Hipogeusia",
+          "canonicalTerm": "Hipogeusia",
+          "cases": [
+            {
+              "term": "Hipogeusia",
+              "caseId": "basic-digestive-boca-seca-ardor",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[4]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer hipogeusia como redução da percepção gustativa, com percepção ainda existente."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Submentoniana",
+          "canonicalTerm": "Submentoniana",
+          "cases": [
+            {
+              "term": "Submentoniana",
+              "caseId": "basic-digestive-lingua-aumentada",
+              "role": "anatomy",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Localizar a região submentoniana abaixo do mento; o termo é anatômico, não uma doença."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Hemangioma",
+          "canonicalTerm": "Hemangioma",
+          "cases": [
+            {
+              "term": "Hemangioma",
+              "caseId": "basic-digestive-lingua-aumentada",
+              "role": "differential",
+              "evidencePaths": [
+                "learningObjectives[3]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir hemangioma de malformações vasculares, usando história e imagem."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Linfangioma",
+          "canonicalTerm": "Linfangioma",
+          "cases": [
+            {
+              "term": "Linfangioma",
+              "caseId": "basic-digestive-lingua-aumentada",
+              "role": "terminology",
+              "evidencePaths": [
+                "learningObjectives[4]",
+                "referenceReasoning"
+              ],
+              "objective": "Relacionar o termo histórico linfangioma à malformação linfática, sem tratá-lo como sinônimo de hemangioma."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Disfagia",
+          "canonicalTerm": "Disfagia",
+          "cases": [
+            {
+              "term": "Disfagia",
+              "caseId": "basic-digestive-garganta-dolorosa",
+              "role": "differential_concept",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Pesquisar disfagia como dificuldade de passagem, que não está demonstrada apenas por dor nesta consulta."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Odinofagia",
+          "canonicalTerm": "Odinofagia",
+          "cases": [
+            {
+              "term": "Odinofagia",
+              "caseId": "basic-digestive-garganta-dolorosa",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Diferenciar odinofagia, dor ao engolir, de disfagia."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Pós-prandial",
+          "canonicalTerm": "Pós-prandial",
+          "cases": [
+            {
+              "term": "Pós-prandial",
+              "caseId": "basic-digestive-queimacao-refeicoes",
+              "role": "temporal_descriptor",
+              "evidencePaths": [
+                "learningObjectives[4]",
+                "referenceReasoning"
+              ],
+              "objective": "Usar pós-prandial para localizar o sintoma no tempo após a refeição, não como diagnóstico."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Hepatite",
+          "canonicalTerm": "Hepatite",
+          "cases": [
+            {
+              "term": "Hepatite",
+              "caseId": "basic-digestive-olhos-amarelos",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer hepatite como inflamação hepática e investigar causa e função, não apenas transaminases."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Pancreatite",
+          "canonicalTerm": "Pancreatite",
+          "cases": [
+            {
+              "term": "Pancreatite",
+              "caseId": "basic-digestive-dor-alta-abdome",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer pancreatite por integração clínica e laboratorial, separando diagnóstico de avaliação de gravidade."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Estomatite",
+          "canonicalTerm": "Estomatite",
+          "cases": [
+            {
+              "term": "Estomatite",
+              "caseId": "basic-digestive-boca-seca-ardor",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[5]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer inflamação da mucosa oral como estomatite e investigar fatores locais."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Hematêmese",
+          "canonicalTerm": "Hematêmese",
+          "cases": [
+            {
+              "term": "Hematêmese",
+              "caseId": "basic-digestive-vomito-escuro",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer hematêmese como vômito de sangue vivo ou alterado, distinguindo-a de hemoptise."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Melena",
+          "canonicalTerm": "Melena",
+          "cases": [
+            {
+              "term": "Melena",
+              "caseId": "basic-digestive-vomito-escuro",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer melena pelo aspecto de sangue digerido nas fezes, sem confundir toda fezes escura com sangramento."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Hematoquezia",
+          "canonicalTerm": "Hematoquezia",
+          "cases": [
+            {
+              "term": "Hematoquezia",
+              "caseId": "basic-digestive-sangue-evacuacao",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Descrever hematoquezia como eliminação de sangue vermelho pelo reto, sem localizar a origem apenas pela cor."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Enterorragia",
+          "canonicalTerm": "Enterorragia",
+          "cases": [
+            {
+              "term": "Enterorragia",
+              "caseId": "basic-digestive-sangue-evacuacao",
+              "role": "active_symptom",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer enterorragia como sangramento exteriorizado pelo intestino; distinguir descrição do sangramento de sua causa."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "bodySystem": "hematopoietic",
+      "sourceImage": "doenças 3.jpg",
+      "sourceImageSha256": "ad2400c55d75f4407cdf5242a20b448c6c811d2205380c5792af620e0c55e76f",
+      "caseCount": 5,
+      "terms": [
+        {
+          "termAsProvided": "Hematopoiese",
+          "canonicalTerm": "Hematopoiese",
+          "cases": [
+            {
+              "term": "Hematopoiese",
+              "caseId": "basic-hematopoietic-cansaco-menstruacao",
+              "role": "physiology",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Explicar hematopoiese como produção das células do sangue, usando reticulócitos e disponibilidade de ferro para pensar na resposta medular."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Leucocitose",
+          "canonicalTerm": "Leucocitose",
+          "cases": [
+            {
+              "term": "Leucocitose",
+              "caseId": "basic-hematopoietic-febre-ganglios",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer leucocitose e usar diferencial e contexto, sem igualar aumento de leucócitos a infecção bacteriana."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Leucopenia",
+          "canonicalTerm": "Leucopenia",
+          "cases": [
+            {
+              "term": "Leucopenia",
+              "caseId": "basic-hematopoietic-febre-remedio-tireoide",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir leucopenia, redução do total de leucócitos, dos componentes específicos do diferencial."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Trombocitopenia",
+          "canonicalTerm": "Trombocitopenia",
+          "cases": [
+            {
+              "term": "Trombocitopenia",
+              "caseId": "basic-hematopoietic-roxos-barriga",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Identificar trombocitopenia e investigar mecanismo e manifestações, sem usar um número isolado como diagnóstico etiológico."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Trombocitose",
+          "canonicalTerm": "Trombocitose",
+          "cases": [
+            {
+              "term": "Trombocitose",
+              "caseId": "basic-hematopoietic-cansaco-menstruacao",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Interpretar trombocitose reativa à deficiência de ferro sem rotular automaticamente doença clonal."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Linfocitose",
+          "canonicalTerm": "Linfocitose",
+          "cases": [
+            {
+              "term": "Linfocitose",
+              "caseId": "basic-hematopoietic-febre-ganglios",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir linfocitose absoluta de simples aumento percentual e considerar padrão reativo."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Linfopenia",
+          "canonicalTerm": "Linfopenia",
+          "cases": [
+            {
+              "term": "Linfopenia",
+              "caseId": "basic-hematopoietic-febre-remedio-tireoide",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Interpretar linfopenia pela contagem absoluta, sem concluir imunodeficiência específica por um exame isolado."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Agranulocitose",
+          "canonicalTerm": "Agranulocitose",
+          "cases": [
+            {
+              "term": "Agranulocitose",
+              "caseId": "basic-hematopoietic-febre-remedio-tireoide",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer agranulocitose/neutropenia profunda com febre como situação urgente e investigar exposição medicamentosa."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Hiperesplenismo",
+          "canonicalTerm": "Hiperesplenismo",
+          "cases": [
+            {
+              "term": "Hiperesplenismo",
+              "caseId": "basic-hematopoietic-roxos-barriga",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir hiperesplenismo, com repercussão nas contagens celulares, de simples aumento do baço."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Esplenomegalia",
+          "canonicalTerm": "Esplenomegalia",
+          "cases": [
+            {
+              "term": "Esplenomegalia",
+              "caseId": "basic-hematopoietic-febre-ganglios",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[3]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer esplenomegalia e seu impacto no risco de trauma, sem confundi-la obrigatoriamente com hiperesplenismo."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Adenomegalia",
+          "canonicalTerm": "Adenomegalia",
+          "cases": [
+            {
+              "term": "Adenomegalia",
+              "caseId": "basic-hematopoietic-febre-ganglios",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Descrever adenomegalia por localização, tamanho, dor e evolução, em vez de concluir neoplasia pelo termo."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Coágulopatia",
+          "canonicalTerm": "Coagulopatia",
+          "cases": [
+            {
+              "term": "Coágulopatia",
+              "caseId": "basic-hematopoietic-roxos-barriga",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Interpretar coagulopatia no contexto clínico; na cirrose, INR isolado não resume risco hemorrágico."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Anemia",
+          "canonicalTerm": "Anemia",
+          "cases": [
+            {
+              "term": "Anemia",
+              "caseId": "basic-hematopoietic-cansaco-menstruacao",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer anemia pela hemoglobina e investigar mecanismo e causa, não apenas palidez."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Poliglobulia",
+          "canonicalTerm": "Poliglobulia",
+          "cases": [
+            {
+              "term": "Poliglobulia",
+              "caseId": "basic-hematopoietic-coceira-banho",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Usar poliglobulia/eritrocitose como descrição do aumento de eritrócitos e investigar causa relativa ou absoluta."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Policitemia",
+          "canonicalTerm": "Policitemia",
+          "cases": [
+            {
+              "term": "Policitemia",
+              "caseId": "basic-hematopoietic-coceira-banho",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir policitemia vera de eritrocitose secundária e hemoconcentração, sem concluir apenas pela hemoglobina."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "bodySystem": "nervous",
+      "sourceImage": "doenças 4.jpg",
+      "sourceImageSha256": "42189158de5c74d0826333f6b23a9e84efd1569046d29777955fe10a37f82247",
+      "caseCount": 7,
+      "terms": [
+        {
+          "termAsProvided": "Hiperestesia",
+          "canonicalTerm": "Hiperestesia",
+          "cases": [
+            {
+              "term": "Hiperestesia",
+              "caseId": "basic-nervous-queimacao-pes",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir hiperestesia, sensibilidade aumentada, de hipoestesia; dor a toque normalmente indolor é descrita mais especificamente como alodinia."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Anestesia",
+          "canonicalTerm": "Anestesia",
+          "cases": [
+            {
+              "term": "Anestesia",
+              "caseId": "basic-nervous-pernas-bexiga",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer anestesia como ausência de sensibilidade, aqui em sela, distinguindo-a de anestesia farmacológica."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Hipoestesia",
+          "canonicalTerm": "Hipoestesia",
+          "cases": [
+            {
+              "term": "Hipoestesia",
+              "caseId": "basic-nervous-queimacao-pes",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer hipoestesia como redução da sensibilidade e mapear sua distribuição."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Anosmia",
+          "canonicalTerm": "Anosmia",
+          "cases": [
+            {
+              "term": "Anosmia",
+              "caseId": "basic-nervous-perda-olfato",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir anosmia, perda do olfato, de ageusia, perda do paladar; discutir segurança em casa e no trabalho."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Anisocoria",
+          "canonicalTerm": "Anisocoria",
+          "cases": [
+            {
+              "term": "Anisocoria",
+              "caseId": "basic-nervous-visao-dupla-palpebra",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer anisocoria como diferença de tamanho pupilar e avaliar reação à luz e motilidade."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Hipotrofia",
+          "canonicalTerm": "Hipotrofia",
+          "cases": [
+            {
+              "term": "Hipotrofia",
+              "caseId": "basic-nervous-queimacao-pes",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Descrever hipotrofia como diminuição do volume muscular, diferenciando-a de medida de força."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Hemiplegia",
+          "canonicalTerm": "Hemiplegia",
+          "cases": [
+            {
+              "term": "Hemiplegia",
+              "caseId": "basic-nervous-fraqueza-subita",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer hemiplegia como perda de movimento em um lado, diferenciando-a de fraqueza parcial e registrando lateralidade."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Paraplegia",
+          "canonicalTerm": "Paraplegia",
+          "cases": [
+            {
+              "term": "Paraplegia",
+              "caseId": "basic-nervous-pernas-bexiga",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer paraplegia como perda de movimento em ambos os membros inferiores e investigar localização e urgência."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Miose",
+          "canonicalTerm": "Miose",
+          "cases": [
+            {
+              "term": "Miose",
+              "caseId": "basic-nervous-visao-dupla-palpebra",
+              "role": "differential_concept",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Definir miose como constrição pupilar; contrastar o padrão de Horner com a pupila dilatada deste caso."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Midríase",
+          "canonicalTerm": "Midríase",
+          "cases": [
+            {
+              "term": "Midríase",
+              "caseId": "basic-nervous-visao-dupla-palpebra",
+              "role": "exam_finding",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir midríase, dilatação pupilar, de anisocoria e investigar causas neurológicas ou farmacológicas."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Angiografia",
+          "canonicalTerm": "Angiografia",
+          "cases": [
+            {
+              "term": "Angiografia",
+              "caseId": "basic-nervous-fraqueza-subita",
+              "role": "selective_test",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Explicar angiografia como visualização vascular, incluindo modalidades por TC/RM ou cateter conforme indicação."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Mielografia",
+          "canonicalTerm": "Mielografia",
+          "cases": [
+            {
+              "term": "Mielografia",
+              "caseId": "basic-nervous-pernas-bexiga",
+              "role": "selective_test",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Explicar mielografia como estudo com contraste do espaço ao redor das estruturas neurais, reservado a indicações específicas; não confundir com mielograma de medula óssea."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Meningoencefalite",
+          "canonicalTerm": "Meningoencefalite",
+          "cases": [
+            {
+              "term": "Meningoencefalite",
+              "caseId": "basic-nervous-febre-confusao",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir meningoencefalite de meningite isolada pela disfunção cerebral, como confusão, alteração comportamental ou crises."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Meningite",
+          "canonicalTerm": "Meningite",
+          "cases": [
+            {
+              "term": "Meningite",
+              "caseId": "basic-nervous-febre-cefaleia",
+              "role": "diagnosis",
+              "evidencePaths": [
+                "learningObjectives[0]",
+                "referenceReasoning"
+              ],
+              "objective": "Reconhecer síndrome meníngea e investigar etiologia sem exigir todos os sinais clássicos."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Proteinorraquia",
+          "canonicalTerm": "Proteinorraquia",
+          "cases": [
+            {
+              "term": "Proteinorraquia",
+              "caseId": "basic-nervous-febre-cefaleia",
+              "role": "exam_parameter",
+              "evidencePaths": [
+                "learningObjectives[1]",
+                "referenceReasoning"
+              ],
+              "objective": "Interpretar proteinorraquia como concentração de proteínas no líquor, considerando contexto e referência."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Glicorraquia",
+          "canonicalTerm": "Glicorraquia",
+          "cases": [
+            {
+              "term": "Glicorraquia",
+              "caseId": "basic-nervous-febre-cefaleia",
+              "role": "exam_parameter",
+              "evidencePaths": [
+                "learningObjectives[2]",
+                "referenceReasoning"
+              ],
+              "objective": "Interpretar glicorraquia junto à glicemia, sem usar um valor isolado para excluir meningite."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Citometria",
+          "canonicalTerm": "Citometria",
+          "cases": [
+            {
+              "term": "Citometria",
+              "caseId": "basic-nervous-febre-cefaleia",
+              "role": "exam_parameter",
+              "evidencePaths": [
+                "learningObjectives[3]",
+                "referenceReasoning"
+              ],
+              "objective": "Distinguir contagem quantitativa de células do líquor de citometria de fluxo especializada, que não é rotina desta infecção."
+            }
+          ]
+        },
+        {
+          "termAsProvided": "Citologia",
+          "canonicalTerm": "Citologia",
+          "cases": [
+            {
+              "term": "Citologia",
+              "caseId": "basic-nervous-febre-cefaleia",
+              "role": "exam_parameter",
+              "evidencePaths": [
+                "learningObjectives[4]",
+                "referenceReasoning"
+              ],
+              "objective": "Relacionar citologia à descrição morfológica/diferencial das células; não confundir com contagem total ou presumir pesquisa oncológica em todo líquor."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -35,6 +35,13 @@ class AIError(RuntimeError):
     """Safe Portuguese error, without credentials, provider body or patient data."""
 
 
+class BasicQuestionsPending(AIError):
+    """Private resumable base result; never expose its payload in an error body."""
+    def __init__(self, checkpoint):
+        super().__init__("A etapa Perguntas Básicas de Graduação não foi validada. As demais dimensões foram preservadas para retomar esta etapa.")
+        self.checkpoint = deepcopy(checkpoint)
+
+
 class AIValidationError(AIError):
     """Machine-readable diagnostics contain schema locations, never provider prose."""
     _MESSAGES = {
@@ -207,7 +214,7 @@ USAGE_KEYS = ("requests", "responses", "usageReports", "cacheUsageReports", "pro
 # Stable schemas and context precede changing input. DeepSeek caches exact
 # persisted prefixes automatically; this ordering neither forces nor guarantees a hit.
 _PROMPT_FIELDS = (
-    "format", "template", "example", "categories", "caseTypes", "specialties",
+    "format", "template", "example", "categories", "criteriaCatalog", "caseTypes", "specialties",
     "specialty", "difficulty", "intents", "speaker", "patientProfile", "case", "articleText", "sourceSpans", "source", "facts", "unknownTopics",
     "patientLocator", "adaptation", "script", "session", "conversationMove", "simulationState", "history", "question",
 )
@@ -1376,11 +1383,46 @@ class AIService:
                 dimension["feedbackLimited"] = dimension["dimension"] not in retained
         return result
 
-    def evaluate(self, case_data, session_data):
+    def evaluate(self, case_data, session_data, evaluation_checkpoint=None):
+        from .basic_questions import build_review, attach_review, input_hash, InvalidBasicQuestions
+
+        case, session = _case(case_data), self._session(session_data)
+        fingerprint = input_hash(case, session)
         previous = self._runtime_deadline
-        self._runtime_deadline = time.monotonic() + 60
+        deadline = time.monotonic() + 60
+        self._runtime_deadline = min(previous, deadline) if previous is not None else deadline
         try:
-            return self._evaluate(case_data, session_data)
+            base = None
+            if isinstance(evaluation_checkpoint, dict) and evaluation_checkpoint.get("inputHash") == fingerprint:
+                if set(evaluation_checkpoint) != {"version", "inputHash", "baseEvaluation"} or evaluation_checkpoint["version"] != 1:
+                    raise AIError("A etapa salva da avaliação está inválida; nenhuma nota foi concluída.")
+                candidate = evaluation_checkpoint["baseEvaluation"]
+                if not isinstance(candidate, dict):
+                    raise AIError("A etapa salva da avaliação está inválida; nenhuma nota foi concluída.")
+                raw = {key: deepcopy(candidate.get(key)) for key in ("score", "summary", "sections", "strengths", "improvements", "next_steps")}
+                # Strip server-only display metadata, retaining the actual grade
+                # and references. This checkpoint never comes from client JSON.
+                for section in raw.get("sections") or []:
+                    if isinstance(section, dict):
+                        for key in ("feedbackLimited", "reviewCriteria"):
+                            section.pop(key, None)
+                checked = self._validate_evaluation(raw, {key: row.get("assessable", True) for key, row in case["rubric"].items()})
+                if checked["score"] != candidate.get("score"):
+                    raise AIError("A etapa salva da avaliação está inválida; nenhuma nota foi concluída.")
+                base = deepcopy(candidate)
+            if base is None:
+                # Preserve the existing five-dimension contract, but reserve a
+                # bounded part of the same deadline for the new semantic review.
+                final_deadline = self._runtime_deadline
+                self._runtime_deadline = final_deadline - 20
+                try:
+                    base = self._evaluate(case, session)
+                finally:
+                    self._runtime_deadline = final_deadline
+            try:
+                return attach_review(base, build_review(self, case, session))
+            except (AIError, InvalidBasicQuestions):
+                raise BasicQuestionsPending({"version": 1, "inputHash": fingerprint, "baseEvaluation": base}) from None
         finally:
             self._runtime_deadline = previous
 

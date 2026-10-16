@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 
 from .case_schema import UNKNOWN_FACT
 
-VERSION = "discovery-v1"
+VERSION = "discovery-v2"
 DIFFICULTIES = ("Iniciante", "Intermediário", "Avançado", "Não classificada")
 
 
@@ -165,6 +165,7 @@ def available_image_count(data):
 
 
 def discovery_values(case):
+    from .catalog import BODY_SYSTEMS
     data = case.data if isinstance(case.data, dict) else {}
     # For authored cases, the editable catalogue columns remain authoritative.
     authored = {**data, "caseType": case.case_type or data.get("caseType", "Primeira consulta"),
@@ -172,11 +173,15 @@ def discovery_values(case):
     types = presentation_types(authored)
     auxiliary, physical = result_entries(data, "auxiliaryLabs"), result_entries(data, "physicalExams")
     difficulty, estimated, note = difficulty_for(authored, auxiliary)
+    track = "basic" if data.get("learningTrack") == "basic" and data.get("bodySystem") in BODY_SYSTEMS else ""
+    system = data["bodySystem"] if track else ""
+    track_terms = ["Casos Básicos", BODY_SYSTEMS[system]] if track else []
     return dict(version=VERSION, source_digest=hashlib.sha256(json.dumps(
         [data, case.specialty, case.case_type, case.difficulty], ensure_ascii=False, sort_keys=True).encode()).hexdigest(),
         case_type=types[0], presentation_tags="|" + "|".join(types) + "|", difficulty=difficulty,
         difficulty_estimated=estimated, classification_note=note,
-        search_text=folded(" ".join([case.specialty, *types, difficulty])),
+        learning_track=track, body_system=system,
+        search_text=folded(" ".join([case.specialty, *types, difficulty, *track_terms])),
         exam_result_count=len(exam_groups(auxiliary)), physical_result_count=len(exam_groups(physical)),
         exam_image_count=available_image_count(data))
 

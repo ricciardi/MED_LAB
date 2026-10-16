@@ -28,13 +28,18 @@ def get_ai_service():
 
 def public_case(case):
     from .discovery import available_image_count
+    from .catalog import BODY_SYSTEMS
     metadata = case.discovery
     kind = metadata.case_type if metadata else case.case_type
+    track = metadata.learning_track if metadata else case.data.get("learningTrack", "")
+    system = metadata.body_system if metadata else case.data.get("bodySystem", "")
+    presentation = case.data.get("publicPresentation", "") if track == "basic" else ""
     return {"id": case.id, "title": public_title(case.id), "specialty": case.specialty,
             "difficulty": metadata.difficulty if metadata else case.difficulty,
             "difficulty_estimated": metadata.difficulty_estimated if metadata else False,
             "classification_note": metadata.classification_note if metadata else "",
-            "summary": public_summary(kind), "case_type": kind,
+            "summary": presentation or public_summary(kind), "case_type": kind,
+            "learning_track": track, "body_system": system, "body_system_label": BODY_SYSTEMS.get(system, ""),
             "case_types": metadata.presentation_tags.strip("|").split("|") if metadata else [kind],
             "exam_result_count": metadata.exam_result_count if metadata else 0,
             "exam_image_count": available_image_count(case.data) if metadata and metadata.exam_image_count else 0,
@@ -44,6 +49,7 @@ def public_case(case):
 def public_session(training):
     case = training.case_snapshot
     return {"id": training.id, "title": public_title(training.case_id),
+            "learning_track": case.get("learningTrack", ""),
             "patient_name": case.get("patientProfile", {}).get("name", "Paciente"),
             "specialty": case.get("specialty", "Clínica médica"), "status": training.status,
             "status_label": "Concluída" if training.status == "completed" else "Em andamento",
@@ -68,9 +74,16 @@ def score_breakdown(evaluation, persisted_score):
         return format(value, ".12g").replace(".", ",") if valid_score(value) else None
 
     evaluation = evaluation if isinstance(evaluation, dict) else {}
+    # Version1 stays a five-dimension historical result. Version2 adds the
+    # separate undergraduate category; overall never receives another weight.
+    titles = dict(SECTION_TITLES)
+    if evaluation.get("evaluationVersion") == 2:
+        from .basic_questions import KEY, TITLE
+        titles = {key: value for key, value in titles.items() if key != "overall"}
+        titles.update({KEY: TITLE, "overall": SECTION_TITLES["overall"]})
     sections = evaluation.get("sections")
     sections = sections if isinstance(sections, list) else []
-    known = {key: [] for key in SECTION_TITLES}
+    known = {key: [] for key in titles}
     malformed = False
     for section in sections:
         if not isinstance(section, dict) or not isinstance(section.get("key"), str) or section["key"] not in known:
@@ -78,7 +91,7 @@ def score_breakdown(evaluation, persisted_score):
             continue
         known[section["key"]].append(section)
     dimensions, scores = [], []
-    for key, title in SECTION_TITLES.items():
+    for key, title in titles.items():
         if key == "overall":
             continue
         row = {"key": key, "title": title, "status": "unavailable", "score": None, "score_display": None}
@@ -271,7 +284,7 @@ def start_session():
         flash("Não há casos disponíveis para estes filtros.", "info")
         # Keep the actual selection so the student can adjust one filter.
         return redirect(url_for("web.cases", **{key: request.form[key] for key in
-            ("specialty", "case_type", "difficulty", "exams", "q") if request.form.get(key)}))
+            ("specialty", "case_type", "difficulty", "exams", "q", "track", "system") if request.form.get(key)}))
     recent_ids = set(db.session.execute(select(Consultation.case_id).where(Consultation.user_id == current_user.id)
                                        .order_by(Consultation.created_at.desc()).limit(5)).scalars().all())
     candidates = [identifier for identifier in available if identifier not in recent_ids] or available
@@ -491,7 +504,7 @@ def exam_image(session_id, asset_id):
 @bp.post("/sessao/<session_id>/finalizar")
 @login_required
 def finish(session_id):
-    from .ai import AIError
+    from .ai import AIError, BasicQuestionsPending
     training = own_session(session_id)
     if training.status == "completed":
         return redirect(url_for("web.result", session_id=session_id))
@@ -528,7 +541,11 @@ def finish(session_id):
         db.session.commit()
         service = get_ai_service()
         with capture_usage(service, "evaluation", user_id=current_user.id, consultation_id=session_id):
-            evaluation = service.evaluate(case_data, session_data)
+            checkpoint = training.evaluation.get("pendingBasicQuestions") if isinstance(training.evaluation, dict) else None
+            if checkpoint is None:
+                evaluation = service.evaluate(case_data, session_data)
+            else:
+                evaluation = service.evaluate(case_data, session_data, evaluation_checkpoint=checkpoint)
         if not lock_is_owned(session_id, token):
             db.session.rollback()
             flash("A avaliação expirou. Sua consulta permanece salva; tente novamente.", "error")
@@ -538,6 +555,15 @@ def finish(session_id):
         training.status, training.completed_at = "completed", utcnow()
         db.session.commit()
         return redirect(url_for("web.result", session_id=session_id))
+    except BasicQuestionsPending as exc:
+        db.session.rollback()
+        if lock_is_owned(session_id, token):
+            training = db.session.get(Consultation, session_id)
+            training.evaluation = {"pendingBasicQuestions": exc.checkpoint}
+            training.score = None
+            db.session.commit()
+        flash(str(exc) + " Sua consulta ainda não foi concluída.", "error")
+        return redirect(url_for("web.consultation", session_id=session_id))
     except AIError as exc:
         db.session.rollback()
         flash(str(exc) + " Sua consulta foi preservada para tentar novamente.", "error")

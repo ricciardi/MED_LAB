@@ -15,3 +15,13 @@ def upgrade_database():
     if "ix_clinical_case_case_type" not in indexes:
         with db.engine.begin() as connection:
             connection.execute(text("CREATE INDEX ix_clinical_case_case_type ON clinical_case (case_type)"))
+    discovery_columns = {column["name"] for column in inspect(db.engine).get_columns("case_discovery")}
+    discovery_indexes = {index["name"] for index in inspect(db.engine).get_indexes("case_discovery")}
+    for name in ("learning_track", "body_system"):
+        # Identifiers come only from this fixed allowlist. Empty values preserve
+        # existing catalogue rows until upgrade-db/reindex-catalogue refreshes them.
+        with db.engine.begin() as connection:
+            if name not in discovery_columns:
+                connection.execute(text(f"ALTER TABLE case_discovery ADD COLUMN {name} VARCHAR(30) NOT NULL DEFAULT ''"))
+            if f"ix_case_discovery_{name}" not in discovery_indexes:
+                connection.execute(text(f"CREATE INDEX ix_case_discovery_{name} ON case_discovery ({name})"))

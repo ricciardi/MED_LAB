@@ -8,6 +8,56 @@ from sqlalchemy.exc import SQLAlchemyError
 from .extensions import db
 from .models import ClinicalCase, RateLimit, User
 
+
+def basic_case_bundles():
+    """Only authored basic-case bundles, not source exports or coverage reports."""
+    from .catalog import BODY_SYSTEMS
+    folder = Path(__file__).parent / "data" / "basic_cases"
+    return [folder / f"{system}.json" for system in BODY_SYSTEMS if (folder / f"{system}.json").is_file()]
+
+
+def import_basic_cases(paths=None):
+    """Validate the whole authored batch, then add missing identities atomically.
+
+    Existing content, review state and deliberate suspension are preserved.
+    Publishing an explicitly imported fictional exercise does not mark it as
+    clinically reviewed: its original reviewStatus stays unchanged.
+    """
+    from .case_schema import validate_case
+    from .catalogue import case_type_for
+    report = {"new": 0, "unchanged": 0}
+    payloads, identities = [], set()
+    try:
+        for path in basic_case_bundles() if paths is None else paths:
+            path = Path(path)
+            if path.stat().st_size > 20 * 1024 * 1024:
+                raise ValueError("oversized basic bundle")
+            rows = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(rows, list):
+                raise ValueError("basic bundle must be a list")
+            for row in rows:
+                data = validate_case(row)
+                if data.get("learningTrack") != "basic" or data["catalogType"] != "fictional":
+                    raise ValueError("basic bundle requires fictional basic cases")
+                if data["caseId"] in identities:
+                    raise ValueError("duplicate basic identity")
+                identities.add(data["caseId"])
+                payloads.append(data)
+        for data in payloads:
+            if db.session.scalar(select(ClinicalCase.id).where(ClinicalCase.slug == data["caseId"])) is not None:
+                report["unchanged"] += 1
+                continue
+            db.session.add(ClinicalCase(slug=data["caseId"], title=data["caseTitle"],
+                specialty=data["specialty"], case_type=case_type_for(data), difficulty=data["difficulty"],
+                summary=data["summary"], data=data, is_published=True, is_generated=False))
+            report["new"] += 1
+        db.session.commit()
+    except (OSError, UnicodeError, ValueError, TypeError, KeyError, SQLAlchemyError):
+        db.session.rollback()
+        raise click.ClickException("O pacote de Casos Básicos é inválido. Nenhum caso deste lote foi incluído ou alterado.") from None
+    return report
+
+
 def store_import_drafts(importer, pmcids=None):
     """Persist each completed Portuguese draft; never replace a reviewed case."""
     from .catalogue import case_type_for
@@ -172,6 +222,16 @@ def restore_bundled_drafts(bundle_path=None):
 
 
 def register_commands(app):
+    @app.cli.command("import-cases")
+    @click.option("--source", "sources", multiple=True, type=click.Path(exists=True, dir_okay=False, path_type=Path),
+        help="Pacote JSON de Casos Básicos; repita para vários. Sem opção, usa os pacotes incluídos na aplicação.")
+    def import_cases(sources):
+        """Inclui exercícios fictícios básicos sem substituir fichas existentes."""
+        from .migrations import upgrade_database
+        upgrade_database()
+        report = import_basic_cases(sources or None)
+        click.echo(f"Casos Básicos: {report['new']} novos; {report['unchanged']} já existentes. Dados e revisões anteriores preservados.")
+
     @app.cli.command("export-real-drafts")
     @click.option("--output", type=click.Path(file_okay=False, path_type=Path), required=True)
     @click.option("--shard-size", type=click.IntRange(1, 500), default=100, show_default=True)
@@ -220,9 +280,10 @@ def register_commands(app):
             db.session.add(ClinicalCase(slug=data["caseId"], title=data["caseTitle"], specialty=data["specialty"], case_type=case_type_for(item), difficulty=data["difficulty"], summary=data["summary"], data=data, is_published=True, is_generated=False))
             added += 1
         db.session.commit()
+        basic = import_basic_cases()
         restore_bundled_inventory()
         restore_bundled_drafts()
-        click.echo(f"Banco pronto. {added} novos casos incluídos. Dados existentes preservados.")
+        click.echo(f"Banco pronto. {added} casos iniciais e {basic['new']} Casos Básicos incluídos. Dados existentes preservados.")
 
     @app.cli.command("upgrade-db")
     def upgrade_db():
@@ -253,6 +314,7 @@ def register_commands(app):
             last_id = batch[-1].id
             db.session.flush()
         db.session.commit()
+        import_basic_cases()
         restore_bundled_inventory()
         restore_bundled_drafts()
         click.echo("Banco atualizado. Consultas e notas anteriores preservadas.")

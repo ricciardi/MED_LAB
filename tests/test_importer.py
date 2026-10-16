@@ -377,7 +377,7 @@ def test_evaluation_excludes_missing_dimensions_and_preserves_six_sections():
         elif section["key"] == "diagnosis":
             section["evidenceRefs"] = [{"id": "D1", "quote": "Pneumonia"}]
     service._request.return_value = response
-    result = service.evaluate(real_case(), {"history": [{"question": "Você está com tosse?", "answer": "Sim."}],
+    result = service._evaluate(real_case(), {"history": [{"question": "Você está com tosse?", "answer": "Sim."}],
         "userSubmissions": [{"data": {"diagnosis": "Pneumonia"}}]})
     assert result["score"] == 60 and len(result["sections"]) == 6
     assert [s["score"] for s in result["sections"]] == [80, None, None, 40, None, 60]

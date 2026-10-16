@@ -1,3 +1,4 @@
+# Base five-dimension evaluator regressions; the version2 wrapper is covered in test_basic_questions.py.
 """Grading prompts allow proportional scores without changing the arithmetic.
 
 Provider responses are controlled: these tests verify contracts and preservation
@@ -49,7 +50,7 @@ def run_grade(case, scores, path):
     service._request = Mock(side_effect=[AIError("Formato inválido."), response]
                             if path == "numeric" else [response])
     service._audit_evaluation = Mock(return_value=[])
-    return service, service.evaluate(case, session)
+    return service, service._evaluate(case, session)
 
 
 @pytest.mark.parametrize("path", ["rich", "numeric"])

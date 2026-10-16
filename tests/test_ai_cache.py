@@ -1,3 +1,4 @@
+# Base five-dimension evaluator regressions; the version2 wrapper is covered in test_basic_questions.py.
 """Exact prompt prefixes without widening patient facts or claiming a cache hit."""
 from copy import deepcopy
 import json
@@ -73,8 +74,8 @@ def test_map_order_is_canonical_but_lists_text_and_chronology_are_preserved(serv
 def test_evaluator_keeps_case_prefix_before_variable_student_work(seed, service, monkeypatch):
     post = Mock(side_effect=[reply(evaluation()), reply(evaluation())])
     monkeypatch.setattr("medlab.ai.requests.post", post)
-    service.evaluate(seed, {})
-    service.evaluate(seed, {"history": [{"question": "Quando começou?", "answer": "Há quatro dias."}],
+    service._evaluate(seed, {})
+    service._evaluate(seed, {"history": [{"question": "Quando começou?", "answer": "Há quatro dias."}],
                             "userSubmissions": [{"data": {"diagnosis": "Hipótese diferente"}}]})
     first, second = map(messages, post.call_args_list)
     assert first[0] == second[0]
@@ -101,8 +102,8 @@ def test_evaluator_omits_provenance_but_preserves_missing_facts_and_clinical_mom
             section["score"] = 0
     post = Mock(side_effect=[reply(empty), reply(deepcopy(empty))])
     monkeypatch.setattr("medlab.ai.requests.post", post)
-    service.evaluate(case, {})
-    service.evaluate(changed, {})
+    service._evaluate(case, {})
+    service._evaluate(changed, {})
     first, second = map(messages, post.call_args_list)
     assert first == second
     content = second[1]["content"]

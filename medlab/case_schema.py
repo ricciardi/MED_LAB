@@ -127,7 +127,8 @@ def validate_case(data):
         "learningObjectives", "references", "rubric",
     }
     optional = {"simulationOnly", "reviewStatus", "origin", "reviewNote", "catalogType",
-                "caseType", "publicPresentation", "provenance", "examMedia", "useAuthorization", "referenceReasoning", "patientSpecies"}
+                "caseType", "publicPresentation", "provenance", "examMedia", "useAuthorization", "referenceReasoning", "patientSpecies",
+                "learningTrack", "bodySystem"}
     if not isinstance(data, dict) or not required <= data.keys() or data.keys() - required - optional:
         _fail("estrutura")
     case = deepcopy(data)
@@ -136,7 +137,12 @@ def validate_case(data):
         _fail("catalogType")
     real_case = case["catalogType"] == "published_case"
     case.setdefault("caseType", "Primeira consulta")
-    from .catalog import CASE_TYPES
+    from .catalog import BODY_SYSTEMS, CASE_TYPES
+    if "learningTrack" in case or "bodySystem" in case:
+        if case.get("learningTrack") != "basic":
+            _fail("learningTrack")
+        if not isinstance(case.get("bodySystem"), str) or case["bodySystem"] not in BODY_SYSTEMS:
+            _fail("bodySystem")
     if case["caseType"] not in CASE_TYPES:
         _fail("caseType")
     if "publicPresentation" in case:
@@ -165,7 +171,7 @@ def validate_case(data):
         "hospital_department_name", "surgery_injury_history", "transfusion_history",
         "infection_history", "system_review", "menstrual_history", "reproductive_history",
         "sexual_history", "vaccination_history", "travel_history", "idea", "concern",
-        "expectation", "respondent", "symptom_details",
+        "expectation", "respondent", "respondent_gender", "symptom_details",
     }
     profile = case["patientProfile"]
     if not isinstance(profile, dict) or not required_profile <= profile.keys() or profile.keys() - required_profile - optional_profile:
@@ -176,6 +182,11 @@ def validate_case(data):
     for name, value in profile.items():
         if name not in {"age_value", "symptom_details"}:
             profile[name] = _text(value, "patientProfile." + name)
+    if "respondent_gender" in profile:
+        if profile["respondent_gender"] not in {"female", "male", "unknown"}:
+            _fail("patientProfile.respondent_gender")
+        if not profile.get("respondent") or profile["respondent"] in {UNKNOWN_FACT, "unknown"}:
+            _fail("patientProfile.respondent_gender: requer respondent")
     if real_case and profile["name"] != ("Paciente animal — relato reservado ao acervo" if is_nonhuman_case(case) else "Paciente simulado"):
         _fail("patientProfile.name: utilize Paciente simulado")
     details = profile.get("symptom_details", {})

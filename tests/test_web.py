@@ -372,8 +372,9 @@ def test_complete_demo_workflow_uses_real_ai_service_contract(app, client, login
     consultation = stored(app, Consultation, consultation_id)
     assert consultation.status == "completed" and consultation.completed_at is not None
     assert consultation.differential == submitted["differential"]
-    assert len(consultation.evaluation["sections"]) == 6
-    assert {section["key"] for section in consultation.evaluation["sections"]} == set(SECTION_TITLES)
+    assert len(consultation.evaluation["sections"]) == 7
+    assert {section["key"] for section in consultation.evaluation["sections"]} == set(SECTION_TITLES) | {"basic_questions"}
+    assert consultation.evaluation["sections"][-2]["score"] is None  # Demo has no semantic provider.
     assert "demonstra" in consultation.evaluation["summary"].casefold()
     result = client.get(result_path)
     assert result.status_code == 200
@@ -426,7 +427,10 @@ def test_daily_ai_limit_releases_lock_and_does_not_call_provider(app, client, st
     ai.respond.assert_called_once()
 
 
-def test_init_db_is_repeatable_and_preserves_existing_data(app):
+def test_init_db_is_repeatable_and_preserves_existing_data(app, monkeypatch):
+    # This regression isolates the original eight seeds; basic-track bundle
+    # installation has its own atomicity/idempotence coverage.
+    monkeypatch.setattr("medlab.cli.basic_case_bundles", lambda: [])
     runner = app.test_cli_runner()
     first = runner.invoke(args=["init-db"])
     assert first.exit_code == 0, first.output

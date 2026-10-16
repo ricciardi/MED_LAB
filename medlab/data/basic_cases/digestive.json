@@ -1,0 +1,1259 @@
+[
+  {
+    "caseId": "basic-digestive-queimacao-refeicoes",
+    "caseTitle": "Queimação depois de comer",
+    "specialty": "Gastroenterologia",
+    "difficulty": "Iniciante",
+    "summary": "Sinto uma queimação que sobe depois das refeições.",
+    "publicPresentation": "Sinto uma queimação que sobe depois das refeições.",
+    "learningTrack": "basic",
+    "bodySystem": "digestive",
+    "catalogType": "fictional",
+    "caseType": "Sintomas digestivos",
+    "patientProfile": {
+      "name": "Bruna Ferreira",
+      "age_value": 36,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Designer",
+      "chief_complaint": "Sinto uma queimação que sobe depois das refeições.",
+      "present_illness_history": "Há dois meses sente queimação atrás do peito depois de jantar, com gosto azedo na boca ao deitar. Come depressa, conversa enquanto mastiga e arrota bastante. Às vezes sente a parte alta da barriga cheia após pouca comida. Não tem dor ao engolir, alimento parado, perda de peso, vômito com sangue ou fezes pretas. A sensação não aparece ao caminhar.",
+      "past_medical_history": "Não tenho doença crônica ou cirurgia digestiva.",
+      "personal_history": "Janto tarde e deito logo depois. Tomo três cafés por dia e refrigerante à noite. Não fumo.",
+      "family_history": "Minha mãe tem azia; não conheço câncer digestivo familiar.",
+      "other_medical_history": "Tomei antiácido ocasionalmente, com alívio curto. Não uso anti-inflamatório.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Trabalha em casa, com horários irregulares e refeições apressadas.",
+      "concern": "Quero saber se preciso fazer endoscopia imediatamente.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Sinto uma queimação que sobe depois das refeições.",
+        "Características dos sintomas": "Há dois meses sente queimação atrás do peito depois de jantar, com gosto azedo na boca ao deitar. Come depressa, conversa enquanto mastiga e arrota bastante. Às vezes sente a parte alta da barriga cheia após pouca comida. Não tem dor ao engolir, alimento parado, perda de peso, vômito com sangue ou fezes pretas. A sensação não aparece ao caminhar.",
+        "Doenças crônicas": "Não tenho doença crônica ou cirurgia digestiva.",
+        "Hábitos de vida": "Janto tarde e deito logo depois. Tomo três cafés por dia e refrigerante à noite. Não fumo.",
+        "História familiar": "Minha mãe tem azia; não conheço câncer digestivo familiar.",
+        "Medicamentos em uso": "Tomei antiácido ocasionalmente, com alívio curto. Não uso anti-inflamatório.",
+        "Preocupações do paciente": "Quero saber se preciso fazer endoscopia imediatamente.",
+        "Início dos sintomas": "Há dois meses, em várias noites da semana.",
+        "Fatores de melhora ou piora": "Piora ao deitar após jantar; melhora ao sentar.",
+        "Sintomas associados": "Gosto azedo, arrotos e sensação de estômago cheio; sem dificuldade para engolir."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame abdominal e cardiopulmonar"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [],
+    "optionalAuxiliaryLabs": [
+      "Hemograma",
+      "Endoscopia digestiva alta"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 116/74 mmHg; FC 72 bpm; temperatura 36,4 °C.",
+      "Exame abdominal e cardiopulmonar": "Abdome sem dor focal, massa ou defesa; ausculta sem alterações."
+    },
+    "auxiliaryLabs": {
+      "Hemograma": "Exame opcional do roteiro: hemoglobina 13,2 g/dL; leucócitos 6.200/mm³.",
+      "Endoscopia digestiva alta": "Etapa opcional se persistência apesar do manejo ou surgimento de sinais de alarme: pequenas erosões no esôfago distal, sem estenose ou úlcera gástrica."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Doença do refluxo gastroesofágico"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Dispepsia funcional"
+        },
+        {
+          "disease": "Doença ulcerosa péptica"
+        },
+        {
+          "disease": "Isquemia miocárdica"
+        }
+      ]
+    },
+    "treatments": "Ajustar horários e tamanho das refeições, evitar deitar logo após comer e identificar desencadeantes pessoais. Discutir tratamento antissecretor e retorno conforme avaliação clínica, sem impor restrições alimentares universais. Reavaliar com disfagia, perda de peso, sangramento ou dor torácica atípica; dor associada a esforço, dispneia ou sudorese exige avaliação imediata.",
+    "referenceReasoning": "Queimação retroesternal com regurgitação e relação com decúbito favorece refluxo. Plenitude epigástrica é sintoma dispéptico associado, não sinônimo de pirose. Dor torácica com esforço ou instabilidade mudaria a prioridade.\nJustificativa dos exames: O quadro típico sem sinais de alarme pode ser abordado clinicamente; não exigir endoscopia na primeira consulta. Endoscopia fica reservada à indicação clínica; não pedir tomografia abdominal de rotina para azia.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer pirose como queimação retroesternal, diferente de qualquer desconforto abdominal.",
+      "Distinguir dispepsia, incluindo plenitude epigástrica, de pirose e refluxo.",
+      "Investigar deglutição excessiva de ar e hábitos, sem deduzir aerofagia apenas por um arroto.",
+      "Nomear eructação como eliminação de ar pela boca, descrita como arroto.",
+      "Usar pós-prandial para localizar o sintoma no tempo após a refeição, não como diagnóstico."
+    ],
+    "references": [
+      {
+        "title": "NIDDK — Symptoms and causes of GERD",
+        "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/symptoms-causes"
+      },
+      {
+        "title": "NIDDK — Treatment for GERD",
+        "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/acid-reflux-ger-gerd-adults/treatment"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Distinguir pirose de dor epigástrica, investigar relação com alimentação e decúbito.",
+          "Pesquisar disfagia, sangramento, perda ponderal, anti-inflamatórios e sintomas cardiovasculares."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Exame abdominal e cardiopulmonar.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "O quadro típico sem sinais de alarme pode ser abordado clinicamente; não exigir endoscopia na primeira consulta.",
+          "Endoscopia fica reservada à indicação clínica; não pedir tomografia abdominal de rotina para azia."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Queimação retroesternal com regurgitação e relação com decúbito favorece refluxo. Plenitude epigástrica é sintoma dispéptico associado, não sinônimo de pirose. Dor torácica com esforço ou instabilidade mudaria a prioridade.",
+          "Distinguir as alternativas Dispepsia funcional, Doença ulcerosa péptica, Isquemia miocárdica, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Ajustar horários e tamanho das refeições, evitar deitar logo após comer e identificar desencadeantes pessoais. Discutir tratamento antissecretor e retorno conforme avaliação clínica, sem impor restrições alimentares universais.",
+          "Reavaliar com disfagia, perda de peso, sangramento ou dor torácica atípica; dor associada a esforço, dispneia ou sudorese exige avaliação imediata."
+        ],
+        "criticalActions": []
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-digestive-garganta-dolorosa",
+    "caseTitle": "Dor forte para engolir",
+    "specialty": "Otorrinolaringologia",
+    "difficulty": "Iniciante",
+    "summary": "Minha garganta dói muito quando engulo.",
+    "publicPresentation": "Minha garganta dói muito quando engulo.",
+    "learningTrack": "basic",
+    "bodySystem": "digestive",
+    "catalogType": "fictional",
+    "caseType": "Sintomas de ouvido, nariz e garganta",
+    "patientProfile": {
+      "name": "João Pires",
+      "age_value": 19,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Estudante",
+      "chief_complaint": "Minha garganta dói muito quando engulo.",
+      "present_illness_history": "Há dois dias sente dor para engolir, febre medida de 38,3 °C e mal-estar. Consegue engolir água, embora doa. Não sente alimento preso, não baba, não tem falta de ar ou dificuldade para abrir a boca. Não tem tosse ou coriza. Divide apartamento com colegas e um deles teve dor de garganta.",
+      "past_medical_history": "Não tenho doença crônica ou cirurgia.",
+      "personal_history": "Não fumo; durmo pouco em semanas de prova.",
+      "family_history": "Sem doenças hereditárias conhecidas.",
+      "other_medical_history": "Usei antitérmico; não tomei antibiótico.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Mora perto da faculdade e pode retornar para resultado.",
+      "concern": "Quero conseguir beber e comer sem tanta dor.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Minha garganta dói muito quando engulo.",
+        "Características dos sintomas": "Dói a passagem, mas a comida não fica parada.",
+        "Doenças crônicas": "Não tenho doença crônica ou cirurgia.",
+        "Hábitos de vida": "Não fumo; durmo pouco em semanas de prova.",
+        "História familiar": "Sem doenças hereditárias conhecidas.",
+        "Medicamentos em uso": "Usei antitérmico; não tomei antibiótico.",
+        "Preocupações do paciente": "Quero conseguir beber e comer sem tanta dor.",
+        "Início dos sintomas": "Há dois dias.",
+        "Sintomas associados": "Febre e mal-estar; consigo engolir a saliva."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Oroscopia",
+      "Palpação cervical"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Teste rápido para estreptococo do grupo A"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Hemograma"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "Temperatura 38,1 °C; FC 92 bpm; PA 118/72 mmHg; SpO₂ 99%.",
+      "Oroscopia": "Tonsilas aumentadas e hiperemiadas, com exsudato bilateral; úvula central; sem abaulamento unilateral ou trismo.",
+      "Palpação cervical": "Linfonodos cervicais anteriores aumentados e dolorosos."
+    },
+    "auxiliaryLabs": {
+      "Teste rápido para estreptococo do grupo A": "Positivo.",
+      "Hemograma": "Opcional: leucócitos 11.800/mm³, predominância de neutrófilos."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Faringotonsilite estreptocócica"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Faringite viral"
+        },
+        {
+          "disease": "Mononucleose infecciosa"
+        },
+        {
+          "disease": "Abscesso peritonsilar"
+        }
+      ]
+    },
+    "treatments": "Analgesia, líquidos e antibiótico apropriado conforme protocolo para infecção estreptocócica confirmada, alergias e adesão. Explicar medidas para reduzir transmissão e seguimento. URGENTE: obstrução respiratória, incapacidade de engolir saliva, trismo ou deterioração rápida exigem avaliação imediata.",
+    "referenceReasoning": "Dor faríngea, febre, exsudato e teste positivo apoiam etiologia estreptocócica. Odinofagia significa dor, enquanto disfagia é dificuldade no trânsito; os termos não são intercambiáveis.\nJustificativa dos exames: Teste etiológico ajuda a evitar antibiótico sem indicação; hemograma não substitui teste específico. Não pedir endoscopia ou imagem de rotina sem sinais de complicação.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Relacionar tonsilite à inflamação das tonsilas e avaliar etiologia e complicações.",
+      "Diferenciar odinofagia, dor ao engolir, de disfagia.",
+      "Pesquisar disfagia como dificuldade de passagem, que não está demonstrada apenas por dor nesta consulta."
+    ],
+    "references": [
+      {
+        "title": "CDC — Clinical guidance for group A streptococcal pharyngitis",
+        "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Distinguir dor ao engolir de dificuldade de passagem e avaliar ingestão de líquidos.",
+          "Perguntar dispneia, saliva não deglutida, trismo e unilateralidade, além de tosse e exposição."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Oroscopia, Palpação cervical.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Teste etiológico ajuda a evitar antibiótico sem indicação; hemograma não substitui teste específico.",
+          "Não pedir endoscopia ou imagem de rotina sem sinais de complicação."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Dor faríngea, febre, exsudato e teste positivo apoiam etiologia estreptocócica. Odinofagia significa dor, enquanto disfagia é dificuldade no trânsito; os termos não são intercambiáveis.",
+          "Distinguir as alternativas Faringite viral, Mononucleose infecciosa, Abscesso peritonsilar, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Analgesia, líquidos e antibiótico apropriado conforme protocolo para infecção estreptocócica confirmada, alergias e adesão. Explicar medidas para reduzir transmissão e seguimento.",
+          "URGENTE: obstrução respiratória, incapacidade de engolir saliva, trismo ou deterioração rápida exigem avaliação imediata."
+        ],
+        "criticalActions": [
+          "URGENTE: obstrução respiratória, incapacidade de engolir saliva, trismo ou deterioração rápida exigem avaliação imediata."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-digestive-boca-seca-ardor",
+    "caseTitle": "Boca seca e língua ardendo",
+    "specialty": "Clínica médica",
+    "difficulty": "Iniciante",
+    "summary": "Minha boca está seca e a língua arde; a comida está com gosto estranho.",
+    "publicPresentation": "Minha boca está seca e a língua arde; a comida está com gosto estranho.",
+    "learningTrack": "basic",
+    "bodySystem": "digestive",
+    "catalogType": "fictional",
+    "caseType": "Sintomas de ouvido, nariz e garganta",
+    "patientProfile": {
+      "name": "Sônia Reis",
+      "age_value": 58,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Costureira",
+      "chief_complaint": "Minha boca está seca e a língua arde; a comida está com gosto estranho.",
+      "present_illness_history": "Há seis semanas percebe boca seca, língua ardendo e gosto metálico. Precisa de água para comer pão. Ainda distingue doce e salgado, mas parecem mais fracos. Usa dentadura e tem dormido com ela. Não sente cheiro diferente, não tem perda de peso ou comida presa no peito.",
+      "past_medical_history": "Tenho humor deprimido em acompanhamento e uso dentadura há quatro anos.",
+      "personal_history": "Bebo pouca água quando trabalho e tomo café várias vezes. Não fumo.",
+      "family_history": "Minha irmã tem diabetes; não conheço doença autoimune familiar.",
+      "other_medical_history": "Comecei amitriptilina há dois meses; não uso corticoide inalatório.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Trabalha em casa e consegue procurar dentista na unidade.",
+      "concern": "Tenho medo de perder completamente o paladar.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Minha boca está seca e a língua arde; a comida está com gosto estranho.",
+        "Características dos sintomas": "A língua arde e fica um gosto de metal; doce e salgado ainda são percebidos.",
+        "Doenças crônicas": "Tenho humor deprimido em acompanhamento e uso dentadura há quatro anos.",
+        "Hábitos de vida": "Bebo pouca água quando trabalho e tomo café várias vezes. Não fumo.",
+        "História familiar": "Minha irmã tem diabetes; não conheço doença autoimune familiar.",
+        "Medicamentos em uso": "Comecei amitriptilina há dois meses; não uso corticoide inalatório.",
+        "Preocupações do paciente": "Tenho medo de perder completamente o paladar.",
+        "Início dos sintomas": "A secura começou semanas depois do remédio novo.",
+        "Fatores de melhora ou piora": "Melhora temporariamente ao beber água; piora com comida apimentada."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Inspeção oral e prótese",
+      "Teste gustativo clínico orientado"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [],
+    "optionalAuxiliaryLabs": [
+      "Exame micológico de raspado oral",
+      "Glicemia e hemograma"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 122/76 mmHg; FC 76 bpm; temperatura 36,5 °C.",
+      "Inspeção oral e prótese": "Mucosa seca, saliva escassa, língua eritematosa e placas brancas removíveis, deixando base avermelhada; estomatite sob a prótese. Sem massa ou úlcera endurecida.",
+      "Teste gustativo clínico orientado": "Reconhece doce e salgado em concentrações mais fortes; queixa de distorção metálica. Não há perda completa do paladar."
+    },
+    "auxiliaryLabs": {
+      "Exame micológico de raspado oral": "Opcional diante de dúvida ou resposta inadequada: estruturas compatíveis com Candida.",
+      "Glicemia e hemograma": "Glicemia em jejum 96 mg/dL; hemoglobina 12,8 g/dL; leucócitos 6.500/mm³."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Xerostomia medicamentosa com candidíase oral associada"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Síndrome de Sjögren"
+        },
+        {
+          "disease": "Deficiência nutricional"
+        },
+        {
+          "disease": "Síndrome da boca ardente primária"
+        }
+      ]
+    },
+    "treatments": "Rever o medicamento com o prescritor, tratar candidíase conforme avaliação, orientar higiene e retirada noturna da prótese e medidas para secura. Acompanhar odontologia e persistência dos sintomas. Investigar lesão persistente, perda de peso ou disfagia progressiva; não suspender psicotrópico abruptamente por conta própria.",
+    "referenceReasoning": "Relação temporal com medicamento, secura e lesões removíveis sugerem efeito medicamentoso com candidíase. Dor de língua é glossodínia; o teste mostra hipogeusia e a queixa distorcida parageusia, não ageusia.\nJustificativa dos exames: Inspeção oral e avaliação do paladar são centrais; exames laboratoriais são seletivos para causa ou dúvida. Não presumir que toda queixa de gosto ruim é perda completa do paladar ou doença neurológica.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Descrever glossodínia como dor ou ardor na língua, buscando causas secundárias.",
+      "Reconhecer xerostomia e seu impacto na alimentação e saúde oral.",
+      "Diferenciar ageusia, perda completa do paladar, de percepção reduzida ou distorcida; não está presente aqui.",
+      "Relacionar parageusia à distorção do paladar, como gosto metálico, sem equipará-la a perda completa.",
+      "Reconhecer hipogeusia como redução da percepção gustativa, com percepção ainda existente.",
+      "Reconhecer inflamação da mucosa oral como estomatite e investigar fatores locais."
+    ],
+    "references": [
+      {
+        "title": "NIDCR — Dry mouth",
+        "url": "https://www.nidcr.nih.gov/health-info/dry-mouth"
+      },
+      {
+        "title": "NIDCD — Taste disorders",
+        "url": "https://www.nidcd.nih.gov/health/taste-disorders"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar secura, ardor, olfato, tipos de gosto percebidos e início após medicamentos.",
+          "Investigar uso e higiene da prótese, hidratação, olhos secos e perda de peso."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Inspeção oral e prótese, Teste gustativo clínico orientado.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Inspeção oral e avaliação do paladar são centrais; exames laboratoriais são seletivos para causa ou dúvida.",
+          "Não presumir que toda queixa de gosto ruim é perda completa do paladar ou doença neurológica."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Relação temporal com medicamento, secura e lesões removíveis sugerem efeito medicamentoso com candidíase. Dor de língua é glossodínia; o teste mostra hipogeusia e a queixa distorcida parageusia, não ageusia.",
+          "Distinguir as alternativas Síndrome de Sjögren, Deficiência nutricional, Síndrome da boca ardente primária, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Rever o medicamento com o prescritor, tratar candidíase conforme avaliação, orientar higiene e retirada noturna da prótese e medidas para secura. Acompanhar odontologia e persistência dos sintomas.",
+          "Investigar lesão persistente, perda de peso ou disfagia progressiva; não suspender psicotrópico abruptamente por conta própria."
+        ],
+        "criticalActions": []
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-digestive-lingua-aumentada",
+    "caseTitle": "Língua aumentada e dificuldade na alimentação",
+    "specialty": "Cirurgia de cabeça e pescoço",
+    "difficulty": "Intermediário",
+    "summary": "A língua da minha filha está grande e ela está babando mais.",
+    "publicPresentation": "A língua da minha filha está grande e ela está babando mais.",
+    "learningTrack": "basic",
+    "bodySystem": "digestive",
+    "catalogType": "fictional",
+    "caseType": "Nódulos e massas",
+    "patientProfile": {
+      "name": "Luísa Prado",
+      "age_value": 4,
+      "age_unit": "anos",
+      "gender": "Menina",
+      "occupation": "Pré-escolar",
+      "chief_complaint": "A língua da minha filha está grande e ela está babando mais.",
+      "present_illness_history": "A mãe percebe língua volumosa desde o primeiro ano de vida, com aumento gradual. Nas últimas semanas mastigar alimentos sólidos ficou mais difícil e saliva escapa pela boca. Não houve início súbito, febre, engasgo importante ou falta de ar. Há um volume macio abaixo do queixo que aumenta junto.",
+      "past_medical_history": "Crescimento acompanhado; não teve cirurgia ou doença sistêmica conhecida.",
+      "personal_history": "Alimenta-se com ajuda da mãe, aceitando líquidos e alimentos macios.",
+      "family_history": "Não há lesões semelhantes na família.",
+      "other_medical_history": "Não usa remédio contínuo.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "A mãe acompanha a criança e deseja orientação para alimentação segura.",
+      "concern": "A mãe teme que a língua atrapalhe a respiração.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "A língua da minha filha está grande e ela está babando mais.",
+        "Características dos sintomas": "A língua parece grande, dificulta mastigar e a saliva escapa.",
+        "Doenças crônicas": "Crescimento acompanhado; não teve cirurgia ou doença sistêmica conhecida.",
+        "Hábitos de vida": "Alimenta-se com ajuda da mãe, aceitando líquidos e alimentos macios.",
+        "História familiar": "Não há lesões semelhantes na família.",
+        "Medicamentos em uso": "Não usa remédio contínuo.",
+        "Preocupações do paciente": "A mãe teme que a língua atrapalhe a respiração.",
+        "Início dos sintomas": "A mãe percebe desde o primeiro ano, com crescimento gradual.",
+        "Sintomas associados": "Sem febre, crescimento súbito ou falta de ar."
+      },
+      "respondent": "Mãe, responsável pela história.",
+      "respondent_gender": "female"
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais e via aérea",
+      "Exame oral e submentoniano"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Ultrassonografia com Doppler"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Ressonância de face e pescoço"
+    ],
+    "physicalExams": {
+      "Sinais vitais e via aérea": "Temperatura 36,5 °C; FC 98 bpm; SpO₂ 99%; sem estridor ou esforço respiratório.",
+      "Exame oral e submentoniano": "Macroglossia com pequenas vesículas translúcidas na superfície; aumento macio na região submentoniana, abaixo do mento, sem pulsação; sem sangramento ativo."
+    },
+    "auxiliaryLabs": {
+      "Ultrassonografia com Doppler": "Lesão multiloculada de conteúdo líquido no assoalho da boca e região submentoniana, sem fluxo interno significativo.",
+      "Ressonância de face e pescoço": "Etapa especializada: malformação cística que envolve língua e assoalho oral; delimita extensão e relação com via aérea."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Malformação linfática da língua e assoalho oral"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Hemangioma infantil"
+        },
+        {
+          "disease": "Malformação venosa"
+        },
+        {
+          "disease": "Cisto dermoide"
+        }
+      ]
+    },
+    "treatments": "Encaminhar à equipe de anomalias vasculares/otorrinolaringologia, avaliar deglutição e nutrição; discutir observação ou intervenção conforme função e extensão. A conduta não é determinada apenas pelo nome histórico. URGENTE: encaminhar se crescimento súbito, estridor, cianose, sangramento importante ou incapacidade de engolir.",
+    "referenceReasoning": "Lesão cística de baixo fluxo, presente desde cedo, favorece malformação linfática, historicamente chamada linfangioma. Hemangioma é tumor vascular com evolução e características diferentes; não são sinônimos.\nJustificativa dos exames: Doppler distingue fluxo e estrutura; ressonância define extensão para planejamento, sem exigir exame invasivo imediato. Não indicar punção ou biópsia às cegas de lesão vascular.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer macroglossia como aumento da língua, com avaliação funcional e de via aérea.",
+      "Reconhecer sialorreia e distinguir escape de saliva por dificuldade de controle oral de hipersecreção comprovada.",
+      "Localizar a região submentoniana abaixo do mento; o termo é anatômico, não uma doença.",
+      "Distinguir hemangioma de malformações vasculares, usando história e imagem.",
+      "Relacionar o termo histórico linfangioma à malformação linfática, sem tratá-lo como sinônimo de hemangioma."
+    ],
+    "references": [
+      {
+        "title": "ISSVA — Classification and glossary of vascular anomalies, 2025",
+        "url": "https://www.issva.org/classification"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Perguntar evolução desde o nascimento, alimentação, sangramento e sinais de obstrução.",
+          "Distinguir escape de saliva por dificuldade oral de produção obrigatoriamente excessiva."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais e via aérea, Exame oral e submentoniano.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Doppler distingue fluxo e estrutura; ressonância define extensão para planejamento, sem exigir exame invasivo imediato.",
+          "Não indicar punção ou biópsia às cegas de lesão vascular."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Lesão cística de baixo fluxo, presente desde cedo, favorece malformação linfática, historicamente chamada linfangioma. Hemangioma é tumor vascular com evolução e características diferentes; não são sinônimos.",
+          "Distinguir as alternativas Hemangioma infantil, Malformação venosa, Cisto dermoide, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhar à equipe de anomalias vasculares/otorrinolaringologia, avaliar deglutição e nutrição; discutir observação ou intervenção conforme função e extensão. A conduta não é determinada apenas pelo nome histórico.",
+          "URGENTE: encaminhar se crescimento súbito, estridor, cianose, sangramento importante ou incapacidade de engolir."
+        ],
+        "criticalActions": [
+          "URGENTE: encaminhar se crescimento súbito, estridor, cianose, sangramento importante ou incapacidade de engolir."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-digestive-olhos-amarelos",
+    "caseTitle": "Mal-estar, olhos amarelos e urina escura",
+    "specialty": "Gastroenterologia",
+    "difficulty": "Iniciante",
+    "summary": "Estou enjoada, meus olhos amarelaram e o xixi ficou escuro.",
+    "publicPresentation": "Estou enjoada, meus olhos amarelaram e o xixi ficou escuro.",
+    "learningTrack": "basic",
+    "bodySystem": "digestive",
+    "catalogType": "fictional",
+    "caseType": "Sintomas digestivos",
+    "patientProfile": {
+      "name": "Camila Teles",
+      "age_value": 29,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Educadora",
+      "chief_complaint": "Estou enjoada, meus olhos amarelaram e o xixi ficou escuro.",
+      "present_illness_history": "Há uma semana começou com falta de apetite, cansaço e náusea. Há dois dias percebeu olhos amarelos e urina cor de chá, sem ardor ou coágulos. Um colega com quem dividiu alimentos teve quadro semelhante recentemente. Não há confusão, sangramento ou dor abdominal intensa.",
+      "past_medical_history": "Não tenho doença hepática conhecida; não sei se recebi vacina contra hepatite A.",
+      "personal_history": "Não fumo; bebo raramente e não uso suplementos ou drogas.",
+      "family_history": "Sem doença hepática familiar conhecida.",
+      "other_medical_history": "Não usei doses altas de analgésicos nem comecei remédio novo.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Trabalha em centro educacional e mora com a irmã.",
+      "concern": "Tenho medo de transmitir isso à minha família.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Estou enjoada, meus olhos amarelaram e o xixi ficou escuro.",
+        "Características dos sintomas": "Há uma semana começou com falta de apetite, cansaço e náusea. Há dois dias percebeu olhos amarelos e urina cor de chá, sem ardor ou coágulos. Um colega com quem dividiu alimentos teve quadro semelhante recentemente. Não há confusão, sangramento ou dor abdominal intensa.",
+        "Doenças crônicas": "Não tenho doença hepática conhecida; não sei se recebi vacina contra hepatite A.",
+        "Hábitos de vida": "Não fumo; bebo raramente e não uso suplementos ou drogas.",
+        "História familiar": "Sem doença hepática familiar conhecida.",
+        "Medicamentos em uso": "Não usei doses altas de analgésicos nem comecei remédio novo.",
+        "Preocupações do paciente": "Tenho medo de transmitir isso à minha família.",
+        "Início dos sintomas": "O mal-estar começou há uma semana; a cor mudou há dois dias.",
+        "Hábitos intestinais e urinários": "Urina escura sem dor; fezes um pouco mais claras, sem sangue.",
+        "História sexual": "Parceiro fixo; não conhece exposição a sangue.",
+        "Vacinação": "Não tem certeza da vacina contra hepatite A."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Consciência e abdome"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Perfil hepático e coagulação",
+      "Sorologia para hepatite A"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Urina tipo I",
+      "Ultrassonografia abdominal"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 110/70 mmHg; FC 80 bpm; temperatura 37,2 °C.",
+      "Consciência e abdome": "Alerta e orientada; icterícia; discreto desconforto no hipocôndrio direito; sem defesa, ascite ou asterixe."
+    },
+    "auxiliaryLabs": {
+      "Perfil hepático e coagulação": "ALT 1.180 U/L; AST 890 U/L; bilirrubina total 5,2 mg/dL, direta 3,6 mg/dL; INR 1,1.",
+      "Sorologia para hepatite A": "IgM anti-HAV reagente.",
+      "Urina tipo I": "Bilirrubina 2+; reação para sangue negativa; hemácias 0–1 por campo.",
+      "Ultrassonografia abdominal": "Opcional se dúvida obstrutiva: sem dilatação biliar ou cálculo no colédoco."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Hepatite A aguda"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Lesão hepática medicamentosa"
+        },
+        {
+          "disease": "Obstrução biliar"
+        },
+        {
+          "disease": "Hemólise"
+        }
+      ]
+    },
+    "treatments": "Hidratação e suporte, evitar álcool e medicamentos hepatotóxicos, orientar higiene e contato com vigilância conforme regras locais. Avaliar profilaxia de contatos no prazo apropriado e acompanhar função hepática. URGENTE: confusão, sonolência anormal, sangramento, vômitos persistentes ou piora de coagulação exigem avaliação hospitalar.",
+    "referenceReasoning": "Sintomas agudos, transaminases elevadas e IgM anti-HAV sustentam hepatite A. Bilirrubina conjugada pode aparecer na urina; não confundir bilirrubinúria com sangue urinário. INR e consciência ajudam a detectar gravidade.\nJustificativa dos exames: Perfil hepático, INR e sorologia orientam diagnóstico e gravidade. Ultrassom é seletivo para suspeita de obstrução; não é exigido para toda sorologia positiva.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer hepatite como inflamação hepática e investigar causa e função, não apenas transaminases.",
+      "Diferenciar bilirrubinúria, ligada a bilirrubina conjugada, de hematúria e hemoglobinúria."
+    ],
+    "references": [
+      {
+        "title": "CDC — Hepatitis A virus infection",
+        "url": "https://www.cdc.gov/std/treatment-guidelines/hav.htm"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Perguntar exposição alimentar, contatos, medicamentos, álcool, vacinação e sintomas de insuficiência hepática.",
+          "Caracterizar cor da urina e fezes sem presumir infecção urinária."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Consciência e abdome.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Perfil hepático, INR e sorologia orientam diagnóstico e gravidade.",
+          "Ultrassom é seletivo para suspeita de obstrução; não é exigido para toda sorologia positiva."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sintomas agudos, transaminases elevadas e IgM anti-HAV sustentam hepatite A. Bilirrubina conjugada pode aparecer na urina; não confundir bilirrubinúria com sangue urinário. INR e consciência ajudam a detectar gravidade.",
+          "Distinguir as alternativas Lesão hepática medicamentosa, Obstrução biliar, Hemólise, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Hidratação e suporte, evitar álcool e medicamentos hepatotóxicos, orientar higiene e contato com vigilância conforme regras locais. Avaliar profilaxia de contatos no prazo apropriado e acompanhar função hepática.",
+          "URGENTE: confusão, sonolência anormal, sangramento, vômitos persistentes ou piora de coagulação exigem avaliação hospitalar."
+        ],
+        "criticalActions": [
+          "URGENTE: confusão, sonolência anormal, sangramento, vômitos persistentes ou piora de coagulação exigem avaliação hospitalar."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-digestive-dor-alta-abdome",
+    "caseTitle": "Dor persistente na parte alta da barriga",
+    "specialty": "Gastroenterologia",
+    "difficulty": "Intermediário",
+    "summary": "Estou com uma dor forte no alto da barriga que vai para as costas.",
+    "publicPresentation": "Estou com uma dor forte no alto da barriga que vai para as costas.",
+    "learningTrack": "basic",
+    "bodySystem": "digestive",
+    "catalogType": "fictional",
+    "caseType": "Dor abdominal",
+    "patientProfile": {
+      "name": "Renata Alves",
+      "age_value": 44,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Gerente de loja",
+      "chief_complaint": "Estou com uma dor forte no alto da barriga que vai para as costas.",
+      "present_illness_history": "A dor começou há doze horas e não passa. Fica na parte alta e vai para as costas; vomitou três vezes. Já teve dores curtas após refeições gordurosas, mas esta é mais longa. Não teve sangue no vômito, fezes pretas ou falta de ar.",
+      "past_medical_history": "Já me falaram em pedras na vesícula, mas não operei.",
+      "personal_history": "Não fumo; tomo bebida alcoólica raramente.",
+      "family_history": "Minha mãe operou a vesícula.",
+      "other_medical_history": "Não uso medicamento contínuo.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "A irmã a trouxe e pode acompanhar o atendimento.",
+      "concern": "Estou assustada porque a dor não passou como das outras vezes.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Estou com uma dor forte no alto da barriga que vai para as costas.",
+        "Características dos sintomas": "A dor começou há doze horas e não passa. Fica na parte alta e vai para as costas; vomitou três vezes. Já teve dores curtas após refeições gordurosas, mas esta é mais longa. Não teve sangue no vômito, fezes pretas ou falta de ar.",
+        "Doenças crônicas": "Já me falaram em pedras na vesícula, mas não operei.",
+        "Hábitos de vida": "Não fumo; tomo bebida alcoólica raramente.",
+        "História familiar": "Minha mãe operou a vesícula.",
+        "Medicamentos em uso": "Não uso medicamento contínuo.",
+        "Preocupações do paciente": "Estou assustada porque a dor não passou como das outras vezes.",
+        "Início dos sintomas": "Há doze horas, dor contínua.",
+        "Localização dos sintomas": "No alto da barriga, irradiando para as costas.",
+        "Sintomas associados": "Três vômitos e dificuldade de comer, sem sangue."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame abdominal e hidratação"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Lipase",
+      "Hemograma, função renal e eletrólitos",
+      "Ultrassonografia abdominal"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Perfil hepático"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 112/74 mmHg; FC 102 bpm; FR 20 irpm; temperatura 37,6 °C; SpO₂ 97%.",
+      "Exame abdominal e hidratação": "Dor epigástrica à palpação, sem rigidez; mucosa discretamente seca."
+    },
+    "auxiliaryLabs": {
+      "Lipase": "960 U/L; limite superior do laboratório 60 U/L.",
+      "Hemograma, função renal e eletrólitos": "Leucócitos 13.400/mm³; hematócrito 43%; ureia 36 mg/dL; creatinina 0,9 mg/dL; potássio 3,8 mmol/L.",
+      "Ultrassonografia abdominal": "Cálculos na vesícula; colédoco sem dilatação.",
+      "Perfil hepático": "ALT 210 U/L; bilirrubina total 1,4 mg/dL."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Pancreatite aguda provavelmente biliar"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Colecistite aguda"
+        },
+        {
+          "disease": "Úlcera péptica perfurada"
+        },
+        {
+          "disease": "Síndrome coronariana aguda"
+        }
+      ]
+    },
+    "treatments": "Encaminhar para cuidado hospitalar, analgesia, hidratação guiada por avaliação e reavaliação de gravidade. Alimentação oral/enteral conforme tolerância e planejamento da causa biliar. Não indicar antibiótico profilático em pancreatite sem infecção. URGENTE: dor persistente com vômitos requer avaliação e monitorização; reconhecer hipotensão, hipoxemia e oligúria como agravamento.",
+    "referenceReasoning": "Dor característica e lipase muito elevada sustentam pancreatite; cálculos e padrão hepático sugerem causa biliar. A lipase não define sozinha gravidade. Não é necessário exigir tomografia precoce se quadro e enzimas são claros.\nJustificativa dos exames: Lipase apoia diagnóstico; função renal, hematócrito e sinais vitais orientam monitorização. Ultrassom pesquisa causa biliar; tomografia é seletiva se dúvida ou evolução desfavorável, não um requisito inicial universal.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer pancreatite por integração clínica e laboratorial, separando diagnóstico de avaliação de gravidade."
+    ],
+    "references": [
+      {
+        "title": "NIDDK — Pancreatitis",
+        "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/pancreatitis"
+      },
+      {
+        "title": "NIDDK — Symptoms and causes of pancreatitis",
+        "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/pancreatitis/symptoms-causes"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar dor, vômitos, álcool, cálculos, medicamentos e sinais de instabilidade.",
+          "Perguntar episódios prévios e sintomas que sugiram causa cardíaca ou perfuração."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Exame abdominal e hidratação.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Lipase apoia diagnóstico; função renal, hematócrito e sinais vitais orientam monitorização.",
+          "Ultrassom pesquisa causa biliar; tomografia é seletiva se dúvida ou evolução desfavorável, não um requisito inicial universal."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Dor característica e lipase muito elevada sustentam pancreatite; cálculos e padrão hepático sugerem causa biliar. A lipase não define sozinha gravidade. Não é necessário exigir tomografia precoce se quadro e enzimas são claros.",
+          "Distinguir as alternativas Colecistite aguda, Úlcera péptica perfurada, Síndrome coronariana aguda, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhar para cuidado hospitalar, analgesia, hidratação guiada por avaliação e reavaliação de gravidade. Alimentação oral/enteral conforme tolerância e planejamento da causa biliar. Não indicar antibiótico profilático em pancreatite sem infecção.",
+          "URGENTE: dor persistente com vômitos requer avaliação e monitorização; reconhecer hipotensão, hipoxemia e oligúria como agravamento."
+        ],
+        "criticalActions": [
+          "URGENTE: dor persistente com vômitos requer avaliação e monitorização; reconhecer hipotensão, hipoxemia e oligúria como agravamento."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-digestive-vomito-escuro",
+    "caseTitle": "Vômito escuro e fezes pretas",
+    "specialty": "Gastroenterologia",
+    "difficulty": "Intermediário",
+    "summary": "Vomitei um material escuro e minhas fezes ficaram pretas.",
+    "publicPresentation": "Vomitei um material escuro e minhas fezes ficaram pretas.",
+    "learningTrack": "basic",
+    "bodySystem": "digestive",
+    "catalogType": "fictional",
+    "caseType": "Sintomas digestivos",
+    "patientProfile": {
+      "name": "Paulo Azevedo",
+      "age_value": 57,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Porteiro",
+      "chief_complaint": "Vomitei um material escuro e minhas fezes ficaram pretas.",
+      "present_illness_history": "Hoje vomitou material parecido com borra de café e evacuou fezes muito pretas, pegajosas e de cheiro forte. Sente tontura ao levantar. Usou anti-inflamatório diariamente na última semana por dor no joelho. Não usa ferro, bismuto ou anticoagulante e não teve sangramento nasal.",
+      "past_medical_history": "Tenho dor no joelho; nunca tive sangramento digestivo diagnosticado.",
+      "personal_history": "Fumo cinco cigarros por dia; consumo álcool em pequena quantidade nos fins de semana.",
+      "family_history": "Sem distúrbio hemorrágico familiar conhecido.",
+      "other_medical_history": "Usei ibuprofeno por conta própria por uma semana.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "A esposa o trouxe; trabalha em turnos noturnos.",
+      "concern": "Estou preocupado com a tontura e o vômito.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Vomitei um material escuro e minhas fezes ficaram pretas.",
+        "Características dos sintomas": "Vômito como borra de café e fezes pretas, pegajosas.",
+        "Doenças crônicas": "Tenho dor no joelho; nunca tive sangramento digestivo diagnosticado.",
+        "Hábitos de vida": "Fumo cinco cigarros por dia; consumo álcool em pequena quantidade nos fins de semana.",
+        "História familiar": "Sem distúrbio hemorrágico familiar conhecido.",
+        "Medicamentos em uso": "Usei ibuprofeno por conta própria por uma semana.",
+        "Preocupações do paciente": "Estou preocupado com a tontura e o vômito.",
+        "Início dos sintomas": "O vômito e as fezes pretas começaram hoje.",
+        "Sintomas associados": "Tontura ao levantar, sem desmaio."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais e perfusão",
+      "Exame abdominal",
+      "Toque retal consentido"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Hemograma",
+      "Função renal, coagulação e tipagem"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Endoscopia digestiva alta"
+    ],
+    "physicalExams": {
+      "Sinais vitais e perfusão": "PA 98/64 mmHg; FC 112 bpm; pele pálida e fria; enchimento capilar de 3 segundos.",
+      "Exame abdominal": "Discreto desconforto epigástrico, sem rigidez.",
+      "Toque retal consentido": "Fezes negras de aspecto compatível com melena."
+    },
+    "auxiliaryLabs": {
+      "Hemograma": "Hemoglobina 9,8 g/dL; hematócrito 29%; plaquetas 235.000/mm³.",
+      "Função renal, coagulação e tipagem": "Ureia 65 mg/dL; creatinina 1,0 mg/dL; INR 1,0; amostra enviada para tipagem e compatibilidade.",
+      "Endoscopia digestiva alta": "Após estabilização: úlcera duodenal com vaso visível; equipe realiza hemostasia endoscópica."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Hemorragia digestiva alta por úlcera duodenal"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Sangramento por varizes esofágicas"
+        },
+        {
+          "disease": "Laceração de Mallory-Weiss"
+        },
+        {
+          "disease": "Sangue deglutido de origem nasal"
+        }
+      ]
+    },
+    "treatments": "Estabilização com acesso venoso, monitorização e reposição/transfusão conforme quadro; suspender anti-inflamatório, iniciar manejo antissecretor e organizar endoscopia. Investigar Helicobacter pylori na etapa apropriada. URGENTE: reconhecer hemorragia com instabilidade e encaminhar para atendimento hospitalar; não dar alta apenas porque o vômito cessou.",
+    "referenceReasoning": "Hematêmese em borra de café e melena sugerem sangramento alto, com sinais de hipovolemia. A hemoglobina inicial pode subestimar perda aguda; estabilização precede a confirmação endoscópica.\nJustificativa dos exames: Hemograma e função renal ajudam no manejo; coagulação e compatibilidade preparam intervenção. Endoscopia identifica e trata a fonte após estabilização; não exigir sangue oculto para confirmar sangramento já visível.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer hematêmese como vômito de sangue vivo ou alterado, distinguindo-a de hemoptise.",
+      "Reconhecer melena pelo aspecto de sangue digerido nas fezes, sem confundir toda fezes escura com sangramento."
+    ],
+    "references": [
+      {
+        "title": "NIDDK — Symptoms and causes of gastrointestinal bleeding",
+        "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gastrointestinal-bleeding/symptoms-causes"
+      },
+      {
+        "title": "NIDDK — Treatment for gastrointestinal bleeding",
+        "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gastrointestinal-bleeding/treatment"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar vômito e fezes, quantidade, síncope e medicamentos ulcerogênicos ou anticoagulantes.",
+          "Pesquisar doença hepática e episódios anteriores, sem atrasar avaliação de estabilidade."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais e perfusão, Exame abdominal, Toque retal consentido.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Hemograma e função renal ajudam no manejo; coagulação e compatibilidade preparam intervenção.",
+          "Endoscopia identifica e trata a fonte após estabilização; não exigir sangue oculto para confirmar sangramento já visível."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Hematêmese em borra de café e melena sugerem sangramento alto, com sinais de hipovolemia. A hemoglobina inicial pode subestimar perda aguda; estabilização precede a confirmação endoscópica.",
+          "Distinguir as alternativas Sangramento por varizes esofágicas, Laceração de Mallory-Weiss, Sangue deglutido de origem nasal, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Estabilização com acesso venoso, monitorização e reposição/transfusão conforme quadro; suspender anti-inflamatório, iniciar manejo antissecretor e organizar endoscopia. Investigar Helicobacter pylori na etapa apropriada.",
+          "URGENTE: reconhecer hemorragia com instabilidade e encaminhar para atendimento hospitalar; não dar alta apenas porque o vômito cessou."
+        ],
+        "criticalActions": [
+          "URGENTE: reconhecer hemorragia com instabilidade e encaminhar para atendimento hospitalar; não dar alta apenas porque o vômito cessou."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-digestive-sangue-evacuacao",
+    "caseTitle": "Sangue vivo nas evacuações",
+    "specialty": "Coloproctologia",
+    "difficulty": "Intermediário",
+    "summary": "Saiu bastante sangue vermelho quando fui ao banheiro.",
+    "publicPresentation": "Saiu bastante sangue vermelho quando fui ao banheiro.",
+    "learningTrack": "basic",
+    "bodySystem": "digestive",
+    "catalogType": "fictional",
+    "caseType": "Sintomas digestivos",
+    "patientProfile": {
+      "name": "Elza Rocha",
+      "age_value": 72,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Aposentada",
+      "chief_complaint": "Saiu bastante sangue vermelho quando fui ao banheiro.",
+      "present_illness_history": "Teve três evacuações com sangue vermelho e coágulos desde a madrugada, sem dor abdominal ou anal. Não houve vômito com sangue nem fezes pretas antes disso. Sente leve fraqueza. Já soube que tinha divertículos em colonoscopia de cinco anos atrás.",
+      "past_medical_history": "Tenho hipertensão; colonoscopia prévia mostrou divertículos.",
+      "personal_history": "Não fumo; caminho quando possível.",
+      "family_history": "Não há câncer intestinal conhecido em parentes próximos.",
+      "other_medical_history": "Uso losartana; não tomo anticoagulantes ou anti-inflamatórios.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Mora com a filha e chegou acompanhada.",
+      "concern": "Quero saber de onde está vindo tanto sangue.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Saiu bastante sangue vermelho quando fui ao banheiro.",
+        "Características dos sintomas": "Teve três evacuações com sangue vermelho e coágulos desde a madrugada, sem dor abdominal ou anal. Não houve vômito com sangue nem fezes pretas antes disso. Sente leve fraqueza. Já soube que tinha divertículos em colonoscopia de cinco anos atrás.",
+        "Doenças crônicas": "Tenho hipertensão; colonoscopia prévia mostrou divertículos.",
+        "Hábitos de vida": "Não fumo; caminho quando possível.",
+        "História familiar": "Não há câncer intestinal conhecido em parentes próximos.",
+        "Medicamentos em uso": "Uso losartana; não tomo anticoagulantes ou anti-inflamatórios.",
+        "Preocupações do paciente": "Quero saber de onde está vindo tanto sangue.",
+        "Início dos sintomas": "Começou de madrugada, três episódios.",
+        "Hábitos intestinais e urinários": "Sangue vermelho misturado à evacuação e coágulos; não há ardor anal.",
+        "Sintomas associados": "Fraqueza leve, sem desmaio ou dor."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame abdominal",
+      "Inspeção anal e toque retal consentidos"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Hemograma e coagulação"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Colonoscopia"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 110/70 mmHg; FC 94 bpm; temperatura 36,5 °C.",
+      "Exame abdominal": "Sem dor focal, massa ou sinais peritoneais.",
+      "Inspeção anal e toque retal consentidos": "Sangue vivo na ampola; sem fissura ou fonte anal ativa evidente."
+    },
+    "auxiliaryLabs": {
+      "Hemograma e coagulação": "Hemoglobina 10,6 g/dL; plaquetas 220.000/mm³; INR 1,0.",
+      "Colonoscopia": "Após avaliação e preparo apropriados, se estabilidade: divertículo sigmoide com estigma recente de sangramento; sem neoplasia visível."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Hemorragia digestiva baixa provavelmente diverticular"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Neoplasia colorretal"
+        },
+        {
+          "disease": "Angiodisplasia"
+        },
+        {
+          "disease": "Hemorragia digestiva alta de trânsito rápido"
+        }
+      ]
+    },
+    "treatments": "Avaliação hospitalar, monitorização e reposição conforme necessidade; localizar e tratar a fonte segundo persistência e estabilidade. Ajustar seguimento após controle. URGENTE: sangramento volumoso, hipotensão, síncope ou piora exigem atendimento imediato, independentemente da cor do sangue.",
+    "referenceReasoning": "Sangue vivo retal descreve hematoquezia/enterorragia, mas não identifica sozinho o local. Sangramento alto intenso também pode exteriorizar sangue vivo; a investigação depende da estabilidade.\nJustificativa dos exames: Hemograma e estabilidade orientam o atendimento; colonoscopia é posterior ao preparo quando viável. Angiotomografia pode localizar sangramento ativo importante; não cobrar simultaneamente todos os métodos.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Descrever hematoquezia como eliminação de sangue vermelho pelo reto, sem localizar a origem apenas pela cor.",
+      "Reconhecer enterorragia como sangramento exteriorizado pelo intestino; distinguir descrição do sangramento de sua causa."
+    ],
+    "references": [
+      {
+        "title": "NIDDK — Symptoms and causes of gastrointestinal bleeding",
+        "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gastrointestinal-bleeding/symptoms-causes"
+      },
+      {
+        "title": "NIDDK — Treatment for gastrointestinal bleeding",
+        "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gastrointestinal-bleeding/treatment"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Quantificar episódios, cor, coágulos, dor, síncope e medicamentos.",
+          "Investigar mudança de hábito intestinal, perda de peso e exames prévios sem concluir hemorroidas por suposição."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Exame abdominal, Inspeção anal e toque retal consentidos.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Hemograma e estabilidade orientam o atendimento; colonoscopia é posterior ao preparo quando viável.",
+          "Angiotomografia pode localizar sangramento ativo importante; não cobrar simultaneamente todos os métodos."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sangue vivo retal descreve hematoquezia/enterorragia, mas não identifica sozinho o local. Sangramento alto intenso também pode exteriorizar sangue vivo; a investigação depende da estabilidade.",
+          "Distinguir as alternativas Neoplasia colorretal, Angiodisplasia, Hemorragia digestiva alta de trânsito rápido, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Avaliação hospitalar, monitorização e reposição conforme necessidade; localizar e tratar a fonte segundo persistência e estabilidade. Ajustar seguimento após controle.",
+          "URGENTE: sangramento volumoso, hipotensão, síncope ou piora exigem atendimento imediato, independentemente da cor do sangue."
+        ],
+        "criticalActions": [
+          "URGENTE: sangramento volumoso, hipotensão, síncope ou piora exigem atendimento imediato, independentemente da cor do sangue."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  }
+]

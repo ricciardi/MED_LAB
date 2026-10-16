@@ -25,6 +25,10 @@ _PROMPT = (
     'Você é um tutor de uma consulta SIMULADA em português brasileiro. Produza revisão didática específica '
     'desta consulta, sem calcular, corrigir ou devolver notas. grades é a avaliação existente, não um alvo a alterar. '
     'Não invente falhas ou elogios para justificar a nota existente. '
+    'Quando basicQuestionsReview estiver presente, já contém o roteiro de graduação julgado por item e '
+    'grupo. Considere suas evidências e dispensas contextuais no ensino, sem recalcular a categoria nem '
+    'transferir automaticamente suas lacunas para a rubrica específica. Não repita as mesmas orientações '
+    'em vários blocos; os detalhes dessa categoria serão anexados pelo servidor. '
     'Compare os critérios da ficha com ações literais registradas. Explique onde houve acerto ou lacuna, por que '
     'isso importa, como abordar melhor e dê uma pergunta concreta e natural quando útil. Não recite uma rubrica '
     'genérica nem elogie apenas por existir uma pergunta. Não transforme uma pergunta ampla em todas as perguntas '
@@ -185,8 +189,13 @@ def _grades(evaluation, case):
     score = evaluation.get('score')
     if score is not None and (isinstance(score, bool) or not isinstance(score, (int, float)) or not math.isfinite(score) or not 0 <= score <= 100):
         raise _InvalidFormat('invalid_existing_evaluation')
+    from .basic_questions import KEY, TITLE
+    titles = dict(SECTION_TITLES)
+    if evaluation.get('evaluationVersion') == 2:
+        titles = {key: value for key, value in titles.items() if key != 'overall'}
+        titles.update({KEY: TITLE, 'overall': SECTION_TITLES['overall']})
     rows = evaluation.get('sections')
-    if not isinstance(rows, list) or len(rows) != 6:
+    if not isinstance(rows, list) or len(rows) != len(titles):
         raise _InvalidFormat('invalid_existing_evaluation')
     qualitative = score is None and all(isinstance(row, dict) and row.get('score') is None
                                        and row.get('assessable') is False for row in rows)
@@ -194,15 +203,20 @@ def _grades(evaluation, case):
         raise _InvalidFormat('invalid_existing_evaluation')
     values = {}
     for row in rows:
-        if not isinstance(row, dict) or not isinstance(row.get('key'), str) or row['key'] not in SECTION_TITLES or row['key'] in values:
+        if not isinstance(row, dict) or not isinstance(row.get('key'), str) or row['key'] not in titles or row['key'] in values:
             raise _InvalidFormat('invalid_existing_evaluation')
         key, value = row['key'], row.get('score')
-        assessable = False if qualitative else case['rubric'][key].get('assessable', True)
+        assessable = False if qualitative else (row.get('assessable') if key == KEY or (key == 'overall' and evaluation.get('evaluationVersion') == 2) else case['rubric'][key].get('assessable', True))
+        if not isinstance(assessable, bool):
+            raise _InvalidFormat('invalid_existing_evaluation')
         if (not assessable and value is not None) or (assessable and (isinstance(value, bool) or not isinstance(value, (int, float))
                 or not math.isfinite(value) or not 0 <= value <= 100)):
             raise _InvalidFormat('invalid_existing_evaluation')
+        if key == KEY and (not isinstance(row.get('title'), str) or not isinstance(row.get('criteria'), list)
+                           or not isinstance(row.get('groups'), list) or row.get('reviewStatus') != 'educational'):
+            raise _InvalidFormat('invalid_existing_evaluation')
         values[key] = {'key': key, 'score': value, 'assessable': assessable}
-    return {'score': score, 'scale': '0-100', 'sections': [values[key] for key in SECTION_TITLES]}
+    return {'score': score, 'scale': '0-100', 'sections': [values[key] for key in titles]}
 
 
 def _review_context(case, evidence, exams):
@@ -408,6 +422,9 @@ def build_teaching_review(service, case_data, session_data, evaluation):
             'grades': {'scale': grades['scale'],
                        'sections': [{key: row[key] for key in ('key', 'assessable')} for row in grades['sections']],
                        'instruction': 'As notas existentes foram validadas pelo servidor e não são fornecidas para evitar ancoragem. Não calcule nem altere notas.'}}
+    basic_review = next((row for row in evaluation['sections'] if row['key'] == 'basic_questions'), None)
+    if basic_review is not None:
+        data['basicQuestionsReview'] = {key: deepcopy(basic_review[key]) for key in ('title', 'criteria', 'groups', 'reviewStatus')}
     previous_deadline = service._runtime_deadline
     deadline = time.monotonic() + 50
     service._runtime_deadline = min(previous_deadline, deadline) if previous_deadline is not None else deadline
@@ -418,7 +435,10 @@ def build_teaching_review(service, case_data, session_data, evaluation):
             value = None
             try:
                 value = service._request(_PROMPT, data, max_tokens)
-                return _normalize(value, criteria, exams, evidence)
+                result = _normalize(value, criteria, exams, evidence)
+                if basic_review is not None:
+                    result['basicQuestions'] = deepcopy(basic_review)
+                return result
             except _InvalidEvidence:
                 raise AIError('A revisão didática não confirmou referências e autoria das ações. Nenhum feedback adicional foi validado.') from None
             except _InvalidFormat as exc:

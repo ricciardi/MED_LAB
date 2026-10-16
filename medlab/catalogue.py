@@ -23,7 +23,7 @@ def public_summary(case_type):
 
 def filtered_cases(values):
     """Identical filters for browsing and random selection. Never search case JSON."""
-    from .catalog import CASE_TYPES
+    from .catalog import BODY_SYSTEMS, CASE_TYPES
     query = select(ClinicalCase).outerjoin(CaseDiscovery).where(ClinicalCase.is_published.is_(True))
     specialty = values.get("specialty", "").strip()[:80]
     difficulty = values.get("difficulty", "").strip()[:30]
@@ -31,6 +31,15 @@ def filtered_cases(values):
     search = values.get("q", "").strip()[:100]
     exams = values.get("exams", "all")
     exams = exams if exams in {"all", "results", "images"} else "all"
+    track = "basic" if values.get("track") == "basic" else ""
+    system = values.get("system", "")
+    system = system if system in BODY_SYSTEMS else ""
+    if system:
+        track = "basic"
+    if track:
+        query = query.where(CaseDiscovery.learning_track == track)
+    if system:
+        query = query.where(CaseDiscovery.body_system == system)
     if specialty:
         query = query.where(ClinicalCase.specialty == specialty)
     if difficulty:
@@ -57,7 +66,8 @@ def filtered_cases(values):
         query = query.where(or_(*predicates))
     return query, {"selected_specialty": specialty, "selected_difficulty": difficulty,
                    "selected_case_type": case_type, "search_query": search,
-                   "selected_exams": exams, "case_types": CASE_TYPES, "difficulties": DIFFICULTIES}
+                   "selected_exams": exams, "case_types": CASE_TYPES, "difficulties": DIFFICULTIES,
+                   "selected_track": track, "selected_system": system, "body_systems": BODY_SYSTEMS}
 
 
 def catalogue_counts(target=300):

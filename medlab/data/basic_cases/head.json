@@ -1,0 +1,1493 @@
+[
+  {
+    "caseId": "basic-head-01",
+    "caseTitle": "Falhas arredondadas no cabelo",
+    "specialty": "Dermatologia",
+    "difficulty": "Iniciante",
+    "caseType": "Alterações da pele",
+    "summary": "Apareceram duas falhas no meu cabelo e estou com vergonha.",
+    "publicPresentation": "Apareceram duas falhas no meu cabelo e estou com vergonha.",
+    "patientProfile": {
+      "name": "Marina Duarte",
+      "age_value": 26,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Professora",
+      "chief_complaint": "Apareceram duas falhas no meu cabelo e estou com vergonha.",
+      "present_illness_history": "Há seis semanas notou uma área sem cabelo ao pentear; depois apareceu outra. Não há dor, coceira forte, descamação ou secreção. Não usa penteado muito apertado nem percebe arrancar os fios. Está preocupada com a aparência e evita sair. Pergunta se raspar o cabelo faria crescer mais forte. Sem febre, perda de peso ou sintomas sistêmicos.",
+      "past_medical_history": "Antes deste episódio não havia doença crônica conhecida nem internações recentes.",
+      "personal_history": "Nunca fumei. Não uso drogas nem anabolizantes. Bebo uma taça de vinho, no máximo duas vezes por mês. Costumo caminhar três vezes por semana e comer arroz, feijão, verduras e frutas.",
+      "family_history": "Mãe viva, com pressão alta controlada; pai vivo, sem doença conhecida. Uma irmã saudável. Sem episódios semelhantes conhecidos na família.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Casado(a); vive com o cônjuge.",
+      "address": "Mora em Campinas, São Paulo, em área urbana; nasceu em Sorocaba e mudou há seis anos. Endereço fictício, sem necessidade de informar número de documento.",
+      "basic_info": "Nome completo: Marina Duarte. Naturalidade: Sorocaba, São Paulo. Cor autodeclarada: parda. Identifica-se com o gênero informado; acolhe pergunta respeitosa. Nome da mãe: Rosa Duarte. Religião católica, sem restrição de cuidado por crença. Todos os dados pessoais são fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "O próprio paciente responde em linguagem leiga.",
+      "symptom_details": {
+        "Queixa principal": "Apareceram duas falhas no meu cabelo e estou com vergonha.",
+        "Características dos sintomas": "Há seis semanas notou uma área sem cabelo ao pentear; depois apareceu outra. Não há dor, coceira forte, descamação ou secreção. Não usa penteado muito apertado nem percebe arrancar os fios. Está preocupada com a aparência e evita sair. Pergunta se raspar o cabelo faria crescer mais forte. Sem febre, perda de peso ou sintomas sistêmicos.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      }
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "head",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Exame do couro cabeludo",
+      "Exame de pele e unhas"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Exame do couro cabeludo": "Duas placas arredondadas de perda de cabelos, pele lisa sem cicatriz ou descamação importante, alguns pelos em ponto de exclamação na periferia.",
+      "Exame de pele e unhas": "Discreto pontilhado ungueal; sem outras lesões extensas."
+    },
+    "mustAuxiliaryLabs": [],
+    "optionalAuxiliaryLabs": [
+      "Exame micológico direto de fios"
+    ],
+    "auxiliaryLabs": {
+      "Exame micológico direto de fios": "Sem fungos identificados; exame indicado apenas se suspeita de micose pelo contexto."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Alopecia areata"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Tinea capitis"
+        },
+        {
+          "disease": "Alopecia por tração"
+        }
+      ]
+    },
+    "treatments": "Acolher impacto emocional, discutir opções dermatológicas e prognóstico variável, sem prometer crescimento completo. Orientar cuidados e retorno se progressão; explicar que raspar é escolha estética, não cura.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Alopécia, Tricotomia.",
+      "Perguntar evolução, distribuição, sintomas locais, hábitos capilares e impacto emocional.",
+      "Diferenciar queda espontânea de corte/raspagem, tração e arrancamento."
+    ],
+    "references": [
+      {
+        "title": "NIAMS — Alopecia areata",
+        "url": "https://www.niams.nih.gov/health-topics/alopecia-areata"
+      }
+    ],
+    "referenceReasoning": "Padrão clínico apoia alopecia areata; testes devem ser dirigidos a dúvida diagnóstica e sinais associados. Tricotomia significa corte/remoção de pelos, não doença nem tratamento que fortaleça folículos. Painéis hormonais ou vitamínicos extensos não são automáticos sem indício clínico.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Perguntar evolução, distribuição, sintomas locais, hábitos capilares e impacto emocional.",
+          "Diferenciar queda espontânea de corte/raspagem, tração e arrancamento."
+        ],
+        "criticalActions": [
+          "Evitar culpabilização ou promessa de cura por raspagem."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Exame do couro cabeludo, Exame de pele e unhas com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Evitar culpabilização ou promessa de cura por raspagem."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Padrão clínico apoia alopecia areata; testes devem ser dirigidos a dúvida diagnóstica e sinais associados. Tricotomia significa corte/remoção de pelos, não doença nem tratamento que fortaleça folículos. Painéis hormonais ou vitamínicos extensos não são automáticos sem indício clínico."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Alopecia areata com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Tinea capitis, Alopecia por tração e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Acolher impacto emocional, discutir opções dermatológicas e prognóstico variável, sem prometer crescimento completo. Orientar cuidados e retorno se progressão; explicar que raspar é escolha estética, não cura."
+        ],
+        "criticalActions": [
+          "Evitar culpabilização ou promessa de cura por raspagem."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Evitar culpabilização ou promessa de cura por raspagem."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-head-02",
+    "caseTitle": "Pelos no rosto e menstruação irregular",
+    "specialty": "Endocrinologia e metabologia",
+    "difficulty": "Intermediário",
+    "caseType": "Sintomas ginecológicos",
+    "summary": "Tenho cada vez mais pelos no queixo e minha menstruação demora a vir.",
+    "publicPresentation": "Tenho cada vez mais pelos no queixo e minha menstruação demora a vir.",
+    "patientProfile": {
+      "name": "Ana Lopes",
+      "age_value": 25,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Estudante",
+      "chief_complaint": "Tenho cada vez mais pelos no queixo e minha menstruação demora a vir.",
+      "present_illness_history": "Há dois anos percebe pelos grossos no queixo e abdome, com acne e ciclos a cada dois ou três meses. A mudança foi gradual, sem engrossamento rápido da voz ou aumento súbito de massa muscular. Não usa anabolizante. Está sem menstruar há oito semanas, mantém relação sexual e usa preservativo. A aparência incomoda, mas prefere que o assunto seja tratado com discrição.",
+      "past_medical_history": "Antes deste episódio não havia doença crônica conhecida nem internações recentes.",
+      "personal_history": "Nunca fumei. Não uso drogas nem anabolizantes. Bebo uma taça de vinho, no máximo duas vezes por mês. Costumo caminhar três vezes por semana e comer arroz, feijão, verduras e frutas.",
+      "family_history": "Mãe viva, com pressão alta controlada; pai vivo, sem doença conhecida. Uma irmã saudável. Sem episódios semelhantes conhecidos na família.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Vive com parceiro fixo; nunca teve filhos.",
+      "address": "Mora em Campinas, São Paulo, em área urbana; nasceu em Sorocaba e mudou há seis anos. Endereço fictício, sem necessidade de informar número de documento.",
+      "basic_info": "Nome completo: Ana Lopes. Naturalidade: Sorocaba, São Paulo. Cor autodeclarada: parda. Identifica-se com o gênero informado; acolhe pergunta respeitosa. Nome da mãe: Rosa Duarte. Religião católica, sem restrição de cuidado por crença. Todos os dados pessoais são fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "O próprio paciente responde em linguagem leiga.",
+      "symptom_details": {
+        "Queixa principal": "Tenho cada vez mais pelos no queixo e minha menstruação demora a vir.",
+        "Características dos sintomas": "Há dois anos percebe pelos grossos no queixo e abdome, com acne e ciclos a cada dois ou três meses. A mudança foi gradual, sem engrossamento rápido da voz ou aumento súbito de massa muscular. Não usa anabolizante. Está sem menstruar há oito semanas, mantém relação sexual e usa preservativo. A aparência incomoda, mas prefere que o assunto seja tratado com discrição.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      },
+      "menstrual_history": "Menarca aos treze anos; ciclos de sessenta a noventa dias nos últimos dois anos. Última menstruação há oito semanas.",
+      "sexual_history": "Relação consensual com parceiro fixo, usa preservativo; aceita perguntas em privacidade.",
+      "reproductive_history": "Nunca engravidou. Ainda não decidiu se quer filhos."
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "head",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Exame consentido de pele e sinais endócrinos",
+      "Sinais vitais e medidas"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Exame consentido de pele e sinais endócrinos": "Pelos terminais em face e linha média abdominal, acne leve; sem sinais de virilização rápida.",
+      "Sinais vitais e medidas": "PA 118/78 mmHg; IMC 28 kg/m²; sem estrias violáceas ou fraqueza proximal."
+    },
+    "mustAuxiliaryLabs": [
+      "Teste de gravidez",
+      "Perfil hormonal dirigido"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Ultrassonografia pélvica"
+    ],
+    "auxiliaryLabs": {
+      "Teste de gravidez": "Negativo.",
+      "Perfil hormonal dirigido": "Testosterona discretamente acima do intervalo feminino do laboratório; TSH, prolactina e 17-hidroxiprogesterona basais sem alteração relevante.",
+      "Ultrassonografia pélvica": "Múltiplos pequenos folículos; achado isolado não define a síndrome."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Síndrome dos ovários policísticos"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Hiperplasia adrenal congênita não clássica"
+        },
+        {
+          "disease": "Tumor produtor de andrógenos"
+        }
+      ]
+    },
+    "treatments": "Discussão compartilhada de cuidados metabólicos, ciclos, contracepção ou fertilidade e manejo do hirsutismo. Respeitar preferências e acompanhamento especializado; não prescrever hormônios sem avaliar contraindicações.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Hirsutismo.",
+      "Investigar início/velocidade dos pelos, ciclos, possibilidade de gravidez, medicamentos e virilização.",
+      "Explorar objetivos reprodutivos e sofrimento sem pressupor que todo pelo seja patológico."
+    ],
+    "references": [
+      {
+        "title": "NHS — Hirsutism",
+        "url": "https://www.nhs.uk/symptoms/hirsutism/"
+      },
+      {
+        "title": "Royal Berkshire NHS — PCOS",
+        "url": "https://www.royalberkshire.nhs.uk/media/1sopgh3q/pcos_jan25.pdf"
+      }
+    ],
+    "referenceReasoning": "A combinação de hiperandrogenismo e disfunção ovulatória, após excluir outras causas, sustenta o diagnóstico; ultrassom isolado não basta e pode não ser necessário quando critérios já estão claros. Crescimento rápido com virilização demandaria investigação tumoral. Exames dependem de contexto e momento.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Investigar início/velocidade dos pelos, ciclos, possibilidade de gravidez, medicamentos e virilização.",
+          "Explorar objetivos reprodutivos e sofrimento sem pressupor que todo pelo seja patológico."
+        ],
+        "criticalActions": [
+          "Excluir gestação e sinais de virilização rápida antes de concluir."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Exame consentido de pele e sinais endócrinos, Sinais vitais e medidas com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Excluir gestação e sinais de virilização rápida antes de concluir."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "A combinação de hiperandrogenismo e disfunção ovulatória, após excluir outras causas, sustenta o diagnóstico; ultrassom isolado não basta e pode não ser necessário quando critérios já estão claros. Crescimento rápido com virilização demandaria investigação tumoral. Exames dependem de contexto e momento."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Síndrome dos ovários policísticos com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Hiperplasia adrenal congênita não clássica, Tumor produtor de andrógenos e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Discussão compartilhada de cuidados metabólicos, ciclos, contracepção ou fertilidade e manejo do hirsutismo. Respeitar preferências e acompanhamento especializado; não prescrever hormônios sem avaliar contraindicações."
+        ],
+        "criticalActions": [
+          "Excluir gestação e sinais de virilização rápida antes de concluir."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Excluir gestação e sinais de virilização rápida antes de concluir."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-head-03",
+    "caseTitle": "Mudança no formato da cabeça do bebê",
+    "specialty": "Neurocirurgia",
+    "difficulty": "Intermediário",
+    "caseType": "Queixa pediátrica",
+    "summary": "A cabeça dela está ficando alta e com um formato diferente.",
+    "publicPresentation": "A cabeça dela está ficando alta e com um formato diferente.",
+    "patientProfile": {
+      "name": "Clara Duarte",
+      "age_value": 6,
+      "age_unit": "meses",
+      "gender": "Mulher",
+      "occupation": "Lactente",
+      "chief_complaint": "A cabeça dela está ficando alta e com um formato diferente.",
+      "present_illness_history": "A mãe percebe desde os primeiros meses que a cabeça da filha parece alta e curta na frente e atrás; a forma ficou mais evidente. Os olhos parecem mais afastados e salientes. Mama, ganha peso e sorri, sem vômitos repetidos, convulsões ou sonolência nova. Foi orientada a avaliar o crescimento, mas ainda não recebeu diagnóstico. Não quer que atribuam a culpa à posição de dormir.",
+      "past_medical_history": "Antes deste episódio não havia doença crônica conhecida nem internações recentes.",
+      "personal_history": "Recebe leite materno. Família sem tabagismo em casa; vacinação acompanhada na unidade de saúde. Iniciou recentemente alimentação complementar orientada pela pediatria.",
+      "family_history": "Pais sem alterações cranianas conhecidas; irmã mais velha saudável.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Não se aplica à criança.",
+      "address": "Nasceu e mora em Campinas, São Paulo, com os pais; nunca morou em outro município.",
+      "basic_info": "Filha: Clara Duarte, seis meses, menina. Mãe/responsável: Rosa Duarte, 29 anos. Nascida e residente em Campinas. Pais vivem juntos; dados inteiramente fictícios.",
+      "social_background": "A família sustenta a criança. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "A mãe, Rosa Duarte, adulta, responde sobre a filha de seis meses. A criança não fala.",
+      "symptom_details": {
+        "Queixa principal": "A cabeça dela está ficando alta e com um formato diferente.",
+        "Características dos sintomas": "A mãe percebe desde os primeiros meses que a cabeça da filha parece alta e curta na frente e atrás; a forma ficou mais evidente. Os olhos parecem mais afastados e salientes. Mama, ganha peso e sorri, sem vômitos repetidos, convulsões ou sonolência nova. Foi orientada a avaliar o crescimento, mas ainda não recebeu diagnóstico. Não quer que atribuam a culpa à posição de dormir.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      },
+      "respondent_gender": "female"
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "head",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Perímetro e formato craniano",
+      "Avaliação do desenvolvimento e olhos"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Perímetro e formato craniano": "Perímetro cefálico 42 cm; crânio alto/turricefálico, redução anteroposterior e crista palpável em suturas coronais. Distância interorbital aumentada.",
+      "Avaliação do desenvolvimento e olhos": "Interage e sustenta cabeça; proptose discreta, sem lesão corneana ou sinais agudos de hipertensão intracraniana."
+    },
+    "mustAuxiliaryLabs": [
+      "Tomografia craniana de baixa dose com reconstrução óssea"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Avaliação genética dirigida"
+    ],
+    "auxiliaryLabs": {
+      "Tomografia craniana de baixa dose com reconstrução óssea": "Fechamento bilateral precoce das suturas coronais, solicitado pela equipe especializada após exame clínico.",
+      "Avaliação genética dirigida": "Ainda sem resultado etiológico; não afirmar síndrome genética específica antes da avaliação."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Craniossinostose bicoronal com fenótipo sindrômico a investigar"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Deformidade posicional do crânio"
+        },
+        {
+          "disease": "Hidrocefalia"
+        }
+      ]
+    },
+    "treatments": "Encaminhar a equipe craniofacial/neurocirúrgica pediátrica, avaliar visão e desenvolvimento e discutir opções e momento de tratamento. Orientar sinais de hipertensão intracraniana e apoio familiar.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Acrocefalia, Craniosinostose, Hipertelorismo.",
+      "Reconstruir formato desde nascimento, crescimento e marcos de desenvolvimento.",
+      "Investigar vômitos, alteração de consciência, visão e história familiar; acolher o responsável."
+    ],
+    "references": [
+      {
+        "title": "CDC — Craniosynostosis",
+        "url": "https://www.cdc.gov/birth-defects/about/craniosynostosis.html"
+      },
+      {
+        "title": "MedlinePlus Genetics — Crouzon syndrome",
+        "url": "https://medlineplus.gov/genetics/condition/crouzon-syndrome/"
+      }
+    ],
+    "referenceReasoning": "Acrocefalia descreve formato alto/pontiagudo e hipertelorismo descreve distância entre órbitas; não são etiologias. Exame orienta encaminhamento, e imagem óssea deve ser justificada pela equipe para planejamento, evitando radiação repetida. O fenótipo sugere investigação sindrômica, sem tornar Crouzon diagnóstico automático.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Reconstruir formato desde nascimento, crescimento e marcos de desenvolvimento.",
+          "Investigar vômitos, alteração de consciência, visão e história familiar; acolher o responsável."
+        ],
+        "criticalActions": [
+          "Não confundir fusão de suturas com alteração posicional sem avaliar crescimento e sinais de alarme."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Perímetro e formato craniano, Avaliação do desenvolvimento e olhos com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Não confundir fusão de suturas com alteração posicional sem avaliar crescimento e sinais de alarme."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Acrocefalia descreve formato alto/pontiagudo e hipertelorismo descreve distância entre órbitas; não são etiologias. Exame orienta encaminhamento, e imagem óssea deve ser justificada pela equipe para planejamento, evitando radiação repetida. O fenótipo sugere investigação sindrômica, sem tornar Crouzon diagnóstico automático."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Craniossinostose bicoronal com fenótipo sindrômico a investigar com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Deformidade posicional do crânio, Hidrocefalia e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhar a equipe craniofacial/neurocirúrgica pediátrica, avaliar visão e desenvolvimento e discutir opções e momento de tratamento. Orientar sinais de hipertensão intracraniana e apoio familiar."
+        ],
+        "criticalActions": [
+          "Não confundir fusão de suturas com alteração posicional sem avaliar crescimento e sinais de alarme."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Não confundir fusão de suturas com alteração posicional sem avaliar crescimento e sinais de alarme."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-head-04",
+    "caseTitle": "Preocupação após exame do pré-natal",
+    "specialty": "Ginecologia e obstetrícia",
+    "difficulty": "Intermediário",
+    "caseType": "Queixa pediátrica",
+    "summary": "No ultrassom disseram que precisam olhar melhor a formação da cabeça do bebê.",
+    "publicPresentation": "No ultrassom disseram que precisam olhar melhor a formação da cabeça do bebê.",
+    "patientProfile": {
+      "name": "Juliana Duarte",
+      "age_value": 29,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Auxiliar administrativa",
+      "chief_complaint": "No ultrassom disseram que precisam olhar melhor a formação da cabeça do bebê.",
+      "present_illness_history": "Gestante de treze semanas, primeira gravidez, veio angustiada após exame em que foi orientada a procurar medicina fetal. Ainda não recebeu explicação do diagnóstico. Não tem dor, sangramento ou perda de líquido. Começou vitaminas após descobrir a gestação, com sete semanas. Não usa medicamento antiepiléptico. Quer saber o que o exame mostrou e teme ter causado o problema.",
+      "past_medical_history": "Antes deste episódio não havia doença crônica conhecida nem internações recentes.",
+      "personal_history": "Nunca fumei. Não uso drogas nem anabolizantes. Bebo uma taça de vinho, no máximo duas vezes por mês. Costumo caminhar três vezes por semana e comer arroz, feijão, verduras e frutas.",
+      "family_history": "Pais e irmãos vivos, sem malformações conhecidas.",
+      "other_medical_history": "Usa suplemento pré-natal iniciado após descobrir a gravidez; nega antiepilépticos e outras medicações.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Casada; primeira gestação, sem filhos prévios.",
+      "address": "Nasceu e sempre morou em Campinas, São Paulo; vive com o marido em área urbana.",
+      "basic_info": "Nome: Juliana Duarte; 29 anos; mulher; natural e residente em Campinas. Nome da mãe: Rosa Duarte. Primeira gestação. Dados fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "A própria gestante responde sobre sua saúde e o exame fetal; não interpretar o feto como interlocutor.",
+      "symptom_details": {
+        "Queixa principal": "No ultrassom disseram que precisam olhar melhor a formação da cabeça do bebê.",
+        "Características dos sintomas": "Gestante de treze semanas, primeira gravidez, veio angustiada após exame em que foi orientada a procurar medicina fetal. Ainda não recebeu explicação do diagnóstico. Não tem dor, sangramento ou perda de líquido. Começou vitaminas após descobrir a gestação, com sete semanas. Não usa medicamento antiepiléptico. Quer saber o que o exame mostrou e teme ter causado o problema.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      },
+      "reproductive_history": "Primeira gravidez, treze semanas; sem abortamentos anteriores."
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "head",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Avaliação materna"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Avaliação materna": "PA 112/72 mmHg; FC 82 bpm; afebril, hemodinamicamente estável, muito apreensiva."
+    },
+    "mustAuxiliaryLabs": [
+      "Ultrassonografia obstétrica especializada"
+    ],
+    "optionalAuxiliaryLabs": [],
+    "auxiliaryLabs": {
+      "Ultrassonografia obstétrica especializada": "Ausência de calota craniana e de grande parte do tecido encefálico acima das órbitas, confirmada por especialista; demais medidas gestacionais compatíveis com treze semanas."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Anencefalia fetal"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Acrania fetal"
+        },
+        {
+          "disease": "Encefalocele"
+        }
+      ]
+    },
+    "treatments": "Acolher e encaminhar à medicina fetal para confirmação, explicação do prognóstico e discussão das opções de cuidado disponíveis conforme contexto local, preferências e equipe. Oferecer apoio psicológico e aconselhamento para futuras gestações; não prometer cura.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Anencefalia.",
+      "Ouvir o que a gestante entendeu, suas preocupações e rede de apoio.",
+      "Recolher idade gestacional, exames, antecedentes e medicamentos sem culpabilizar.",
+      "Distinguir história materna da condição fetal: o feto não responde à entrevista."
+    ],
+    "references": [
+      {
+        "title": "CDC — Anencephaly",
+        "url": "https://www.cdc.gov/birth-defects/about/anencephaly.html"
+      }
+    ],
+    "referenceReasoning": "O diagnóstico depende de imagem obstétrica especializada e comunicação cuidadosa. Não confundir anencefalia com microcefalia nem inferir causa individual pela suplementação tardia. Exames maternos indiscriminados não corrigem o defeito nem substituem confirmação e aconselhamento.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Ouvir o que a gestante entendeu, suas preocupações e rede de apoio.",
+          "Recolher idade gestacional, exames, antecedentes e medicamentos sem culpabilizar.",
+          "Distinguir história materna da condição fetal: o feto não responde à entrevista."
+        ],
+        "criticalActions": [
+          "Comunicar de forma sensível, sem culpa ou promessas, e não simular fala do feto."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Avaliação materna com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Comunicar de forma sensível, sem culpa ou promessas, e não simular fala do feto."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "O diagnóstico depende de imagem obstétrica especializada e comunicação cuidadosa. Não confundir anencefalia com microcefalia nem inferir causa individual pela suplementação tardia. Exames maternos indiscriminados não corrigem o defeito nem substituem confirmação e aconselhamento."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Anencefalia fetal com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Acrania fetal, Encefalocele e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Acolher e encaminhar à medicina fetal para confirmação, explicação do prognóstico e discussão das opções de cuidado disponíveis conforme contexto local, preferências e equipe. Oferecer apoio psicológico e aconselhamento para futuras gestações; não prometer cura."
+        ],
+        "criticalActions": [
+          "Comunicar de forma sensível, sem culpa ou promessas, e não simular fala do feto."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Comunicar de forma sensível, sem culpa ou promessas, e não simular fala do feto."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-head-05",
+    "caseTitle": "Cabeça pequena e desenvolvimento lento",
+    "specialty": "Pediatria",
+    "difficulty": "Intermediário",
+    "caseType": "Queixa pediátrica",
+    "summary": "Disseram que a cabecinha dela está pequena e ela ainda não firma bem o pescoço.",
+    "publicPresentation": "Disseram que a cabecinha dela está pequena e ela ainda não firma bem o pescoço.",
+    "patientProfile": {
+      "name": "Luana Duarte",
+      "age_value": 4,
+      "age_unit": "meses",
+      "gender": "Mulher",
+      "occupation": "Lactente",
+      "chief_complaint": "Disseram que a cabecinha dela está pequena e ela ainda não firma bem o pescoço.",
+      "present_illness_history": "A mãe traz a filha de quatro meses para avaliação. Desde o nascimento a medida da cabeça era pequena e continuou abaixo da curva. Mama com alguma lentidão, sorri e acompanha parcialmente o rosto, mas tem dificuldade em sustentar a cabeça. Não houve perda de habilidade já adquirida nem convulsão observada. Gestação acompanhada, sem infecção confirmada. A família quer entender a causa sem receber uma conclusão precipitada.",
+      "past_medical_history": "Antes deste episódio não havia doença crônica conhecida nem internações recentes.",
+      "personal_history": "Recebe leite materno. Família sem tabagismo em casa; vacinação acompanhada na unidade de saúde.",
+      "family_history": "Pais sem cabeça pequena conhecida; primeiro filho do casal.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Não se aplica à bebê.",
+      "address": "Nasceu e mora em Campinas, São Paulo, com os pais; nunca morou em outro município.",
+      "basic_info": "Filha: Luana Duarte, quatro meses, menina; nasceu a termo em Campinas. Mãe: Rosa Duarte. Dados fictícios.",
+      "social_background": "A família sustenta a criança. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "A mãe, Rosa Duarte, responde sobre a filha de quatro meses. A bebê não fala.",
+      "symptom_details": {
+        "Queixa principal": "Disseram que a cabecinha dela está pequena e ela ainda não firma bem o pescoço.",
+        "Características dos sintomas": "A mãe traz a filha de quatro meses para avaliação. Desde o nascimento a medida da cabeça era pequena e continuou abaixo da curva. Mama com alguma lentidão, sorri e acompanha parcialmente o rosto, mas tem dificuldade em sustentar a cabeça. Não houve perda de habilidade já adquirida nem convulsão observada. Gestação acompanhada, sem infecção confirmada. A família quer entender a causa sem receber uma conclusão precipitada.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      },
+      "respondent_gender": "female"
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "head",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Antropometria e suturas",
+      "Exame neurológico e desenvolvimento"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Antropometria e suturas": "Perímetro cefálico 37 cm aos quatro meses, abaixo de três desvios-padrão na curva utilizada; medida repetida e registro desde nascimento reduzido. Suturas sem cristas evidentes.",
+      "Exame neurológico e desenvolvimento": "Hipotonia axial e controle cefálico abaixo do esperado, sem sinal focal agudo."
+    },
+    "mustAuxiliaryLabs": [
+      "Ressonância de encéfalo"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Avaliação dirigida de audição e visão"
+    ],
+    "auxiliaryLabs": {
+      "Ressonância de encéfalo": "Volume cerebral reduzido, sem massa ou hidrocefalia; achado não define sozinho etiologia.",
+      "Avaliação dirigida de audição e visão": "Audição preservada no teste disponível; avaliação visual especializada em andamento."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Microcefalia congênita com atraso do desenvolvimento, etiologia em investigação"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Variação familiar do perímetro cefálico"
+        },
+        {
+          "disease": "Craniossinostose"
+        }
+      ]
+    },
+    "treatments": "Encaminhar à pediatria/neurologia, iniciar apoio ao desenvolvimento e alimentação sem esperar diagnóstico etiológico completo. Oferecer acompanhamento e investigação dirigida, incluindo genética/infecciosa quando pertinente.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Microcefalia.",
+      "Conferir idade gestacional, medidas seriadas, gestação, exposições e desenvolvimento.",
+      "Perguntar convulsões, alimentação, regressão e medidas familiares quando disponíveis."
+    ],
+    "references": [
+      {
+        "title": "CDC — Microcephaly",
+        "url": "https://www.cdc.gov/birth-defects/about/microcephaly.html"
+      }
+    ],
+    "referenceReasoning": "Microcefalia é achado antropométrico e exige curva adequada e medida correta. A investigação etiológica é dirigida; não atribuir automaticamente a uma infecção específica sem evidência. Imagem e avaliação sensorial ajudam no cuidado, sem exigir todos os testes possíveis.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Conferir idade gestacional, medidas seriadas, gestação, exposições e desenvolvimento.",
+          "Perguntar convulsões, alimentação, regressão e medidas familiares quando disponíveis."
+        ],
+        "criticalActions": [
+          "Não inventar etiologia infecciosa nem adiar apoio ao desenvolvimento."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Antropometria e suturas, Exame neurológico e desenvolvimento com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Não inventar etiologia infecciosa nem adiar apoio ao desenvolvimento."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Microcefalia é achado antropométrico e exige curva adequada e medida correta. A investigação etiológica é dirigida; não atribuir automaticamente a uma infecção específica sem evidência. Imagem e avaliação sensorial ajudam no cuidado, sem exigir todos os testes possíveis."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Microcefalia congênita com atraso do desenvolvimento, etiologia em investigação com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Variação familiar do perímetro cefálico, Craniossinostose e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhar à pediatria/neurologia, iniciar apoio ao desenvolvimento e alimentação sem esperar diagnóstico etiológico completo. Oferecer acompanhamento e investigação dirigida, incluindo genética/infecciosa quando pertinente."
+        ],
+        "criticalActions": [
+          "Não inventar etiologia infecciosa nem adiar apoio ao desenvolvimento."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Não inventar etiologia infecciosa nem adiar apoio ao desenvolvimento."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-head-06",
+    "caseTitle": "Crescimento rápido da cabeça e vômitos",
+    "specialty": "Neurocirurgia",
+    "difficulty": "Intermediário",
+    "caseType": "Queixa pediátrica",
+    "summary": "A cabeça dela cresceu rápido e nos últimos dias começou a vomitar.",
+    "publicPresentation": "A cabeça dela cresceu rápido e nos últimos dias começou a vomitar.",
+    "patientProfile": {
+      "name": "Ana Duarte",
+      "age_value": 6,
+      "age_unit": "meses",
+      "gender": "Mulher",
+      "occupation": "Lactente",
+      "chief_complaint": "A cabeça dela cresceu rápido e nos últimos dias começou a vomitar.",
+      "present_illness_history": "A mãe notou crescimento acelerado da cabeça da filha de seis meses no último mês; os gorros deixaram de servir. Há três dias está irritada, mama menos e vomita mais que o habitual. Hoje ficou sonolenta entre mamadas. Não tem febre ou diarreia. A caderneta mostra subida rápida na curva. Nunca teve meningite diagnosticada.",
+      "past_medical_history": "Antes deste episódio não havia doença crônica conhecida nem internações recentes.",
+      "personal_history": "Recebe leite materno. Família sem tabagismo em casa; vacinação acompanhada na unidade de saúde. Iniciou recentemente alimentação complementar orientada pela pediatria.",
+      "family_history": "Pais com medidas cranianas habituais; sem hidrocefalia familiar conhecida.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Não se aplica à criança.",
+      "address": "Nasceu e mora em Campinas, São Paulo, com os pais; nunca morou em outro município.",
+      "basic_info": "Filha: Ana Duarte, seis meses; nasceu a termo. Mãe/responsável: Rosa Duarte. Todos os dados são fictícios.",
+      "social_background": "A família sustenta a criança. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "A mãe, Rosa Duarte, responde sobre a filha de seis meses; a bebê não fala.",
+      "symptom_details": {
+        "Queixa principal": "A cabeça dela cresceu rápido e nos últimos dias começou a vomitar.",
+        "Características dos sintomas": "A mãe notou crescimento acelerado da cabeça da filha de seis meses no último mês; os gorros deixaram de servir. Há três dias está irritada, mama menos e vomita mais que o habitual. Hoje ficou sonolenta entre mamadas. Não tem febre ou diarreia. A caderneta mostra subida rápida na curva. Nunca teve meningite diagnosticada.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      },
+      "respondent_gender": "female"
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "head",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Perímetro cefálico e fontanela",
+      "Avaliação neurológica e sinais vitais"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Perímetro cefálico e fontanela": "Perímetro 46,5 cm, cruzando percentis; fontanela tensa em repouso, veias do couro cabeludo visíveis.",
+      "Avaliação neurológica e sinais vitais": "Sonolência maior que habitual e olhar em sol poente; afebril, perfusão preservada."
+    },
+    "mustAuxiliaryLabs": [
+      "Ultrassonografia transfontanelar"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Ressonância de encéfalo"
+    ],
+    "auxiliaryLabs": {
+      "Ultrassonografia transfontanelar": "Ventriculomegalia acentuada; exame inicial disponível, sem atrasar avaliação especializada.",
+      "Ressonância de encéfalo": "Após estabilização e avaliação da equipe: dilatação de ventrículos laterais e terceiro ventrículo, com estreitamento aquedutal."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Hidrocefalia com sinais de hipertensão intracraniana"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Macrocefalia familiar benigna"
+        },
+        {
+          "disease": "Lesão expansiva intracraniana"
+        }
+      ]
+    },
+    "treatments": "Encaminhamento urgente à emergência pediátrica/neurocirurgia para estabilização e avaliação de derivação ou outra intervenção apropriada. Não aguardar consulta eletiva diante da sonolência progressiva.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Macrocefalia, Hidrocefalia.",
+      "Investigar crescimento seriado, vômitos, alimentação, sonolência e sinais visuais.",
+      "Distinguir aumento estável familiar de crescimento acelerado com sintomas."
+    ],
+    "references": [
+      {
+        "title": "NHS — Hydrocephalus",
+        "url": "https://www.nhs.uk/conditions/hydrocephalus/"
+      }
+    ],
+    "referenceReasoning": "Macrocefalia é medida aumentada, não sinônimo de hidrocefalia. Sintomas e ultrassom apontam aumento ventricular com pressão; ressonância ajuda na causa e planejamento. Punção lombar não é investigação inicial indiscriminada diante de possível hipertensão intracraniana obstrutiva.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Investigar crescimento seriado, vômitos, alimentação, sonolência e sinais visuais.",
+          "Distinguir aumento estável familiar de crescimento acelerado com sintomas."
+        ],
+        "criticalActions": [
+          "Reconhecer urgência por alteração de consciência e não fazer punção lombar sem avaliar risco."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Perímetro cefálico e fontanela, Avaliação neurológica e sinais vitais com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Reconhecer urgência por alteração de consciência e não fazer punção lombar sem avaliar risco."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Macrocefalia é medida aumentada, não sinônimo de hidrocefalia. Sintomas e ultrassom apontam aumento ventricular com pressão; ressonância ajuda na causa e planejamento. Punção lombar não é investigação inicial indiscriminada diante de possível hipertensão intracraniana obstrutiva."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Hidrocefalia com sinais de hipertensão intracraniana com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Macrocefalia familiar benigna, Lesão expansiva intracraniana e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhamento urgente à emergência pediátrica/neurocirurgia para estabilização e avaliação de derivação ou outra intervenção apropriada. Não aguardar consulta eletiva diante da sonolência progressiva."
+        ],
+        "criticalActions": [
+          "Reconhecer urgência por alteração de consciência e não fazer punção lombar sem avaliar risco."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Reconhecer urgência por alteração de consciência e não fazer punção lombar sem avaliar risco."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-head-07",
+    "caseTitle": "Olhos mais saltados e visão dupla",
+    "specialty": "Oftalmologia",
+    "difficulty": "Intermediário",
+    "caseType": "Alterações visuais",
+    "summary": "Meus olhos parecem mais para fora e às vezes vejo dobrado.",
+    "publicPresentation": "Meus olhos parecem mais para fora e às vezes vejo dobrado.",
+    "patientProfile": {
+      "name": "Luana Ferreira",
+      "age_value": 38,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Contadora",
+      "chief_complaint": "Meus olhos parecem mais para fora e às vezes vejo dobrado.",
+      "present_illness_history": "Há quatro meses percebe olhos saltados, ardor e sensação de areia. A visão fica dupla ao olhar para cima. Também sente calor excessivo, tremor e perdeu quatro quilos apesar de comer bem. Não teve febre ou dor intensa súbita no olho. Usa colírio lubrificante por conta própria, com alívio parcial. Fuma e quer entender se isso interfere.",
+      "past_medical_history": "Antes deste episódio não havia doença crônica conhecida nem internações recentes.",
+      "personal_history": "Fuma oito cigarros por dia há quinze anos; nega anabolizantes e drogas.",
+      "family_history": "Mãe viva, com pressão alta controlada; pai vivo, sem doença conhecida. Uma irmã saudável. Sem episódios semelhantes conhecidos na família.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Casado(a); vive com o cônjuge.",
+      "address": "Mora em Campinas, São Paulo, em área urbana; nasceu em Sorocaba e mudou há seis anos. Endereço fictício, sem necessidade de informar número de documento.",
+      "basic_info": "Nome completo: Luana Ferreira. Naturalidade: Sorocaba, São Paulo. Cor autodeclarada: parda. Identifica-se com o gênero informado; acolhe pergunta respeitosa. Nome da mãe: Rosa Duarte. Religião católica, sem restrição de cuidado por crença. Todos os dados pessoais são fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "O próprio paciente responde em linguagem leiga.",
+      "symptom_details": {
+        "Queixa principal": "Meus olhos parecem mais para fora e às vezes vejo dobrado.",
+        "Características dos sintomas": "Há quatro meses percebe olhos saltados, ardor e sensação de areia. A visão fica dupla ao olhar para cima. Também sente calor excessivo, tremor e perdeu quatro quilos apesar de comer bem. Não teve febre ou dor intensa súbita no olho. Usa colírio lubrificante por conta própria, com alívio parcial. Fuma e quer entender se isso interfere.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      }
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "head",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Exame ocular",
+      "Exame geral"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Exame ocular": "Proptose bilateral, retração palpebral e limitação de elevação ocular; acuidade e visão de cores preservadas no exame atual.",
+      "Exame geral": "FC 108 bpm, tremor fino e aumento difuso da tireoide; sem sinais de descompensação aguda."
+    },
+    "mustAuxiliaryLabs": [
+      "Função tireoidiana e anticorpos"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Imagem de órbitas"
+    ],
+    "auxiliaryLabs": {
+      "Função tireoidiana e anticorpos": "TSH suprimido, T4 livre elevado e anticorpo contra receptor de TSH positivo.",
+      "Imagem de órbitas": "Espessamento dos ventres musculares extraoculares, poupando tendões, solicitado para avaliar extensão e restrição."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Orbitopatia de Graves associada a hipertireoidismo"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Inflamação orbitária de outra causa"
+        },
+        {
+          "disease": "Lesão expansiva orbitária"
+        }
+      ]
+    },
+    "treatments": "Encaminhar à oftalmologia e endocrinologia, abordar tabagismo, proteção/lubrificação ocular e controle hormonal. Reavaliar urgentemente se queda de visão, alteração de cores ou exposição corneana; tratamento da órbita é individualizado.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Exoftalmia, Oftalmoplegia.",
+      "Investigar dor, visão de cores, acuidade, diplopia, evolução e sintomas tireoidianos.",
+      "Perguntar tabagismo e impacto funcional; distinguir limitação do movimento de perda visual."
+    ],
+    "references": [
+      {
+        "title": "NEI — Graves eye disease",
+        "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/graves-eye-disease"
+      }
+    ],
+    "referenceReasoning": "Exoftalmia é protrusão ocular; restrição de motilidade pode produzir oftalmoplegia/diplopia. Exame ocular avalia risco ao nervo óptico e córnea. Testes tireoidianos apoiam a etiologia; imagem é dirigida, não substitui avaliação urgente se perda visual.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Investigar dor, visão de cores, acuidade, diplopia, evolução e sintomas tireoidianos.",
+          "Perguntar tabagismo e impacto funcional; distinguir limitação do movimento de perda visual."
+        ],
+        "criticalActions": [
+          "Pesquisar ameaça à visão e não tratar apenas a alteração estética."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Exame ocular, Exame geral com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Pesquisar ameaça à visão e não tratar apenas a alteração estética."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Exoftalmia é protrusão ocular; restrição de motilidade pode produzir oftalmoplegia/diplopia. Exame ocular avalia risco ao nervo óptico e córnea. Testes tireoidianos apoiam a etiologia; imagem é dirigida, não substitui avaliação urgente se perda visual."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Orbitopatia de Graves associada a hipertireoidismo com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Inflamação orbitária de outra causa, Lesão expansiva orbitária e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhar à oftalmologia e endocrinologia, abordar tabagismo, proteção/lubrificação ocular e controle hormonal. Reavaliar urgentemente se queda de visão, alteração de cores ou exposição corneana; tratamento da órbita é individualizado."
+        ],
+        "criticalActions": [
+          "Pesquisar ameaça à visão e não tratar apenas a alteração estética."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Pesquisar ameaça à visão e não tratar apenas a alteração estética."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-head-08",
+    "caseTitle": "Olhos secos e dificuldade para enxergar no escuro",
+    "specialty": "Oftalmologia",
+    "difficulty": "Intermediário",
+    "caseType": "Alterações visuais",
+    "summary": "Meus olhos estão muito secos e enxergar à noite ficou difícil.",
+    "publicPresentation": "Meus olhos estão muito secos e enxergar à noite ficou difícil.",
+    "patientProfile": {
+      "name": "Ana Almeida",
+      "age_value": 36,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Cabeleireira",
+      "chief_complaint": "Meus olhos estão muito secos e enxergar à noite ficou difícil.",
+      "present_illness_history": "Há cinco meses sente ardor ocular e piora da visão em ambiente escuro. Fez cirurgia bariátrica há três anos e parou suplementos por custo. Tem diarreia gordurosa recorrente e alimentação muito restrita. Não há dor ocular intensa aguda nem secreção purulenta. Quase tropeçou ao entrar em um cômodo pouco iluminado.",
+      "past_medical_history": "Cirurgia bariátrica há três anos; sem outra doença crônica conhecida.",
+      "personal_history": "Dieta muito restrita, pouca gordura e poucas fontes de vitamina A; nega álcool em excesso e tabagismo.",
+      "family_history": "Mãe viva, com pressão alta controlada; pai vivo, sem doença conhecida. Uma irmã saudável. Sem episódios semelhantes conhecidos na família.",
+      "other_medical_history": "Suspendeu suplemento pós-bariátrico há um ano por custo.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Casado(a); vive com o cônjuge.",
+      "address": "Mora em Campinas, São Paulo, em área urbana; nasceu em Sorocaba e mudou há seis anos. Endereço fictício, sem necessidade de informar número de documento.",
+      "basic_info": "Nome completo: Ana Almeida. Naturalidade: Sorocaba, São Paulo. Cor autodeclarada: parda. Identifica-se com o gênero informado; acolhe pergunta respeitosa. Nome da mãe: Rosa Duarte. Religião católica, sem restrição de cuidado por crença. Todos os dados pessoais são fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Cirurgia bariátrica há três anos, sem trauma ocular.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "O próprio paciente responde em linguagem leiga.",
+      "symptom_details": {
+        "Queixa principal": "Meus olhos estão muito secos e enxergar à noite ficou difícil.",
+        "Características dos sintomas": "Há cinco meses sente ardor ocular e piora da visão em ambiente escuro. Fez cirurgia bariátrica há três anos e parou suplementos por custo. Tem diarreia gordurosa recorrente e alimentação muito restrita. Não há dor ocular intensa aguda nem secreção purulenta. Quase tropeçou ao entrar em um cômodo pouco iluminado.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      }
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "head",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Exame ocular",
+      "Avaliação nutricional"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Exame ocular": "Conjuntiva seca com placas esbranquiçadas espumosas temporais; sem úlcera corneana no exame atual.",
+      "Avaliação nutricional": "Perda ponderal e dieta restrita; sinais clínicos de carência nutricional a investigar."
+    },
+    "mustAuxiliaryLabs": [
+      "Retinol sérico e avaliação nutricional dirigida",
+      "Exame oftalmológico completo"
+    ],
+    "optionalAuxiliaryLabs": [],
+    "auxiliaryLabs": {
+      "Retinol sérico e avaliação nutricional dirigida": "Retinol 0,12 mg/L, abaixo do intervalo do laboratório; interpretar junto de estado inflamatório e contexto de má absorção.",
+      "Exame oftalmológico completo": "Alteração de adaptação ao escuro; córneas sem perfuração ou ulceração, necessitando acompanhamento próximo."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Xeroftalmia por deficiência de vitamina A"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Doença do olho seco de outra causa"
+        },
+        {
+          "disease": "Distrofia retiniana"
+        }
+      ]
+    },
+    "treatments": "Encaminhar para avaliação oftalmológica e nutricional, corrigir deficiência e má absorção sob supervisão e viabilizar acesso a suplementos. Explicar risco visual e retorno imediato por dor ou piora da visão.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Xeroftalmia.",
+      "Investigar cirurgia, suplementos, dieta, diarreia e barreiras de acesso.",
+      "Caracterizar visão noturna, dor e sinais de lesão corneana."
+    ],
+    "references": [
+      {
+        "title": "NEI — Dry eye",
+        "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/dry-eye"
+      },
+      {
+        "title": "NIH ODS — Vitamin A and carotenoids",
+        "url": "https://ods.od.nih.gov/factsheets/VitaminA-HealthProfessional/"
+      }
+    ],
+    "referenceReasoning": "Ressecamento isolado é comum e não prova carência, mas sinais oculares, má absorção e retinol baixo sustentam a hipótese. Dosagem deve ser interpretada clinicamente. Não indicar megadoses autônomas: reposição exige esquema e avaliação apropriados, inclusive de gravidez e outras deficiências.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Investigar cirurgia, suplementos, dieta, diarreia e barreiras de acesso.",
+          "Caracterizar visão noturna, dor e sinais de lesão corneana."
+        ],
+        "criticalActions": [
+          "Reconhecer risco corneano e evitar reposição em megadose sem avaliação."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Exame ocular, Avaliação nutricional com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Reconhecer risco corneano e evitar reposição em megadose sem avaliação."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Ressecamento isolado é comum e não prova carência, mas sinais oculares, má absorção e retinol baixo sustentam a hipótese. Dosagem deve ser interpretada clinicamente. Não indicar megadoses autônomas: reposição exige esquema e avaliação apropriados, inclusive de gravidez e outras deficiências."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Xeroftalmia por deficiência de vitamina A com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Doença do olho seco de outra causa, Distrofia retiniana e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhar para avaliação oftalmológica e nutricional, corrigir deficiência e má absorção sob supervisão e viabilizar acesso a suplementos. Explicar risco visual e retorno imediato por dor ou piora da visão."
+        ],
+        "criticalActions": [
+          "Reconhecer risco corneano e evitar reposição em megadose sem avaliação."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Reconhecer risco corneano e evitar reposição em megadose sem avaliação."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-head-09",
+    "caseTitle": "Visão de um olho escureceu por alguns minutos",
+    "specialty": "Oftalmologia",
+    "difficulty": "Intermediário",
+    "caseType": "Alterações visuais",
+    "summary": "Foi como uma cortina no olho direito; depois voltou ao normal.",
+    "publicPresentation": "Foi como uma cortina no olho direito; depois voltou ao normal.",
+    "patientProfile": {
+      "name": "Lucas Martins",
+      "age_value": 64,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Taxista aposentado",
+      "chief_complaint": "Foi como uma cortina no olho direito; depois voltou ao normal.",
+      "present_illness_history": "Hoje pela manhã perdeu a visão do olho direito por três minutos, sem dor, como uma cortina escura. Cobriu alternadamente os olhos e confirmou que era só de um lado. A visão voltou por completo. Não viu luzes coloridas e não teve dor de cabeça, fraqueza ou alteração da fala. Tem pressão alta, colesterol elevado e fuma. Quase desistiu de vir porque passou.",
+      "past_medical_history": "Pressão e colesterol altos, acompanhamento irregular.",
+      "personal_history": "Fuma quinze cigarros por dia há quarenta anos; pouca atividade física.",
+      "family_history": "Mãe viva, com pressão alta controlada; pai vivo, sem doença conhecida. Uma irmã saudável. Sem episódios semelhantes conhecidos na família.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Casado(a); vive com o cônjuge.",
+      "address": "Mora em Campinas, São Paulo, em área urbana; nasceu em Sorocaba e mudou há seis anos. Endereço fictício, sem necessidade de informar número de documento.",
+      "basic_info": "Nome completo: Lucas Martins. Naturalidade: Sorocaba, São Paulo. Cor autodeclarada: parda. Identifica-se com o gênero informado; acolhe pergunta respeitosa. Nome da mãe: Rosa Duarte. Religião católica, sem restrição de cuidado por crença. Todos os dados pessoais são fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "O próprio paciente responde em linguagem leiga.",
+      "symptom_details": {
+        "Queixa principal": "Foi como uma cortina no olho direito; depois voltou ao normal.",
+        "Características dos sintomas": "Hoje pela manhã perdeu a visão do olho direito por três minutos, sem dor, como uma cortina escura. Cobriu alternadamente os olhos e confirmou que era só de um lado. A visão voltou por completo. Não viu luzes coloridas e não teve dor de cabeça, fraqueza ou alteração da fala. Tem pressão alta, colesterol elevado e fuma. Quase desistiu de vir porque passou.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      }
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "head",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Exame neurológico e sinais vitais",
+      "Exame ocular"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Exame neurológico e sinais vitais": "Sem déficit focal no momento; PA 152/88 mmHg; ritmo cardíaco regular.",
+      "Exame ocular": "Acuidade recuperada, sem dor ou vermelhidão; exame de fundo dirigido sem descolamento evidente no cenário."
+    },
+    "mustAuxiliaryLabs": [
+      "Doppler de carótidas",
+      "Eletrocardiograma",
+      "Avaliação urgente neurovascular e oftalmológica"
+    ],
+    "optionalAuxiliaryLabs": [],
+    "auxiliaryLabs": {
+      "Doppler de carótidas": "Placa aterosclerótica na carótida interna direita com estenose relevante, a ser confirmada/quantificada para decisão especializada.",
+      "Eletrocardiograma": "Ritmo sinusal no registro atual; isso não exclui arritmia intermitente.",
+      "Avaliação urgente neurovascular e oftalmológica": "Sem infarto estabelecido no estudo inicial; investigação de causa vascular em andamento."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Amaurose fugaz de provável origem isquêmica"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Enxaqueca com fenômeno visual"
+        },
+        {
+          "disease": "Doença retiniana aguda"
+        }
+      ]
+    },
+    "treatments": "Encaminhar no mesmo dia para avaliação de isquemia transitória e oftalmologia conforme fluxo local, com prevenção secundária definida pela equipe e investigação etiológica. Orientar emergência se novo déficit ou perda visual persistente.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Amaurose.",
+      "Definir monocular versus binocular, duração, dor, fenômenos positivos e recuperação.",
+      "Pesquisar déficit neurológico, cefaleia nova, dor ao mastigar e fatores vasculares."
+    ],
+    "references": [
+      {
+        "title": "NHS Highland — Sudden visual loss",
+        "url": "https://www.rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/therapeutic-guidelines/eyes/ophthalmology-emergency-guidelines/sudden-visual-loss-guidelines/"
+      }
+    ],
+    "referenceReasoning": "Recuperação não exclui risco de evento isquêmico. Exame ocular e investigação vascular são urgentes e dirigidos; ECG único normal não exclui fibrilação paroxística. Não rotular como enxaqueca só porque o sintoma foi transitório.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Definir monocular versus binocular, duração, dor, fenômenos positivos e recuperação.",
+          "Pesquisar déficit neurológico, cefaleia nova, dor ao mastigar e fatores vasculares."
+        ],
+        "criticalActions": [
+          "Não tranquilizar apenas porque a visão voltou."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Exame neurológico e sinais vitais, Exame ocular com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Não tranquilizar apenas porque a visão voltou."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Recuperação não exclui risco de evento isquêmico. Exame ocular e investigação vascular são urgentes e dirigidos; ECG único normal não exclui fibrilação paroxística. Não rotular como enxaqueca só porque o sintoma foi transitório."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Amaurose fugaz de provável origem isquêmica com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Enxaqueca com fenômeno visual, Doença retiniana aguda e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhar no mesmo dia para avaliação de isquemia transitória e oftalmologia conforme fluxo local, com prevenção secundária definida pela equipe e investigação etiológica. Orientar emergência se novo déficit ou perda visual persistente."
+        ],
+        "criticalActions": [
+          "Não tranquilizar apenas porque a visão voltou."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Não tranquilizar apenas porque a visão voltou."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  }
+]

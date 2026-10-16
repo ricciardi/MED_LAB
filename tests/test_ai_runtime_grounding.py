@@ -1,3 +1,4 @@
+# Base five-dimension evaluator regressions; the version2 wrapper is covered in test_basic_questions.py.
 """Regressions discovered in real DeepSeek conversations and grading."""
 from copy import deepcopy
 import json
@@ -76,12 +77,12 @@ def session():
 def test_grading_rejects_invented_or_misattributed_question_evidence(seed, service, monkeypatch, identifier, quote):
     monkeypatch.setattr("medlab.ai.requests.post", Mock(return_value=reply(reference_grade(identifier, quote))))
     with pytest.raises(AIError, match="evidências que não conferem"):
-        service.evaluate(seed, session())
+        service._evaluate(seed, session())
 
 
 def test_grading_preserves_only_verified_session_quotes_and_accepts_exact_provider_envelope(seed, service, monkeypatch):
     monkeypatch.setattr("medlab.ai.requests.post", Mock(return_value=reply({"type": "json_object", "format": reference_grade()})))
-    graded = service.evaluate(seed, session())
+    graded = service._evaluate(seed, session())
     assert graded["sections"][0]["evidence"] == ['Pergunta 1: “Quando começou?”']
     assert "Invented provider narrative" not in json.dumps(graded)
     assert graded["score"] == 10  # Mean is still derived from five dimensions.
@@ -94,7 +95,7 @@ def test_only_missing_top_level_summaries_are_derived_from_valid_sections(seed, 
     grade["sections"][0].update(strengths=["Perguntou o início."], improvements=["Ampliar a entrevista."])
     compact = {key: grade[key] for key in ("score", "summary", "sections")}
     monkeypatch.setattr("medlab.ai.requests.post", Mock(return_value=reply(compact)))
-    graded = service.evaluate(seed, session())
+    graded = service._evaluate(seed, session())
     assert graded["strengths"] == ["Perguntou o início."]
     assert graded["improvements"] == graded["next_steps"] == ["Ampliar a entrevista."]
 
@@ -105,7 +106,7 @@ def test_normalization_never_repairs_missing_dimension(seed, service, monkeypatc
     compact["sections"].pop()
     monkeypatch.setattr("medlab.ai.requests.post", Mock(return_value=reply(compact)))
     with pytest.raises(AIError, match="dados incompletos"):
-        service.evaluate(seed, session())
+        service._evaluate(seed, session())
 
 
 def test_long_literal_treatment_quote_is_verified_not_discarded(seed, service, monkeypatch):
@@ -114,7 +115,7 @@ def test_long_literal_treatment_quote_is_verified_not_discarded(seed, service, m
     grade["sections"][4].update(score=25, evidenceRefs=[{"id": "T1", "quote": plan.strip()}])
     grade["sections"][-1].update(evidenceRefs=[{"id": "T1", "quote": plan.strip()}])
     monkeypatch.setattr("medlab.ai.requests.post", Mock(return_value=reply(grade)))
-    graded = service.evaluate(seed, {"userTreatments": [{"data": {"treatmentPlan": plan}}]})
+    graded = service._evaluate(seed, {"userTreatments": [{"data": {"treatmentPlan": plan}}]})
     assert graded["sections"][4]["score"] == 25
     assert plan.strip() in graded["sections"][4]["evidence"][0]
 
@@ -124,7 +125,7 @@ def test_positive_diagnosis_credit_requires_an_actual_student_submission(seed, s
     grade["sections"][3].update(score=100, evidenceRefs=[{"id": "Q1", "quote": "Quando começou?"}])
     monkeypatch.setattr("medlab.ai.requests.post", Mock(return_value=reply(grade)))
     with pytest.raises(AIError, match="evidências que não conferem"):
-        service.evaluate(seed, session())
+        service._evaluate(seed, session())
 
 
 def test_all_40_questions_are_numbered_and_last_turn_can_be_cited(seed, service, monkeypatch):
@@ -132,7 +133,7 @@ def test_all_40_questions_are_numbered_and_last_turn_can_be_cited(seed, service,
     grade = reference_grade("Q40", history[-1]["question"])
     post = Mock(return_value=reply(grade))
     monkeypatch.setattr("medlab.ai.requests.post", post)
-    result = service.evaluate(seed, {"history": history})
+    result = service._evaluate(seed, {"history": history})
     payload = json.loads(post.call_args.kwargs["json"]["messages"][1]["content"])
     assert len(payload["session"]["evidenceCatalog"]) == 80
     assert payload["session"]["evidenceCatalog"][-2]["id"] == "Q40"

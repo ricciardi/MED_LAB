@@ -1,0 +1,213 @@
+{
+  "version": 1,
+  "source": "Imagens 5, 6 e 7 fornecidas pelo usuário",
+  "kind": "fictional_educational_scenarios",
+  "coverage": {
+    "respiratory": {
+      "Sinusite": [
+        "basic-respiratory-01"
+      ],
+      "Rinite": [
+        "basic-respiratory-01"
+      ],
+      "Rinoscopia": [
+        "basic-respiratory-01"
+      ],
+      "Otite": [
+        "basic-respiratory-02"
+      ],
+      "Amigdalite": [
+        "basic-respiratory-03"
+      ],
+      "Adenite": [
+        "basic-respiratory-03"
+      ],
+      "Parotidite": [
+        "basic-respiratory-04"
+      ],
+      "Epiglote": [
+        "basic-respiratory-05"
+      ],
+      "Vômica": [
+        "basic-respiratory-06"
+      ],
+      "Sopro tubário": [
+        "basic-respiratory-06"
+      ],
+      "Frêmito tóraco-vocal": [
+        "basic-respiratory-06"
+      ],
+      "Expectorar": [
+        "basic-respiratory-06"
+      ],
+      "Estetoscópio": [
+        "basic-respiratory-06"
+      ],
+      "Bronquiectasia": [
+        "basic-respiratory-07"
+      ],
+      "Hemoptise": [
+        "basic-respiratory-07"
+      ],
+      "Hemoptóicos": [
+        "basic-respiratory-07"
+      ],
+      "Pneumotórax": [
+        "basic-respiratory-08"
+      ],
+      "Pneumomediastino": [
+        "basic-respiratory-08"
+      ],
+      "Broncoespasmo": [
+        "basic-respiratory-09"
+      ],
+      "Dispnéia": [
+        "basic-respiratory-09"
+      ],
+      "Bronquite": [
+        "basic-respiratory-10"
+      ],
+      "Tráqueobrônquica": [
+        "basic-respiratory-10"
+      ],
+      "Apnéia": [
+        "basic-respiratory-11"
+      ],
+      "Hipóxia; hipoxemia": [
+        "basic-respiratory-11"
+      ],
+      "Intersticial": [
+        "basic-respiratory-12"
+      ],
+      "Paquipleuris": [
+        "basic-respiratory-12"
+      ],
+      "Micetoma": [
+        "basic-respiratory-13"
+      ],
+      "Broncogênico": [
+        "basic-respiratory-14"
+      ],
+      "Platipnéia": [
+        "basic-respiratory-15"
+      ],
+      "Cianose": [
+        "basic-respiratory-15"
+      ],
+      "Ortopnéia": [
+        "basic-cardiovascular-03"
+      ]
+    },
+    "cardiovascular": {
+      "Taquicardia": [
+        "basic-cardiovascular-01"
+      ],
+      "Taquisfigmia": [
+        "basic-cardiovascular-01"
+      ],
+      "Eletrocardiografia": [
+        "basic-cardiovascular-01"
+      ],
+      "Bradicardia": [
+        "basic-cardiovascular-02"
+      ],
+      "Cardiomegalia": [
+        "basic-cardiovascular-03"
+      ],
+      "Miocardiopatias": [
+        "basic-cardiovascular-03"
+      ],
+      "Hipervolemia": [
+        "basic-cardiovascular-03"
+      ],
+      "Levocardia": [
+        "basic-cardiovascular-03"
+      ],
+      "Ortopnéia": [
+        "basic-cardiovascular-03"
+      ],
+      "Valvulopatia": [
+        "basic-cardiovascular-04"
+      ],
+      "Cardiopatia": [
+        "basic-cardiovascular-04"
+      ],
+      "Endocardite": [
+        "basic-cardiovascular-05"
+      ],
+      "Cardite": [
+        "basic-cardiovascular-05"
+      ],
+      "Pericardite": [
+        "basic-cardiovascular-06"
+      ],
+      "Isquemia": [
+        "basic-cardiovascular-07"
+      ],
+      "Aterosclerose": [
+        "basic-cardiovascular-07"
+      ],
+      "Precordialgia": [
+        "basic-cardiovascular-07"
+      ],
+      "Hipertensão arterial": [
+        "basic-cardiovascular-08"
+      ],
+      "Hipertrofia": [
+        "basic-cardiovascular-08"
+      ]
+    },
+    "head": {
+      "Alopécia": [
+        "basic-head-01"
+      ],
+      "Tricotomia": [
+        "basic-head-01"
+      ],
+      "Hirsutismo": [
+        "basic-head-02"
+      ],
+      "Acrocefalia": [
+        "basic-head-03"
+      ],
+      "Craniosinostose": [
+        "basic-head-03"
+      ],
+      "Hipertelorismo": [
+        "basic-head-03"
+      ],
+      "Anencefalia": [
+        "basic-head-04"
+      ],
+      "Microcefalia": [
+        "basic-head-05"
+      ],
+      "Macrocefalia": [
+        "basic-head-06"
+      ],
+      "Hidrocefalia": [
+        "basic-head-06"
+      ],
+      "Exoftalmia": [
+        "basic-head-07"
+      ],
+      "Oftalmoplegia": [
+        "basic-head-07"
+      ],
+      "Xeroftalmia": [
+        "basic-head-08"
+      ],
+      "Amaurose": [
+        "basic-head-09"
+      ],
+      "Rinoscopia": [
+        "basic-respiratory-01"
+      ]
+    }
+  },
+  "notes": [
+    "Termos de sinais, sintomas, anatomia e procedimentos não são tratados automaticamente como doenças.",
+    "Paquipleuris foi interpretado como espessamento pleural/paquipleurite; Micetoma, no contexto respiratório, como bola fúngica (aspergiloma), não micetoma cutâneo.",
+    "Tricotomia é um procedimento e levocardia uma posição anatômica; são discutidas sem diagnóstico patológico automático."
+  ]
+}

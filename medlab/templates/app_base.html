@@ -4,9 +4,11 @@
 <aside class="sidebar" id="sidebar">
   {{ brand(url_for('web.dashboard'), 'meu painel') }}
   <div class="workspace-label">SEU ESPAÇO DE PRÁTICA</div>
+  {% set basic_navigation = selected_track|default('') == 'basic' or (training is defined and training.learning_track|default('') == 'basic') %}
   <nav class="side-nav" aria-label="Navegação principal">
     <a href="{{ url_for('web.dashboard') }}" class="{{ 'active' if request.endpoint == 'web.dashboard' else '' }}" {% if request.endpoint == 'web.dashboard' %}aria-current="page"{% endif %}>{{ icon('grid',20) }}<span>Visão geral</span></a>
-    <a href="{{ url_for('web.cases') }}" class="{{ 'active' if request.endpoint in ['web.cases','web.consultation','web.result'] else '' }}" {% if request.endpoint == 'web.cases' %}aria-current="page"{% endif %}>{{ icon('case',20) }}<span>Casos clínicos</span></a>
+    <a href="{{ url_for('web.cases') }}" class="{{ 'active' if request.endpoint in ['web.cases','web.consultation','web.result'] and not basic_navigation else '' }}" {% if request.endpoint == 'web.cases' and not basic_navigation %}aria-current="page"{% endif %}>{{ icon('case',20) }}<span>Casos clínicos</span></a>
+    <a href="{{ url_for('web.cases', track='basic') }}" class="{{ 'active' if basic_navigation else '' }}" {% if request.endpoint == 'web.cases' and basic_navigation %}aria-current="page"{% endif %}>{{ icon('book',20) }}<span>Casos Básicos</span></a>
     <a href="{{ url_for('web.history') }}" class="{{ 'active' if request.endpoint == 'web.history' else '' }}" {% if request.endpoint == 'web.history' %}aria-current="page"{% endif %}>{{ icon('history',20) }}<span>Minha trajetória</span></a>
   </nav>
   <div class="sidebar-note"><span class="note-drawing">{{ icon('spark',30) }}</span><h3>A prática faz<br>a diferença.</h3><p>Uma nova conversa.<br>Uma nova oportunidade<br>de aprender.</p><div class="note-line"></div><span>CONTINUE CURIOSO.</span></div>

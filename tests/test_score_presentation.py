@@ -44,7 +44,7 @@ def test_five_is_explained_as_whole_consultation_not_the_interview(app, client, 
     assert "25 pontos somados ÷ 5 dimensões avaliáveis" in body
     assert body.count('data-score-dimension=') == 5
     assert 'data-score-dimension="overall"' not in body
-    assert "não é um sexto peso" in body and "Uma falha técnica não gera uma nota salva" in body
+    assert "não acrescenta outro peso" in body and "Uma falha técnica não gera uma nota salva" in body
     assert "data-score-inconsistent" not in body
     with app.app_context():
         training = db.session.get(Consultation, identifier)
@@ -138,6 +138,36 @@ def test_global_dimension_is_not_counted_a_second_time():
     result = score_breakdown(evaluation, 5)
     assert result["calculated_score"] == 5 and result["divisor"] == 5
     assert result["warning"]  # The historical global value itself is inconsistent.
+
+
+def test_landing_does_not_promise_the_old_number_of_dimensions(client):
+    body = client.get("/").get_data(as_text=True)
+    assert "Receba feedback sobre sua prática" in body
+    assert "feedback em seis dimensões" not in body
+
+
+def test_contextually_excluded_basic_review_does_not_claim_missing_case_data(app, client, start_session):
+    from medlab.basic_questions import attach_review, KEY, TITLE
+
+    section = {"key": KEY, "title": TITLE, "score": None, "assessable": False,
+        "feedback": "Os dados necessários já estavam conhecidos neste contexto.",
+        "strengths": [], "improvements": [], "evidence": [],
+        "groups": [{"id": "identification", "title": "Identificação", "score": None,
+                    "assessable": False, "criterionIds": ["I04"]}],
+        "criteria": [{"id": "I04", "groupId": "identification", "title": "Idade",
+            "status": "not_applicable", "exemption": "already_known", "reason": "Idade já exibida.",
+            "evidence": [], "contextEvidence": [{"id": "K1", "text": "Idade: 45 anos"}]}]}
+    evaluation = attach_review(assessment([50, 50, 50, 50, 50]), section)
+    identifier = start_session()
+    complete(app, identifier, evaluation)
+    body = client.get(f"/sessao/{identifier}/resultado").get_data(as_text=True)
+    assert "Dimensão fora do cálculo; confira os detalhes abaixo" in body
+    assert "Informações insuficientes no caso" not in body
+    assert "Informação já conhecida no contexto da consulta." in body
+    assert "250 pontos somados ÷ 5 dimensões avaliáveis" in body
+    with app.app_context():
+        training = db.session.get(Consultation, identifier)
+        assert training.score == 50 and training.evaluation == evaluation
 
 
 def test_saved_learning_review_is_embedded_as_safe_json_without_a_get_side_effect(app, client, start_session, monkeypatch):

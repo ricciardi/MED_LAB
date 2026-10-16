@@ -1,3 +1,4 @@
+# Base five-dimension evaluator regressions; the version2 wrapper is covered in test_basic_questions.py.
 """Elaborated patient dialogue is context, never a new rubric or learner action."""
 from copy import deepcopy
 from unittest.mock import Mock
@@ -65,7 +66,7 @@ def test_invalid_simulation_context_is_rejected_before_provider(seed, change):
     service = AIService({"DEEPSEEK_API_KEY": "test"})
     service._request = Mock()
     with pytest.raises(AIError, match="contexto de simulação"):
-        service.evaluate(seed, data)
+        service._evaluate(seed, data)
     service._request.assert_not_called()
 
 
@@ -136,7 +137,7 @@ def test_rich_evaluation_and_audit_keep_simulation_separate_from_reference(seed)
     service = AIService({"DEEPSEEK_API_KEY": "test"})
     service._request = Mock(return_value=reference_grade())
     service._audit_evaluation = Mock(return_value=[])
-    result = service.evaluate(seed, context())
+    result = service._evaluate(seed, context())
     system, data, _ = service._request.call_args.args
     assert_fairness_contract(system, data, original_case)
     assert data["session"]["simulationContext"] == context()["simulationContext"]
@@ -162,7 +163,7 @@ def test_numeric_fallback_receives_identical_context_without_fabricating_conflic
     original_case = deepcopy(seed)
     service = AIService({"DEEPSEEK_API_KEY": "test"})
     service._request = Mock(side_effect=[AIError("Falha de formato."), numeric_grade()])
-    result = service.evaluate(seed, context())
+    result = service._evaluate(seed, context())
     system, data, _ = service._request.call_args.args
     assert_fairness_contract(system, data, original_case)
     assert data["simulationContext"] == context()["simulationContext"]
@@ -187,9 +188,9 @@ def test_demo_and_empty_activation_do_not_add_requirements_or_score_credit(seed)
     service = AIService({"DEMO_MODE": True})
     data = context()
     data["simulationContext"].update(startedAfterTurn=2, details=[])
-    with_simulation = service.evaluate(seed, data)
+    with_simulation = service._evaluate(seed, data)
     del data["simulationContext"]
-    legacy = service.evaluate(seed, data)
+    legacy = service._evaluate(seed, data)
     assert with_simulation.pop("simulationNotice")["simulatedAnswerIds"] == []
     assert with_simulation == legacy
 
@@ -290,7 +291,7 @@ def test_local_guards_override_auditor_approval_and_do_not_retain_the_false_clai
     service = AIService({"DEEPSEEK_API_KEY": "test"})
     service._request = Mock(side_effect=[bad, numeric_grade()])
     service._audit_evaluation = Mock(return_value=[])
-    result = service.evaluate(case, context())
+    result = service._evaluate(case, context())
     assert service._request.call_count == 2
     assert result["verification"]["status"] == "limited"
     assert all(section["feedbackLimited"] for section in result["sections"])

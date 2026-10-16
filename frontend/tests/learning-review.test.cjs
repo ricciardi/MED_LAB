@@ -41,6 +41,28 @@ function harness({saved=null,demo=false,present=true}={}) {
 }
 const settle=()=>new Promise(resolve=>setImmediate(resolve));
 
+function basicQuestions() {
+  return {title:'Perguntas Básicas de Graduação',groups:[{id:'hpi',title:'História da doença atual',score:50,assessable:true,criterionIds:['H1','H2']}],
+    criteria:[{id:'H1',groupId:'hpi',title:'Início',status:'partial',reason:'Explore como o sintoma se instalou.',evidenceRefs:['Q1'],evidence:[{id:'Q1',text:'<script>Quando começou?</script>'}],contextEvidence:[{id:'A1',text:'Resposta espontânea do paciente.'}],exemption:null},
+      {id:'H2',groupId:'hpi',title:'Duração',status:'not_applicable',reason:'O cenário não fornece esse fato.',evidenceRefs:[],evidence:[],contextEvidence:[],exemption:'source_unavailable'}]};
+}
+
+test('undergraduate guidance groups evidence separately from context without altering the score',()=>{
+  const value=review();value.basicQuestions=basicQuestions();
+  const h=harness({saved:value});const rendered=h.get('learning-review-content').textContent;
+  for(const phrase of ['Perguntas Básicas de Graduação','História da doença atual','50/100','Parcial','Não aplicável','PERGUNTAS REGISTRADAS','CONTEXTO CONSIDERADO','<script>Quando começou?</script>','Informação não disponível no cenário.'])assert.ok(rendered.includes(phrase),phrase);
+  assert.ok(!rendered.includes('source_unavailable'));assert.ok(!h.created.some(el=>el.tagName==='SCRIPT'));
+  assert.equal(h.requests.length,0);assert.equal(h.get('saved-score').textContent,'5/100');
+});
+
+test('malformed undergraduate guidance fails explicitly while older reviews remain supported',()=>{
+  for(const mutate of [v=>v.criteria[0].status='__proto__',v=>v.criteria[0].evidence={},v=>v.groups[0].score=101,v=>v.criteria[0].contextEvidence=[{id:'A1',text:null}],v=>v.criteria[1].exemption='unknown']){
+    const value=review();value.basicQuestions=basicQuestions();mutate(value.basicQuestions);
+    const h=harness({saved:value});assert.equal(h.get('learning-review-content').hidden,true);assert.match(h.get('learning-review-error-text').textContent,/incompleto/);
+  }
+  assert.equal(harness({saved:review()}).get('learning-review-content').hidden,false);
+});
+
 test('saved review renders actionable guidance and evidence with no request or HTML interpretation',()=>{
   const value=review();value.summary='<img src=x onerror=alert(1)>';value.interview[0].exampleQuestion='<script>pergunta literal</script>';
   const h=harness({saved:value});

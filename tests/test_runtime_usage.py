@@ -17,6 +17,7 @@ from medlab.models import AIUsage, ClinicalCase, Consultation, Turn, User, utcno
 from medlab.usage import capture_usage, usage_summary
 from test_web import evaluation_payload
 from test_fictional_audit import response as fictional_audit_response
+from medlab.basic_questions import _SPECS
 
 
 USAGE = {"prompt_tokens": 10, "completion_tokens": 2, "total_tokens": 12,
@@ -52,7 +53,9 @@ def live_ai(app, monkeypatch):
     audit = {"checks": [{"path": field["path"], "claims": []} for field in _evaluation_claim_fields(assessment)]}
     post = Mock(side_effect=[provider_response({"answer": "PRIVATE_RESPONSE_SENTINEL: começou ontem.",
         "intents": ["Início dos sintomas"], "newDetails": []}),
-        provider_response(assessment), provider_response(audit)])
+        provider_response(assessment), provider_response(audit), provider_response({"version": 1, "items": [
+            {"id": item[0], "status": "not_applicable", "actionIds": [], "contextIds": [],
+             "exemption": "source_unavailable", "reason": "Detalhe indisponível no cenário sintético."} for item in _SPECS]})])
     monkeypatch.setattr("medlab.ai.requests.post", post)
     return service, post
 
@@ -76,18 +79,18 @@ def test_conversation_and_evaluation_persist_real_deltas_without_retry_duplicati
     assert send_question(client, identifier).status_code == 200
     assert finish(client, identifier).status_code == 302
     assert finish(client, identifier).status_code == 302
-    assert post.call_count == 3
+    assert post.call_count == 4
     with app.app_context():
         rows = db.session.scalars(db.select(AIUsage).order_by(AIUsage.id)).all()
         assert [row.operation for row in rows] == ["conversation", "evaluation"]
-        assert [row.requests for row in rows] == [1, 2]
-        assert [row.prompt_tokens for row in rows] == [10, 20]
-        assert [row.completion_tokens for row in rows] == [2, 4]
-        assert [row.cache_hit_tokens for row in rows] == [4, 8]
+        assert [row.requests for row in rows] == [1, 3]
+        assert [row.prompt_tokens for row in rows] == [10, 30]
+        assert [row.completion_tokens for row in rows] == [2, 6]
+        assert [row.cache_hit_tokens for row in rows] == [4, 12]
         assert all(row.successful and row.usage_complete and row.cache_usage_complete for row in rows)
         assert all(row.consultation_id == identifier and row.user_id == db.session.get(Consultation, identifier).user_id for row in rows)
         totals = usage_summary()
-        assert totals["requests"] == 3 and totals["total_tokens"] == 36 and totals["cache_rate"] == 40
+        assert totals["requests"] == 4 and totals["total_tokens"] == 48 and totals["cache_rate"] == 40
         stored = json.dumps([{column.name: str(getattr(row, column.name)) for column in AIUsage.__table__.columns} for row in rows])
         for forbidden in ("PRIVATE_RESPONSE_SENTINEL", "PRIVATE_QUESTION_SENTINEL", "PRIVATE_DIAGNOSIS_SENTINEL", "private-provider-key-for-tests"):
             assert forbidden not in stored

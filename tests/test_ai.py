@@ -1,3 +1,4 @@
+# Base five-dimension evaluator regressions; the version2 wrapper is covered in test_basic_questions.py.
 """Provider boundary, private facts and educational-case contract regressions."""
 
 from copy import deepcopy
@@ -107,7 +108,7 @@ def test_demo_is_explicit_deterministic_and_does_not_generate(seed, monkeypatch)
     assert first["answer"].startswith("[Demonstração sem IA]")
     assert first["intent"] == "Alergias"
     assert "Não sei lhe dizer." in demo.respond(seed, "Qual é o tamanho do seu sapato?", [])["answer"]
-    assessed = demo.evaluate(seed, {})
+    assessed = demo._evaluate(seed, {})
     assert len(assessed["sections"]) == 6
     assert "sem análise clínica por IA" in assessed["summary"]
     with pytest.raises(AIError, match="exige IA configurada"):
@@ -121,7 +122,7 @@ def test_explicit_demo_override_never_uses_configured_credentials(seed, monkeypa
     demo = AIService({"DEMO_MODE": True, "DEEPSEEK_API_KEY": "unused-test-key"})
     assert demo.is_demo
     assert "Demonstração sem IA" in demo.respond(seed, "Tem alergias?", [])["answer"]
-    assert "Demonstração sem IA" in demo.evaluate(seed, {})["summary"]
+    assert "Demonstração sem IA" in demo._evaluate(seed, {})["summary"]
     post.assert_not_called()
 
 
@@ -199,7 +200,7 @@ def test_transport_failures_are_safe(seed, service, monkeypatch, error):
     post = Mock(side_effect=error)
     monkeypatch.setattr("medlab.ai.requests.post", post)
     with pytest.raises(AIError) as caught:
-        service.evaluate(seed, {})
+        service._evaluate(seed, {})
     assert "server-only-test-key" not in str(caught.value)
     assert "provider internal body" not in str(caught.value)
     assert post.call_count == (2 if isinstance(error, requests.Timeout) else 1)
@@ -217,7 +218,7 @@ def test_empty_or_invalid_json_is_rejected(seed, service, monkeypatch, content):
 def test_truncated_completion_is_rejected_even_if_json_parses(seed, service, monkeypatch):
     monkeypatch.setattr("medlab.ai.requests.post", Mock(return_value=reply(evaluation(), finish="length")))
     with pytest.raises(AIError, match="incompleta ou inválida"):
-        service.evaluate(seed, {})
+        service._evaluate(seed, {})
 
 
 def test_evaluation_uses_full_40_turns_all_dimensions_and_authoritative_exams(seed, service, monkeypatch):
@@ -225,7 +226,7 @@ def test_evaluation_uses_full_40_turns_all_dimensions_and_authoritative_exams(se
     session = {"history": history, "performedExams": [{"itemName": "Sinais vitais", "result": "forged", "examType": "physical_exam"}], "userSubmissions": [{"data": {"mainDiagnoses": [{"diagnosisName": "Hipótese do estudante"}], "differentialDiagnoses": [{"diagnosisName": "Alternativa"}]}}], "userTreatments": [{"data": {"treatmentPlan": "Plano do estudante"}}]}
     post = Mock(return_value=reply(evaluation()))
     monkeypatch.setattr("medlab.ai.requests.post", post)
-    result = service.evaluate(seed, session)
+    result = service._evaluate(seed, session)
     payload = json.loads(post.call_args.kwargs["json"]["messages"][1]["content"])
     assert len(payload["session"]["history"]) == 40
     assert payload["session"]["history"][0]["question"] == "Pergunta 0"
@@ -253,7 +254,7 @@ def test_invalid_evaluation_never_becomes_success(seed, service, monkeypatch, ch
     change(result)
     monkeypatch.setattr("medlab.ai.requests.post", Mock(return_value=reply(result)))
     with pytest.raises(AIError, match="Nenhum resultado foi validado"):
-        service.evaluate(seed, {})
+        service._evaluate(seed, {})
 
 
 def test_overall_score_is_derived_not_blindly_trusted(seed, service, monkeypatch):
@@ -291,9 +292,9 @@ def test_oversized_history_and_unknown_exams_rejected_before_provider(seed, serv
     post = Mock()
     monkeypatch.setattr("medlab.ai.requests.post", post)
     with pytest.raises(AIError, match="40 interações"):
-        service.evaluate(seed, {"history": [{"question": "Olá", "answer": "Oi"}] * 41})
+        service._evaluate(seed, {"history": [{"question": "Olá", "answer": "Oi"}] * 41})
     with pytest.raises(AIError, match="não pertence"):
-        service.evaluate(seed, {"performedExams": [{"itemName": "Exame inventado", "result": "normal", "examType": "physical_exam"}]})
+        service._evaluate(seed, {"performedExams": [{"itemName": "Exame inventado", "result": "normal", "examType": "physical_exam"}]})
     post.assert_not_called()
 
 
@@ -302,7 +303,7 @@ def test_malformed_student_submission_is_rejected(seed, service, monkeypatch, da
     post = Mock()
     monkeypatch.setattr("medlab.ai.requests.post", post)
     with pytest.raises(AIError, match="incompleto"):
-        service.evaluate(seed, {"userSubmissions": [{"data": data}]})
+        service._evaluate(seed, {"userSubmissions": [{"data": data}]})
     post.assert_not_called()
 
 
