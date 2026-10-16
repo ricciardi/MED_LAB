@@ -1,0 +1,788 @@
+[
+  {
+    "caseId": "basic-hematopoietic-cansaco-menstruacao",
+    "caseTitle": "Cansaço e menstruações intensas",
+    "specialty": "Hematologia e hemoterapia",
+    "difficulty": "Iniciante",
+    "summary": "Estou cansada para subir escadas e minha menstruação está muito forte.",
+    "publicPresentation": "Estou cansada para subir escadas e minha menstruação está muito forte.",
+    "learningTrack": "basic",
+    "bodySystem": "hematopoietic",
+    "catalogType": "fictional",
+    "caseType": "Febre e sintomas gerais",
+    "patientProfile": {
+      "name": "Fernanda Melo",
+      "age_value": 34,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Auxiliar administrativa",
+      "chief_complaint": "Estou cansada para subir escadas e minha menstruação está muito forte.",
+      "present_illness_history": "Há quatro meses sente cansaço e palpitações ao subir escadas, sem dor no peito ou desmaio. Menstrua por oito dias, com troca frequente de absorventes e coágulos. Passou a ter vontade de mastigar gelo. Não percebe sangue nas fezes, urina ou vômito e não está grávida.",
+      "past_medical_history": "Não tenho doença crônica conhecida; não fui investigada pelo sangramento menstrual.",
+      "personal_history": "Como pouca carne, mas não sigo dieta restritiva. Não fumo.",
+      "family_history": "Minha mãe teve mioma; não conheço doença de sangue hereditária.",
+      "other_medical_history": "Não uso anticoagulante nem medicamento regular.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Tem dois filhos e vem adiando consultas para não faltar ao trabalho.",
+      "concern": "Quero recuperar a disposição e entender a menstruação.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Estou cansada para subir escadas e minha menstruação está muito forte.",
+        "Características dos sintomas": "Há quatro meses sente cansaço e palpitações ao subir escadas, sem dor no peito ou desmaio. Menstrua por oito dias, com troca frequente de absorventes e coágulos. Passou a ter vontade de mastigar gelo. Não percebe sangue nas fezes, urina ou vômito e não está grávida.",
+        "Doenças crônicas": "Não tenho doença crônica conhecida; não fui investigada pelo sangramento menstrual.",
+        "Hábitos de vida": "Como pouca carne, mas não sigo dieta restritiva. Não fumo.",
+        "História familiar": "Minha mãe teve mioma; não conheço doença de sangue hereditária.",
+        "Medicamentos em uso": "Não uso anticoagulante nem medicamento regular.",
+        "Preocupações do paciente": "Quero recuperar a disposição e entender a menstruação.",
+        "Início dos sintomas": "O cansaço piorou nos últimos quatro meses.",
+        "História menstrual": "Oito dias de sangramento, com trocas muito frequentes nos primeiros três dias.",
+        "Sintomas associados": "Palpitações ao esforço e vontade de mastigar gelo; sem desmaio.",
+        "História reprodutiva": "Dois partos anteriores; sem possibilidade de gravidez atual segundo a paciente."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Pele, mucosas e ausculta"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Hemograma e reticulócitos",
+      "Ferritina e saturação de transferrina"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Esfregaço de sangue periférico"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 112/70 mmHg; FC 92 bpm; FR 18 irpm; SpO₂ 99%.",
+      "Pele, mucosas e ausculta": "Palidez conjuntival; sem icterícia ou petéquias; sopro sistólico suave de fluxo."
+    },
+    "auxiliaryLabs": {
+      "Hemograma e reticulócitos": "Hemoglobina 9,1 g/dL; VCM 69 fL; RDW 18%; leucócitos 6.800/mm³; plaquetas 510.000/mm³; reticulócitos 1,0%.",
+      "Ferritina e saturação de transferrina": "Ferritina 7 ng/mL; saturação de transferrina 7%.",
+      "Esfregaço de sangue periférico": "Microcitose e hipocromia; sem blastos ou esquizócitos."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Anemia ferropriva associada a perda menstrual"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Traço talassêmico"
+        },
+        {
+          "disease": "Anemia de inflamação"
+        },
+        {
+          "disease": "Neoplasia mieloproliferativa"
+        }
+      ]
+    },
+    "treatments": "Repor ferro por via apropriada, investigar e tratar sangramento menstrual, acompanhar resposta hematológica e orientar alimentação. Não limitar a conduta a dar ferro indefinidamente sem identificar a perda. Avaliação urgente se síncope, dor torácica, dispneia em repouso ou sangramento intenso ativo; transfusão depende do quadro, não apenas de um número.",
+    "referenceReasoning": "Anemia microcítica com ferritina baixa e perda crônica favorece deficiência de ferro. Plaquetas elevadas podem ser reativas, não prova de doença clonal. A produção medular depende de substrato; reticulócitos devem ser interpretados diante do grau de anemia.\nJustificativa dos exames: Hemograma classifica a anemia; ferritina e saturação sustentam deficiência; reticulócitos avaliam resposta de produção. Não exigir biópsia medular para quadro típico; reavaliar plaquetas após corrigir a causa.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Explicar hematopoiese como produção das células do sangue, usando reticulócitos e disponibilidade de ferro para pensar na resposta medular.",
+      "Reconhecer anemia pela hemoglobina e investigar mecanismo e causa, não apenas palidez.",
+      "Interpretar trombocitose reativa à deficiência de ferro sem rotular automaticamente doença clonal."
+    ],
+    "references": [
+      {
+        "title": "NHLBI — Iron-deficiency anemia",
+        "url": "https://www.nhlbi.nih.gov/health/anemia/iron-deficiency-anemia"
+      },
+      {
+        "title": "NHLBI — Thrombocythemia and thrombocytosis",
+        "url": "https://www.nhlbi.nih.gov/health/thrombocythemia-thrombocytosis"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar impacto funcional, perdas menstruais e outras fontes de sangramento.",
+          "Investigar dieta, medicamentos, gestação e sinais de instabilidade."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Pele, mucosas e ausculta.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Hemograma classifica a anemia; ferritina e saturação sustentam deficiência; reticulócitos avaliam resposta de produção.",
+          "Não exigir biópsia medular para quadro típico; reavaliar plaquetas após corrigir a causa."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Anemia microcítica com ferritina baixa e perda crônica favorece deficiência de ferro. Plaquetas elevadas podem ser reativas, não prova de doença clonal. A produção medular depende de substrato; reticulócitos devem ser interpretados diante do grau de anemia.",
+          "Distinguir as alternativas Traço talassêmico, Anemia de inflamação, Neoplasia mieloproliferativa, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Repor ferro por via apropriada, investigar e tratar sangramento menstrual, acompanhar resposta hematológica e orientar alimentação. Não limitar a conduta a dar ferro indefinidamente sem identificar a perda.",
+          "Avaliação urgente se síncope, dor torácica, dispneia em repouso ou sangramento intenso ativo; transfusão depende do quadro, não apenas de um número."
+        ],
+        "criticalActions": []
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-hematopoietic-febre-remedio-tireoide",
+    "caseTitle": "Febre e dor de garganta durante tratamento",
+    "specialty": "Hematologia e hemoterapia",
+    "difficulty": "Intermediário",
+    "summary": "Estou com febre e dor de garganta, e comecei um remédio para a tireoide recentemente.",
+    "publicPresentation": "Estou com febre e dor de garganta, e comecei um remédio para a tireoide recentemente.",
+    "learningTrack": "basic",
+    "bodySystem": "hematopoietic",
+    "catalogType": "fictional",
+    "caseType": "Febre e sintomas gerais",
+    "patientProfile": {
+      "name": "Patrícia Ramos",
+      "age_value": 42,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Professora",
+      "chief_complaint": "Estou com febre e dor de garganta, e comecei um remédio para a tireoide recentemente.",
+      "present_illness_history": "Há um dia teve febre de 38,7 °C, dor de garganta e uma ferida na boca. Iniciou carbimazol há seis semanas por problema da tireoide. Não tem tosse, ardor urinário ou sangramento. Trouxe a embalagem e lembra de ter recebido uma orientação sobre febre, mas não sabe o que fazer.",
+      "past_medical_history": "Tenho hipertireoidismo diagnosticado há dois meses; nenhuma quimioterapia ou doença de sangue conhecida.",
+      "personal_history": "Não fumo e consumo álcool raramente.",
+      "family_history": "Minha mãe tem doença da tireoide.",
+      "other_medical_history": "Uso carbimazol iniciado há seis semanas e propranolol conforme prescrição; não usei antibiótico.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Vive com o marido e trouxe os remédios para conferência.",
+      "concern": "Tenho medo de o remédio ter relação com a febre.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Estou com febre e dor de garganta, e comecei um remédio para a tireoide recentemente.",
+        "Características dos sintomas": "Há um dia teve febre de 38,7 °C, dor de garganta e uma ferida na boca. Iniciou carbimazol há seis semanas por problema da tireoide. Não tem tosse, ardor urinário ou sangramento. Trouxe a embalagem e lembra de ter recebido uma orientação sobre febre, mas não sabe o que fazer.",
+        "Doenças crônicas": "Tenho hipertireoidismo diagnosticado há dois meses; nenhuma quimioterapia ou doença de sangue conhecida.",
+        "Hábitos de vida": "Não fumo e consumo álcool raramente.",
+        "História familiar": "Minha mãe tem doença da tireoide.",
+        "Medicamentos em uso": "Carbimazol há seis semanas e propranolol; trouxe a embalagem.",
+        "Preocupações do paciente": "Tenho medo de o remédio ter relação com a febre.",
+        "Início dos sintomas": "A febre e a dor começaram ontem.",
+        "Sintomas associados": "Ferida dolorosa na boca; sem falta de ar ou sangramento."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais e perfusão",
+      "Exame oral e pele"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Hemograma com contagem diferencial"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Hemoculturas",
+      "Função renal e hepática"
+    ],
+    "physicalExams": {
+      "Sinais vitais e perfusão": "Temperatura 38,7 °C; FC 108 bpm; PA 110/68 mmHg; FR 20 irpm; enchimento capilar de 2 segundos.",
+      "Exame oral e pele": "Úlcera pequena em mucosa oral; hiperemia faríngea discreta; sem petéquias ou abscesso visível."
+    },
+    "auxiliaryLabs": {
+      "Hemograma com contagem diferencial": "Leucócitos 800/mm³; neutrófilos absolutos 90/mm³; linfócitos absolutos 560/mm³; hemoglobina 12,5 g/dL; plaquetas 230.000/mm³.",
+      "Hemoculturas": "Coletadas antes de antimicrobiano se não houver atraso; resultado ainda pendente.",
+      "Função renal e hepática": "Creatinina 0,8 mg/dL; ALT 28 U/L; bilirrubina total 0,7 mg/dL."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Agranulocitose associada a antitireoidiano com febre"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Infecção viral com citopenia"
+        },
+        {
+          "disease": "Falência medular"
+        },
+        {
+          "disease": "Sepse com consumo celular"
+        }
+      ]
+    },
+    "treatments": "Suspender o fármaco suspeito sob supervisão e encaminhar imediatamente para manejo hospitalar de neutropenia febril, antimicrobiano e investigação conforme protocolo. Acionar hematologia/endocrinologia para acompanhamento. URGENTE: não tratar como dor de garganta simples nem aguardar em casa o resultado da cultura diante de febre e neutropenia profunda.",
+    "referenceReasoning": "Febre e neutrófilos muito baixos durante exposição a antitireoidiano exigem abordagem imediata. Leucopenia descreve o total, agranulocitose a depleção grave dos granulócitos; a linfopenia presente é outro achado, sem atribuir sua causa com certeza.\nJustificativa dos exames: Hemograma diferencial é indispensável: o total de leucócitos não substitui contagem absoluta de neutrófilos. Culturas ajudam a orientar tratamento, mas não se deve aguardar seu resultado para agir.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Distinguir leucopenia, redução do total de leucócitos, dos componentes específicos do diferencial.",
+      "Interpretar linfopenia pela contagem absoluta, sem concluir imunodeficiência específica por um exame isolado.",
+      "Reconhecer agranulocitose/neutropenia profunda com febre como situação urgente e investigar exposição medicamentosa."
+    ],
+    "references": [
+      {
+        "title": "NHS — Serious adverse effects of carbimazole",
+        "url": "https://www.nhs.uk/medicines/carbimazole/side-effects-of-carbimazole/"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Identificar medicamento, início e sintomas de infecção, conferindo embalagem.",
+          "Pesquisar foco infeccioso e deterioração, sem esperar sinais inflamatórios exuberantes na neutropenia."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais e perfusão, Exame oral e pele.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Hemograma diferencial é indispensável: o total de leucócitos não substitui contagem absoluta de neutrófilos.",
+          "Culturas ajudam a orientar tratamento, mas não se deve aguardar seu resultado para agir."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Febre e neutrófilos muito baixos durante exposição a antitireoidiano exigem abordagem imediata. Leucopenia descreve o total, agranulocitose a depleção grave dos granulócitos; a linfopenia presente é outro achado, sem atribuir sua causa com certeza.",
+          "Distinguir as alternativas Infecção viral com citopenia, Falência medular, Sepse com consumo celular, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Suspender o fármaco suspeito sob supervisão e encaminhar imediatamente para manejo hospitalar de neutropenia febril, antimicrobiano e investigação conforme protocolo. Acionar hematologia/endocrinologia para acompanhamento.",
+          "URGENTE: não tratar como dor de garganta simples nem aguardar em casa o resultado da cultura diante de febre e neutropenia profunda."
+        ],
+        "criticalActions": [
+          "URGENTE: não tratar como dor de garganta simples nem aguardar em casa o resultado da cultura diante de febre e neutropenia profunda."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-hematopoietic-febre-ganglios",
+    "caseTitle": "Febre, garganta e caroços no pescoço",
+    "specialty": "Infectologia",
+    "difficulty": "Iniciante",
+    "summary": "Estou muito cansado, com febre e caroços no pescoço.",
+    "publicPresentation": "Estou muito cansado, com febre e caroços no pescoço.",
+    "learningTrack": "basic",
+    "bodySystem": "hematopoietic",
+    "catalogType": "fictional",
+    "caseType": "Febre e sintomas gerais",
+    "patientProfile": {
+      "name": "Lucas Nunes",
+      "age_value": 20,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Estudante",
+      "chief_complaint": "Estou muito cansado, com febre e caroços no pescoço.",
+      "present_illness_history": "Há oito dias tem cansaço, febre baixa e dor de garganta. Notou caroços dos dois lados do pescoço. Não teve falta de ar ou dificuldade para engolir saliva. Faz judô e quer saber quando pode voltar. Não tem perda de peso prolongada ou suor noturno há meses.",
+      "past_medical_history": "Não tenho doença crônica ou imunossupressão.",
+      "personal_history": "Pratico judô três vezes por semana; não fumo.",
+      "family_history": "Sem doença de sangue conhecida.",
+      "other_medical_history": "Usei antitérmico; não tomei amoxicilina ou corticoide.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Mora em república e divide utensílios com colegas.",
+      "concern": "Quero melhorar e voltar ao esporte sem risco.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Estou muito cansado, com febre e caroços no pescoço.",
+        "Características dos sintomas": "Há oito dias tem cansaço, febre baixa e dor de garganta. Notou caroços dos dois lados do pescoço. Não teve falta de ar ou dificuldade para engolir saliva. Faz judô e quer saber quando pode voltar. Não tem perda de peso prolongada ou suor noturno há meses.",
+        "Doenças crônicas": "Não tenho doença crônica ou imunossupressão.",
+        "Hábitos de vida": "Pratico judô, com contato e risco de impacto no abdome.",
+        "História familiar": "Sem doença de sangue conhecida.",
+        "Medicamentos em uso": "Usei antitérmico; não tomei amoxicilina ou corticoide.",
+        "Preocupações do paciente": "Quero melhorar e voltar ao esporte sem risco.",
+        "Início dos sintomas": "Há oito dias.",
+        "Sintomas associados": "Febre, garganta dolorida, cansaço e caroços no pescoço."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame cervical e orofaringe",
+      "Exame abdominal"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Hemograma e esfregaço"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Sorologia para EBV",
+      "Transaminases"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "Temperatura 37,9 °C; FC 88 bpm; PA 116/72 mmHg.",
+      "Exame cervical e orofaringe": "Adenomegalias cervicais posteriores móveis e dolorosas; tonsilas aumentadas com exsudato, sem obstrução.",
+      "Exame abdominal": "Baço palpável 2 cm abaixo do rebordo costal esquerdo, sem dor ou sinais peritoneais."
+    },
+    "auxiliaryLabs": {
+      "Hemograma e esfregaço": "Leucócitos 14.800/mm³; linfócitos absolutos 8.600/mm³, com linfócitos reativos; hemoglobina 13,8 g/dL; plaquetas 165.000/mm³.",
+      "Sorologia para EBV": "VCA IgM reagente; EBNA IgG não reagente, compatível com infecção recente.",
+      "Transaminases": "ALT 96 U/L; AST 78 U/L."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Mononucleose infecciosa por EBV"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Faringite estreptocócica"
+        },
+        {
+          "disease": "Infecção aguda por HIV"
+        },
+        {
+          "disease": "Doença linfoproliferativa"
+        }
+      ]
+    },
+    "treatments": "Suporte, líquidos e analgesia. Orientar evitar esporte de contato e esforço até reavaliação e recuperação, individualizando retorno. Não usar antibiótico ou corticoide rotineiramente sem indicação específica. URGENTE: dor abdominal súbita, desmaio ou piora respiratória precisam de atendimento; explicar risco esplênico sem alarmismo.",
+    "referenceReasoning": "Febre, adenomegalias, linfocitose reativa e esplenomegalia sustentam síndrome mononucleósica; sorologia esclarece a etiologia quando necessária. Linfócitos aumentados não equivalem automaticamente a leucemia.\nJustificativa dos exames: Hemograma diferencial e esfregaço distinguem padrão reativo; sorologia é útil em dúvida ou confirmação etiológica. Não exigir imagem de rotina para todos nem indicar biópsia de linfonodo sem evolução suspeita.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer leucocitose e usar diferencial e contexto, sem igualar aumento de leucócitos a infecção bacteriana.",
+      "Distinguir linfocitose absoluta de simples aumento percentual e considerar padrão reativo.",
+      "Descrever adenomegalia por localização, tamanho, dor e evolução, em vez de concluir neoplasia pelo termo.",
+      "Reconhecer esplenomegalia e seu impacto no risco de trauma, sem confundi-la obrigatoriamente com hiperesplenismo."
+    ],
+    "references": [
+      {
+        "title": "CDC — Infectious mononucleosis",
+        "url": "https://www.cdc.gov/epstein-barr/about/mononucleosis.html"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar duração, febre, contatos, impacto funcional e sintomas prolongados.",
+          "Perguntar dor abdominal e prática de esporte de contato."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Exame cervical e orofaringe, Exame abdominal.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Hemograma diferencial e esfregaço distinguem padrão reativo; sorologia é útil em dúvida ou confirmação etiológica.",
+          "Não exigir imagem de rotina para todos nem indicar biópsia de linfonodo sem evolução suspeita."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Febre, adenomegalias, linfocitose reativa e esplenomegalia sustentam síndrome mononucleósica; sorologia esclarece a etiologia quando necessária. Linfócitos aumentados não equivalem automaticamente a leucemia.",
+          "Distinguir as alternativas Faringite estreptocócica, Infecção aguda por HIV, Doença linfoproliferativa, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Suporte, líquidos e analgesia. Orientar evitar esporte de contato e esforço até reavaliação e recuperação, individualizando retorno. Não usar antibiótico ou corticoide rotineiramente sem indicação específica.",
+          "URGENTE: dor abdominal súbita, desmaio ou piora respiratória precisam de atendimento; explicar risco esplênico sem alarmismo."
+        ],
+        "criticalActions": [
+          "URGENTE: dor abdominal súbita, desmaio ou piora respiratória precisam de atendimento; explicar risco esplênico sem alarmismo."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-hematopoietic-roxos-barriga",
+    "caseTitle": "Manchas roxas e aumento da barriga",
+    "specialty": "Hematologia e hemoterapia",
+    "difficulty": "Intermediário",
+    "summary": "Estou aparecendo com roxos e minha barriga cresceu.",
+    "publicPresentation": "Estou aparecendo com roxos e minha barriga cresceu.",
+    "learningTrack": "basic",
+    "bodySystem": "hematopoietic",
+    "catalogType": "fictional",
+    "caseType": "Alterações da pele",
+    "patientProfile": {
+      "name": "Geraldo Fontes",
+      "age_value": 61,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Pedreiro aposentado",
+      "chief_complaint": "Estou aparecendo com roxos e minha barriga cresceu.",
+      "present_illness_history": "Há três meses percebe abdome maior, cansaço e roxos após pequenas batidas. Não teve vômito com sangue, fezes pretas ou confusão. Já foi informado de cicatrizes no fígado e interrompeu o álcool há seis meses. Não usa anticoagulante.",
+      "past_medical_history": "Tenho cirrose em acompanhamento; faltei ao último retorno.",
+      "personal_history": "Bebia destilados diariamente por muitos anos; parei há seis meses com apoio da família.",
+      "family_history": "Sem doença hemorrágica familiar conhecida.",
+      "other_medical_history": "Uso diuréticos prescritos para a barriga; trouxe a lista, sem outros medicamentos.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Vive com a filha e aceita retomar acompanhamento especializado.",
+      "concern": "Tenho medo de o sangue estar ficando fraco e de piorar em casa.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Estou aparecendo com roxos e minha barriga cresceu.",
+        "Características dos sintomas": "Há três meses percebe abdome maior, cansaço e roxos após pequenas batidas. Não teve vômito com sangue, fezes pretas ou confusão. Já foi informado de cicatrizes no fígado e interrompeu o álcool há seis meses. Não usa anticoagulante.",
+        "Doenças crônicas": "Tenho cirrose e preciso voltar ao acompanhamento.",
+        "Hábitos de vida": "Bebia destilados diariamente por muitos anos; parei há seis meses com apoio da família.",
+        "História familiar": "Sem doença hemorrágica familiar conhecida.",
+        "Medicamentos em uso": "Uso diuréticos prescritos para a barriga; trouxe a lista, sem outros medicamentos.",
+        "Preocupações do paciente": "Tenho medo de o sangue estar ficando fraco e de piorar em casa.",
+        "Início dos sintomas": "Barriga maior e roxos nos últimos três meses.",
+        "Sintomas associados": "Cansaço; sem vômito com sangue, fezes pretas ou confusão."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Pele e consciência",
+      "Exame abdominal"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Hemograma",
+      "Função hepática e coagulação"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Ultrassonografia abdominal com Doppler"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 108/68 mmHg; FC 82 bpm; temperatura 36,5 °C.",
+      "Pele e consciência": "Equimoses em braços; alerta, orientado, sem asterixe.",
+      "Exame abdominal": "Ascite moderada e baço palpável; sem dor ou defesa."
+    },
+    "auxiliaryLabs": {
+      "Hemograma": "Hemoglobina 10,8 g/dL; leucócitos 2.900/mm³; plaquetas 72.000/mm³.",
+      "Função hepática e coagulação": "Albumina 2,8 g/dL; bilirrubina total 2,0 mg/dL; INR 1,5; fibrinogênio 210 mg/dL.",
+      "Ultrassonografia abdominal com Doppler": "Fígado de contornos nodulares, sinais de hipertensão portal, baço de 17 cm e ascite; veia porta pérvia."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Hiperesplenismo associado a hipertensão portal na cirrose"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Supressão medular por álcool"
+        },
+        {
+          "disease": "Deficiência nutricional"
+        },
+        {
+          "disease": "Doença hematológica primária"
+        }
+      ]
+    },
+    "treatments": "Retomar avaliação hepatológica, revisar ascite, nutrição e prevenção de complicações. Investigar causas adicionais das citopenias se atípicas; individualizar procedimentos e manejo de sangramento. URGENTE: sangramento digestivo, febre com ascite ou alteração de consciência exigem atendimento imediato.",
+    "referenceReasoning": "Esplenomegalia, hipertensão portal e citopenias tornam hiperesplenismo provável, mas causas medulares/nutricionais podem coexistir. INR alterado na cirrose não prediz sozinho sangramento nem exige correção automática.\nJustificativa dos exames: Hemograma avalia as linhagens; imagem e função hepática contextualizam sequestro esplênico e doença de base. Não interpretar INR isolado como medida completa da hemostasia na cirrose ou indicar plasma apenas para normalizá-lo.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Distinguir hiperesplenismo, com repercussão nas contagens celulares, de simples aumento do baço.",
+      "Identificar trombocitopenia e investigar mecanismo e manifestações, sem usar um número isolado como diagnóstico etiológico.",
+      "Interpretar coagulopatia no contexto clínico; na cirrose, INR isolado não resume risco hemorrágico."
+    ],
+    "references": [
+      {
+        "title": "NHLBI — Thrombocytopenia",
+        "url": "https://www.nhlbi.nih.gov/health/thrombocytopenia"
+      },
+      {
+        "title": "NIDDK — Diagnosis of cirrhosis",
+        "url": "https://www.niddk.nih.gov/health-information/liver-disease/cirrhosis/diagnosis"
+      },
+      {
+        "title": "NIDDK — Treatment for cirrhosis",
+        "url": "https://www.niddk.nih.gov/health-information/liver-disease/cirrhosis/treatment"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Pesquisar sangramento ativo, infecção, confusão, álcool, fármacos e adesão ao acompanhamento.",
+          "Distinguir equimoses de perda sanguínea importante e documentar evolução da ascite."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Pele e consciência, Exame abdominal.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Hemograma avalia as linhagens; imagem e função hepática contextualizam sequestro esplênico e doença de base.",
+          "Não interpretar INR isolado como medida completa da hemostasia na cirrose ou indicar plasma apenas para normalizá-lo."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Esplenomegalia, hipertensão portal e citopenias tornam hiperesplenismo provável, mas causas medulares/nutricionais podem coexistir. INR alterado na cirrose não prediz sozinho sangramento nem exige correção automática.",
+          "Distinguir as alternativas Supressão medular por álcool, Deficiência nutricional, Doença hematológica primária, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Retomar avaliação hepatológica, revisar ascite, nutrição e prevenção de complicações. Investigar causas adicionais das citopenias se atípicas; individualizar procedimentos e manejo de sangramento.",
+          "URGENTE: sangramento digestivo, febre com ascite ou alteração de consciência exigem atendimento imediato."
+        ],
+        "criticalActions": [
+          "URGENTE: sangramento digestivo, febre com ascite ou alteração de consciência exigem atendimento imediato."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-hematopoietic-coceira-banho",
+    "caseTitle": "Coceira após o banho e dor de cabeça",
+    "specialty": "Hematologia e hemoterapia",
+    "difficulty": "Intermediário",
+    "summary": "Tenho coceira depois do banho e dor de cabeça frequente.",
+    "publicPresentation": "Tenho coceira depois do banho e dor de cabeça frequente.",
+    "learningTrack": "basic",
+    "bodySystem": "hematopoietic",
+    "catalogType": "fictional",
+    "caseType": "Alterações da pele",
+    "patientProfile": {
+      "name": "Mauro Brito",
+      "age_value": 60,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Comerciante",
+      "chief_complaint": "Tenho coceira depois do banho e dor de cabeça frequente.",
+      "present_illness_history": "Há três meses tem coceira após banho quente, sem manchas, e cefaleia leve recorrente. Não teve perda de força, falta de ar ou dor no peito. Um hemograma de rotina veio alterado e foi repetido. Não vive em altitude, não fuma e não usa testosterona.",
+      "past_medical_history": "Tenho pressão alta controlada; sem trombose anterior.",
+      "personal_history": "Não fumo; não uso anabolizantes; minha esposa não percebe pausas respiratórias importantes no sono.",
+      "family_history": "Não conheço doença semelhante na família.",
+      "other_medical_history": "Uso losartana; não tomo diuréticos ou testosterona.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Administra uma pequena loja e pode comparecer à hematologia.",
+      "concern": "Quero entender o exame e se há risco de entupir uma veia.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Tenho coceira depois do banho e dor de cabeça frequente.",
+        "Características dos sintomas": "Há três meses tem coceira após banho quente, sem manchas, e cefaleia leve recorrente. Não teve perda de força, falta de ar ou dor no peito. Um hemograma de rotina veio alterado e foi repetido. Não vive em altitude, não fuma e não usa testosterona.",
+        "Doenças crônicas": "Tenho pressão alta controlada; sem trombose anterior.",
+        "Hábitos de vida": "Não fumo; não uso anabolizantes; minha esposa não percebe pausas respiratórias importantes no sono.",
+        "História familiar": "Não conheço doença semelhante na família.",
+        "Medicamentos em uso": "Losartana; sem testosterona ou anabolizante.",
+        "Preocupações do paciente": "Quero entender o exame e se há risco de entupir uma veia.",
+        "Início dos sintomas": "Coceira e dor de cabeça há três meses.",
+        "Fatores de melhora ou piora": "A coceira aparece mais após banho quente."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Pele, abdome e exame neurológico"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Hemograma repetido"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Eritropoietina e pesquisa JAK2",
+      "Avaliação medular especializada"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 138/84 mmHg; FC 76 bpm; SpO₂ 98% em ar ambiente.",
+      "Pele, abdome e exame neurológico": "Rubor facial; baço discretamente palpável; sem déficit focal ou lesão de pele."
+    },
+    "auxiliaryLabs": {
+      "Hemograma repetido": "Hemoglobina 18,6 g/dL; hematócrito 56%; leucócitos 12.300/mm³; plaquetas 490.000/mm³, persistentes em segunda amostra com hidratação habitual.",
+      "Eritropoietina e pesquisa JAK2": "Eritropoietina abaixo da referência; mutação JAK2 V617F detectada.",
+      "Avaliação medular especializada": "Etapa confirmatória posterior: medula hipercelular com proliferação das três linhagens."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Policitemia vera"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Eritrocitose secundária à hipóxia"
+        },
+        {
+          "disease": "Hemoconcentração por desidratação"
+        },
+        {
+          "disease": "Eritrocitose por testosterona"
+        }
+      ]
+    },
+    "treatments": "Encaminhar à hematologia para estratificação de risco e manejo individualizado, incluindo controle do hematócrito e prevenção de trombose quando indicados. Tratar fatores cardiovasculares e explicar seguimento. URGENTE: déficit focal, dor torácica, dispneia súbita ou membro doloroso e inchado exigem avaliação imediata.",
+    "referenceReasoning": "Eritrocitose persistente, prurido aquagênico e JAK2 favorecem policitemia vera, confirmada em avaliação especializada. Poliglobulia descreve aumento de eritrócitos; não é sinônimo obrigatório de doença clonal.\nJustificativa dos exames: Repetição do hemograma confirma persistência; saturação, eritropoietina e JAK2 orientam o mecanismo. Biópsia medular é etapa especializada; não exigir que o aluno a execute para reconhecer a síndrome.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Usar poliglobulia/eritrocitose como descrição do aumento de eritrócitos e investigar causa relativa ou absoluta.",
+      "Distinguir policitemia vera de eritrocitose secundária e hemoconcentração, sem concluir apenas pela hemoglobina."
+    ],
+    "references": [
+      {
+        "title": "NHS — Erythrocytosis",
+        "url": "https://www.nhs.uk/conditions/erythrocytosis/"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Pesquisar trombose, sintomas neurológicos, hipóxia, tabaco, altitude, sono e medicamentos.",
+          "Confirmar persistência do achado e diferenciar desidratação de produção aumentada."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Pele, abdome e exame neurológico.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Repetição do hemograma confirma persistência; saturação, eritropoietina e JAK2 orientam o mecanismo.",
+          "Biópsia medular é etapa especializada; não exigir que o aluno a execute para reconhecer a síndrome."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Eritrocitose persistente, prurido aquagênico e JAK2 favorecem policitemia vera, confirmada em avaliação especializada. Poliglobulia descreve aumento de eritrócitos; não é sinônimo obrigatório de doença clonal.",
+          "Distinguir as alternativas Eritrocitose secundária à hipóxia, Hemoconcentração por desidratação, Eritrocitose por testosterona, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhar à hematologia para estratificação de risco e manejo individualizado, incluindo controle do hematócrito e prevenção de trombose quando indicados. Tratar fatores cardiovasculares e explicar seguimento.",
+          "URGENTE: déficit focal, dor torácica, dispneia súbita ou membro doloroso e inchado exigem avaliação imediata."
+        ],
+        "criticalActions": [
+          "URGENTE: déficit focal, dor torácica, dispneia súbita ou membro doloroso e inchado exigem avaliação imediata."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  }
+]

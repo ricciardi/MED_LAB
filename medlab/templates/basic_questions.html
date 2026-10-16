@@ -1,0 +1,15 @@
+{% set basic_status = {'complete':'Demonstrado', 'partial':'Parcial', 'not_met':'Não demonstrado', 'not_applicable':'Não aplicável'} %}
+{% set basic_exemption = {'source_unavailable':'Informação não disponível no cenário.', 'already_known':'Informação já conhecida no contexto da consulta.', 'context_not_relevant':'Item não pertinente a este contexto.', 'declined':'Preferência por não responder respeitada.', 'urgent_priority':'Outras prioridades exigiam atenção neste momento.', 'respondent_limitation':'Limitação do paciente ou informante considerada.', 'record_uncertain':'O registro não permite concluir com segurança.'} %}
+<div class="basic-question-review" data-basic-question-review>
+  <p>Os itens são organizados por tema. Itens não aplicáveis ficam fora do cálculo; cada grupo avaliável tem o mesmo peso nesta dimensão.</p>
+  {% for group in section.groups|default([]) %}
+  <details class="basic-question-group"><summary><span>{{ group.title }}</span><strong>{% if group.assessable and group.score is number %}{{ '%.0f'|format(group.score) }}<small>/100</small>{% else %}Não avaliado{% endif %}</strong></summary>
+    <ol>{% for criterion in section.criteria|default([]) if criterion.groupId == group.id %}<li>
+      <div class="basic-criterion-heading"><h4>{{ criterion.title }}</h4><span class="basic-criterion-status" data-status="{{ criterion.status }}">{{ basic_status.get(criterion.status, 'A conferir') }}</span></div>
+      <p>{{ criterion.reason }}</p>{% if criterion.exemption %}<p class="basic-criterion-exemption">{{ basic_exemption.get(criterion.exemption, 'Aplicabilidade considerada no contexto da consulta.') }}</p>{% endif %}
+      {% if criterion.evidence %}<div class="basic-criterion-evidence"><span class="micro-label">PERGUNTAS REGISTRADAS</span>{% for item in criterion.evidence %}<blockquote>{{ item.text }}</blockquote>{% endfor %}</div>{% endif %}
+      {% if criterion.contextEvidence %}<div class="basic-criterion-context"><span class="micro-label">CONTEXTO CONSIDERADO</span>{% for item in criterion.contextEvidence %}<p>{{ item.text }}</p>{% endfor %}</div>{% endif %}
+    </li>{% endfor %}</ol>
+  </details>
+  {% endfor %}
+</div>

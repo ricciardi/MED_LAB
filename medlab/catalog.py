@@ -1,0 +1,121 @@
+"""Supported study taxonomy, independent of the cases currently available.
+
+SPECIALTIES follows the 55 names in CFM Resolution 2.380/2024, pages 2–3:
+https://sistemas.cfm.org.br/normas/arquivos/resolucoes/BR/2024/2380_2024.pdf
+Checked against the CFM CME portal and October 2026 CFM publications. These
+are Brazilian recognized specialties, not labels supplied by MedCaseReasoning.
+CASE_TYPES is MED LAB's presentation taxonomy and is not a CFM classification.
+"""
+
+SPECIALTIES = (
+    "Acupuntura",
+    "Alergia e imunologia",
+    "Anestesiologia",
+    "Angiologia",
+    "Cardiologia",
+    "Cirurgia cardiovascular",
+    "Cirurgia da mão",
+    "Cirurgia de cabeça e pescoço",
+    "Cirurgia do aparelho digestivo",
+    "Cirurgia geral",
+    "Cirurgia oncológica",
+    "Cirurgia pediátrica",
+    "Cirurgia plástica",
+    "Cirurgia torácica",
+    "Cirurgia vascular",
+    "Clínica médica",
+    "Coloproctologia",
+    "Dermatologia",
+    "Endocrinologia e metabologia",
+    "Endoscopia",
+    "Gastroenterologia",
+    "Genética médica",
+    "Geriatria",
+    "Ginecologia e obstetrícia",
+    "Hematologia e hemoterapia",
+    "Homeopatia",
+    "Infectologia",
+    "Mastologia",
+    "Medicina de emergência",
+    "Medicina de família e comunidade",
+    "Medicina do trabalho",
+    "Medicina do tráfego",
+    "Medicina esportiva",
+    "Medicina física e reabilitação",
+    "Medicina intensiva",
+    "Medicina legal e perícia médica",
+    "Medicina nuclear",
+    "Medicina preventiva e social",
+    "Nefrologia",
+    "Neurocirurgia",
+    "Neurologia",
+    "Nutrologia",
+    "Oftalmologia",
+    "Oncologia clínica",
+    "Ortopedia e traumatologia",
+    "Otorrinolaringologia",
+    "Patologia",
+    "Patologia clínica/medicina laboratorial",
+    "Pediatria",
+    "Pneumologia",
+    "Psiquiatria",
+    "Radiologia e diagnóstico por imagem",
+    "Radioterapia",
+    "Reumatologia",
+    "Urologia",
+)
+
+BODY_SYSTEMS = {
+    "urinary": "Sistema urinário",
+    "digestive": "Sistema digestivo",
+    "hematopoietic": "Sistema hematopoiético",
+    "nervous": "Sistema nervoso",
+    "respiratory": "Sistema respiratório",
+    "cardiovascular": "Sistema cardiovascular",
+    "head": "Cabeça",
+}
+
+CASE_TYPES = [
+    "Primeira consulta",
+    "Sintomas respiratórios",
+    "Dor torácica",
+    "Dor abdominal",
+    "Sintomas digestivos",
+    "Sintomas urinários",
+    "Cefaleia e sintomas neurológicos",
+    "Dor e limitação de movimento",
+    "Alterações da pele",
+    "Febre e sintomas gerais",
+    "Saúde emocional",
+    "Acompanhamento e prevenção",
+    "Sintomas ginecológicos",
+    "Queixa pediátrica",
+    "Alterações visuais",
+    "Sintomas de ouvido, nariz e garganta",
+    "Palpitações e desmaios",
+    "Edema e alterações circulatórias",
+    "Nódulos e massas",
+    "Sede, fome e alterações de peso",
+    "Trauma e lesões",
+    "Outros sintomas",
+]
+
+SEED_CASE_TYPES = {
+    "tosse-febre-01": "Sintomas respiratórios",
+    "ardor-urina-02": "Sintomas urinários",
+    "cefaleia-recorrente-03": "Cefaleia e sintomas neurológicos",
+    "dor-lombar-04": "Dor e limitação de movimento",
+    "desanimo-05": "Saúde emocional",
+    "sede-cansaco-06": "Febre e sintomas gerais",
+    "diarreia-infantil-07": "Queixa pediátrica",
+    "chiado-noturno-08": "Sintomas respiratórios",
+}
+
+SPECIALTY_ALIASES = {
+    "Clínica Médica": "Clínica médica",
+    "Ortopedia": "Ortopedia e traumatologia",
+    "Endocrinologia": "Endocrinologia e metabologia",
+    "Saúde mental": "Psiquiatria",
+    "Saúde da mulher": "Ginecologia e obstetrícia",
+    "Medicina de família": "Medicina de família e comunidade",
+}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<main id="main">
+  <section class="hero container">
+    <div class="hero-copy reveal">
+      <p class="eyebrow"><span class="live-dot"></span> SUA PRÓXIMA CONSULTA COMEÇA AQUI</p>
+      <h1>Aprenda a ouvir.<br><em>Evolua ao cuidar.</em></h1>
+      <p class="hero-description">Entre a teoria e o paciente, existe a prática.<br class="desktop-only"> Encontre o seu espaço para desenvolver o raciocínio clínico — uma conversa de cada vez.</p>
+      <div class="hero-actions"><a href="{{ url_for('web.register') }}" class="button button-primary">Começar a praticar {{ icon('arrow',19) }}</a><a class="text-link" href="#como-funciona">Conheça a experiência <span>↗</span></a></div>
+      <div class="hero-proof"><span class="proof-icon">{{ icon('shield',18) }}</span><p>Pacientes simulados. Aprendizado real.<br><strong>Um ambiente seguro para você evoluir.</strong></p></div>
+    </div>
+    <div class="hero-art reveal" aria-label="Ilustração de uma consulta médica simulada com diálogo, raciocínio e cuidado">
+      <div class="art-topline"><span>O SEU CONSULTÓRIO DE APRENDIZADO</span><span class="art-plus">+</span></div>
+      <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
+      <svg class="consultation-art" viewBox="0 0 560 460" fill="none" aria-hidden="true"><defs><linearGradient id="consultation-halo" x1="100" y1="100" x2="430" y2="380" gradientUnits="userSpaceOnUse"><stop stop-color="#9a65d8"/><stop offset=".52" stop-color="#315bd7"/><stop offset="1" stop-color="#c8425d"/></linearGradient></defs>
+        <path d="M103 367c-30-88-5-177 71-234 76-57 181-56 248 4 69 62 78 177 13 250" fill="#ffffff" stroke="url(#consultation-halo)" stroke-width="2"/>
+        <path d="M91 369h385M80 380h406" stroke="#b2b9ce" stroke-width="1"/>
+        <path d="M181 372v-65c0-41 30-69 70-69h49c42 0 73 30 73 70v64" fill="#ffffff" stroke="#dce0e8" stroke-width="1.5"/>
+        <path d="m242 233-18 37 50 60 48-60-20-37" fill="#e9c9af"/>
+        <path d="m237 251 37 79-23 42h-70v-63c0-34 21-59 56-58Z" fill="#ffffff"/>
+        <path d="m311 251-37 79 23 42h76v-63c0-34-24-59-62-58Z" fill="#ffffff"/>
+        <path d="m235 251-10 42 25 12-11 18 35 47 34-47-12-18 25-12-10-42" stroke="#dce0e8" stroke-width="2"/>
+        <path d="M225 164c0-49 23-69 52-69 34 0 55 24 55 65v34c0 36-25 65-55 65s-52-29-52-65v-30Z" fill="#e9c9af"/>
+        <path d="M224 179c-7-30-6-61 12-78 12-12 28-16 43-15 38 0 58 29 56 65-11-1-20-9-26-26-19 24-51 31-78 28v29l-7-3Z" fill="#2e3856"/>
+        <path d="M251 184h5M294 184h5" stroke="#2e3856" stroke-width="3" stroke-linecap="round"/>
+        <path d="m275 186-4 18h7M263 219c8 6 17 6 24-1" stroke="#ac8066" stroke-width="2" stroke-linecap="round"/>
+        <path d="M235 258c-15 18-22 31-20 56 1 17 11 27 24 27s21-10 22-27" stroke="#294fa8" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="261" cy="313" r="9" fill="#294fa8"/><circle cx="261" cy="313" r="4" fill="#ffffff"/>
+        <path d="M314 258c8 13 11 30 10 46" stroke="#294fa8" stroke-width="4" stroke-linecap="round"/>
+        <rect x="308" y="304" width="31" height="31" rx="8" fill="#ffffff" stroke="#dce0e8"/><path d="M323.5 311v17M315 319.5h17" stroke="#294fa8" stroke-width="2"/>
+        <path d="M121 371v-36c0-9 7-16 16-16h22l28 53" fill="#a7afc8"/>
+        <path d="M422 371v-36c0-9-7-16-16-16h-22l-28 53" fill="#a7afc8"/>
+        <path d="M139 372h265" stroke="#8994b5" stroke-width="3"/>
+        <path d="m419 119 7-16 7 16 16 7-16 7-7 16-7-16-16-7 16-7Z" fill="#c8425d"/>
+        <circle cx="135" cy="202" r="5" fill="#315bd7"/><circle cx="400" cy="254" r="3" fill="#315bd7"/>
+      </svg>
+      <div class="float-card patient-bubble"><span class="mini-avatar">M</span><div><span class="micro-label">PACIENTE SIMULADO</span><p>“Doutor, há alguns dias<br>não tenho me sentido bem…”</p></div></div>
+      <div class="float-card listening-card"><span class="listening-icon">{{ icon('chat',19) }}</span><div><span class="micro-label">CADA PERGUNTA IMPORTA</span><strong>Escute. Investigue. Conecte.</strong></div><div class="sound-bars"><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="art-bottomline"><span>ANAMNESE</span><span class="tiny-dot"></span><span>RACIOCÍNIO</span><span class="tiny-dot"></span><span>CUIDADO</span></div>
+      <span class="art-caption">A medicina começa no encontro.</span>
+    </div>
+  </section>
+  <section class="principles-strip"><div class="container principles-inner"><p>Mais que respostas certas.<br><strong>Boas decisões clínicas.</strong></p><div>{{ icon('chat',22) }}<span>Conversas que ensinam</span></div><div>{{ icon('case',22) }}<span>Casos que desafiam</span></div><div>{{ icon('pulse',24) }}<span>Evolução que você acompanha</span></div></div></section>
+  <section id="como-funciona" class="section container">
+    <div class="section-heading"><div><p class="eyebrow">DO PRIMEIRO OLÁ À CONDUTA</p><h2>Uma consulta completa.<br><em>Um novo jeito de aprender.</em></h2></div><p>Aproxime o que você estuda<br>do que vai encontrar na prática.</p></div>
+    <div class="steps-grid">
+      <article class="step-card"><div class="step-top"><span class="step-number">01</span>{{ icon('chat',28) }}</div><h3>Ouça a história.</h3><p>Converse com o paciente simulado. Faça perguntas, explore os sintomas e construa uma anamnese com propósito.</p><span class="step-caption">ESCUTA ATIVA</span></article>
+      <article class="step-card"><div class="step-top"><span class="step-number">02</span>{{ icon('flask',28) }}</div><h3>Conecte as pistas.</h3><p>Solicite exames, interprete os achados e organize suas hipóteses. Cada decisão faz parte do seu raciocínio.</p><span class="step-caption">INVESTIGAÇÃO CLÍNICA</span></article>
+      <article class="step-card"><div class="step-top"><span class="step-number">03</span>{{ icon('spark',28) }}</div><h3>Enxergue sua evolução.</h3><p>Defina o diagnóstico e a conduta. Receba feedback sobre sua prática e descubra onde dar o próximo passo.</p><span class="step-caption">APRENDIZADO CONTÍNUO</span></article>
+    </div>
+  </section>
+  <section id="aprendizado" class="learning-section container">
+    <div class="learning-copy"><p class="eyebrow">SEU RACIOCÍNIO, EM PERSPECTIVA</p><h2>A evolução está<br><em>nos detalhes.</em></h2><p>Uma boa consulta não cabe em uma única nota. Entenda seus pontos fortes e o que ainda pode desenvolver em cada etapa do atendimento.</p><a href="{{ url_for('web.register') }}" class="text-link">Comece a construir sua trajetória {{ icon('arrow',18) }}</a></div>
+    <div class="dimension-preview"><div class="preview-heading"><span class="micro-label">UM OLHAR COMPLETO SOBRE SUA PRÁTICA</span>{{ icon('spark',22) }}</div><div class="dimension-list">{% for name,desc in [('Anamnese','A história que você investiga'),('Exame físico','Os sinais que você reconhece'),('Exames complementares','As escolhas que orientam'),('Raciocínio diagnóstico','As conexões que você constrói'),('Plano terapêutico','O cuidado que você propõe'),('Desempenho global','O conjunto da sua consulta')] %}<div><span class="dimension-index">0{{ loop.index }}</span><h4>{{ name }}</h4><span class="dimension-description">{{ desc }}</span><span class="dimension-mark">{{ icon('check',15) }}</span></div>{% endfor %}</div><p class="preview-footnote">Feedback para aprender, refletir e tentar de novo.</p></div>
+  </section>
+  {% include 'ranking_boards.html' %}
+  <section class="closing-cta container"><span class="eyebrow">UM PASSO DE CADA VEZ. UMA CONSULTA DE CADA VEZ.</span><h2>O profissional que você quer ser<br><em>começa com a prática de hoje.</em></h2><a href="{{ url_for('web.register') }}" class="button button-primary">Vamos começar? {{ icon('arrow',19) }}</a><p>Crie sua conta e encontre seu próximo desafio clínico.</p></section>
+</main>
+{% endblock %}

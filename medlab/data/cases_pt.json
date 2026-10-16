@@ -1,0 +1,1166 @@
+[
+  {
+    "caseId": "tosse-febre-01",
+    "caseTitle": "Tosse, febre e cansaço",
+    "specialty": "Clínica Médica",
+    "difficulty": "Intermediário",
+    "summary": "Tosse com catarro e febre há quatro dias.",
+    "patientProfile": {
+      "name": "Marta Nascimento",
+      "age_value": 42,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Professora",
+      "chief_complaint": "Tosse com catarro e febre há quatro dias.",
+      "present_illness_history": "Tosse há quatro dias, seguida de febre medida de 38,5 °C, catarro amarelado e dor do lado direito do peito ao respirar fundo. Hoje sente cansaço ao subir escadas. Sem sangue no catarro, desmaio ou confusão. Bebe líquidos e consegue comer pequenas porções.",
+      "past_medical_history": "Não tenho doença crônica conhecida.",
+      "personal_history": "Nunca fumei. Tomo uma taça de vinho em algumas comemorações.",
+      "family_history": "Minha mãe tem pressão alta.",
+      "other_medical_history": "Não uso remédios regularmente.",
+      "allergy_history": "Não conheço alergia a medicamentos.",
+      "symptom_details": {
+        "Início dos sintomas": "A tosse começou há quatro dias e a febre apareceu no dia seguinte.",
+        "Características dos sintomas": "Tosse com catarro amarelado. A dor aparece quando respiro fundo.",
+        "Localização dos sintomas": "Sinto a dor na parte de baixo do lado direito do peito.",
+        "Sintomas associados": "Tive febre de 38,5 °C e cansaço ao subir escadas. Não cuspi sangue, não desmaiei e não fiquei confusa.",
+        "Estado geral": "Estou cansada, mas consigo beber água e comer um pouco.",
+        "Evolução do quadro": "Hoje fiquei mais cansada para subir escadas.",
+        "Fatores de melhora ou piora": "A dor piora ao respirar fundo.",
+        "Diagnóstico e tratamento prévios": "Não fui atendida antes por este episódio. Não tomei antibiótico."
+      },
+      "concern": "Tenho medo de piorar e não conseguir trabalhar.",
+      "expectation": "Quero entender o que está acontecendo e voltar a respirar melhor."
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Doenças crônicas",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "Medicamentos em uso",
+      "Estado geral"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Ausculta pulmonar",
+      "Estado geral e consciência"
+    ],
+    "optionalPhysicalExams": [
+      "Exame cardiovascular"
+    ],
+    "mustAuxiliaryLabs": [
+      "Radiografia de tórax"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Hemograma",
+      "Ureia e creatinina"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 118/76 mmHg; FC 96 bpm; FR 22 irpm; temperatura 38,2 °C; SpO₂ 95% em ar ambiente.",
+      "Ausculta pulmonar": "Estertores inspiratórios focais na base direita, sem sibilos difusos.",
+      "Estado geral e consciência": "Alerta, orientada, fala frases completas, perfusão periférica preservada.",
+      "Exame cardiovascular": "Ritmo regular; sem sopros ou edema periférico."
+    },
+    "auxiliaryLabs": {
+      "Radiografia de tórax": "Opacidade alveolar na base direita, sem derrame pleural.",
+      "Hemograma": "Leucócitos 13.200/mm³ com neutrofilia; hemoglobina 12,8 g/dL; plaquetas 256.000/mm³.",
+      "Ureia e creatinina": "Ureia 28 mg/dL; creatinina 0,8 mg/dL."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Pneumonia adquirida na comunidade"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Infecção viral respiratória"
+        },
+        {
+          "disease": "Embolia pulmonar"
+        }
+      ]
+    },
+    "treatments": "Avaliar gravidade e condições de acompanhamento antes de decidir o local de cuidado. Discutir tratamento antimicrobiano conforme protocolo local, alergias e contexto clínico, sem prescrição automatizada. Oferecer suporte, hidratação e reavaliação. Orientar retorno imediato se houver piora respiratória, confusão, hipotensão ou incapacidade de ingerir líquidos.",
+    "learningObjectives": [
+      "Sustentar pneumonia com quadro febril, foco auscultatório e imagem; discutir alternativas sem ignorar sinais discordantes.",
+      "Caracterizar tosse, febre, dor ventilatório-dependente e evolução.",
+      "Definir manejo e seguimento segundo gravidade, condições sociais e protocolo local."
+    ],
+    "references": [
+      {
+        "title": "NICE NG250 — Pneumonia: diagnosis and management",
+        "url": "https://www.nice.org.uk/guidance/ng250/chapter/recommendations"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar tosse, febre, dor ventilatório-dependente e evolução.",
+          "Investigar dispneia, confusão, ingestão oral e condições que aumentam o risco."
+        ],
+        "criticalActions": [
+          "Pesquisar piora respiratória e alteração de consciência."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Interpretar oxigenação, frequência respiratória, pressão arterial e ausculta focal."
+        ],
+        "criticalActions": [
+          "Avaliar SpO₂ e estabilidade hemodinâmica."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Relacionar a opacidade focal à hipótese clínica; justificar exames adicionais pela gravidade."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar pneumonia com quadro febril, foco auscultatório e imagem; discutir alternativas sem ignorar sinais discordantes."
+        ],
+        "criticalActions": [
+          "Reconhecer necessidade de reavaliar gravidade, além de nomear a doença."
+        ]
+      },
+      "treatment": {
+        "criteria": [
+          "Definir manejo e seguimento segundo gravidade, condições sociais e protocolo local."
+        ],
+        "criticalActions": [
+          "Explicitar sinais de alarme e reavaliação."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar os dados positivos e negativos sem inventar achados.",
+          "Comunicar a hipótese, suas incertezas e os próximos passos em linguagem compreensível.",
+          "Priorizar segurança, decisão compartilhada e acompanhamento proporcional ao risco."
+        ],
+        "criticalActions": [
+          "Não liberar paciente com instabilidade sem encaminhamento."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "seed",
+    "reviewNote": "Caso inteiramente fictício, preparado para demonstração educacional com consulta a fontes institucionais. Não houve validação clínica humana; revisar antes de uso curricular ou avaliativo."
+  },
+  {
+    "caseId": "ardor-urina-02",
+    "caseTitle": "Ardor ao urinar",
+    "specialty": "Urologia",
+    "difficulty": "Iniciante",
+    "summary": "Ardor ao urinar e idas frequentes ao banheiro há dois dias.",
+    "patientProfile": {
+      "name": "Camila Torres",
+      "age_value": 27,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Designer",
+      "chief_complaint": "Ardor ao urinar e idas frequentes ao banheiro há dois dias.",
+      "present_illness_history": "Ardor ao urinar há dois dias, vontade frequente com pouco volume e desconforto abaixo do umbigo. Sem febre, calafrios, dor lombar, vômitos ou corrimento vaginal. Menstruação habitual há dez dias; usa contraceptivo oral e preservativo, sem falhas relatadas. Não teve episódio parecido no último ano.",
+      "past_medical_history": "Não tenho doença renal, diabetes ou outra doença crônica conhecida.",
+      "personal_history": "Não fumo e bebo ocasionalmente.",
+      "family_history": "Não conheço doenças urinárias na família.",
+      "other_medical_history": "Uso contraceptivo oral regularmente.",
+      "allergy_history": "Nunca tive reação alérgica conhecida a remédios.",
+      "symptom_details": {
+        "Início dos sintomas": "Começou há dois dias.",
+        "Características dos sintomas": "Arde principalmente no final do xixi; sai pouco de cada vez.",
+        "Localização dos sintomas": "O incômodo fica abaixo do umbigo.",
+        "Hábitos intestinais e urinários": "Vou ao banheiro muitas vezes e sai pouca urina. As fezes estão como de costume.",
+        "Sintomas associados": "Não tive febre, calafrios, dor nas costas, vômitos ou corrimento.",
+        "Diagnóstico e tratamento prévios": "Não tive isso no último ano e não tomei antibiótico recentemente."
+      },
+      "menstrual_history": "Menstruei há dez dias, com duração e fluxo habituais.",
+      "reproductive_history": "Nunca estive grávida. Uso contraceptivo oral e preservativo, sem falhas percebidas.",
+      "sexual_history": "Tenho um parceiro fixo; não houve relação sem preservativo recentemente.",
+      "concern": "Receio que o incômodo chegue aos rins."
+    },
+    "mustConsultionItems": [
+      "Hábitos intestinais e urinários",
+      "Início dos sintomas",
+      "Sintomas associados",
+      "História reprodutiva",
+      "Alergias",
+      "Medicamentos em uso"
+    ],
+    "optionalConsultionItems": [
+      "História sexual",
+      "Diagnóstico e tratamento prévios"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame abdominal",
+      "Punho-percussão lombar"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [],
+    "optionalAuxiliaryLabs": [
+      "Urina tipo 1",
+      "Teste de gravidez urinário",
+      "Urocultura"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 110/70 mmHg; FC 78 bpm; FR 16 irpm; temperatura 36,6 °C.",
+      "Exame abdominal": "Leve sensibilidade suprapúbica, sem defesa ou dor à descompressão.",
+      "Punho-percussão lombar": "Sem dor bilateralmente."
+    },
+    "auxiliaryLabs": {
+      "Urina tipo 1": "Leucócitos 35 por campo; nitrito positivo; 2 hemácias por campo. Resultado complementar, não obrigatório diante de apresentação típica.",
+      "Teste de gravidez urinário": "Negativo no dia da avaliação; interpretar considerando o tempo desde a exposição, se houver suspeita clínica.",
+      "Urocultura": "Crescimento de Escherichia coli; exame reservado na prática para indicação clínica, como recorrência, falha terapêutica ou condições de risco."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Cistite aguda não complicada"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Pielonefrite aguda"
+        },
+        {
+          "disease": "Uretrite"
+        }
+      ]
+    },
+    "treatments": "Investigar gestação e fatores de complicação; discutir tratamento conforme protocolo local, resistência e alergias. Não exigir urocultura de rotina em apresentação típica de baixo risco. Orientar hidratação conforme tolerância e retorno se aparecer febre, dor lombar, vômitos ou se não houver melhora. Reavaliar possibilidade de infecção sexualmente transmissível conforme exposição e sintomas.",
+    "learningObjectives": [
+      "Distinguir infecção urinária baixa de pielonefrite e uretrite pelos achados documentados.",
+      "Caracterizar sintomas urinários e investigar sinais sistêmicos, corrimento e gestação.",
+      "Propor manejo contextualizado e retorno por ausência de melhora ou sinais de infecção alta."
+    ],
+    "references": [
+      {
+        "title": "NICE NG109 — Urinary tract infection (lower): antimicrobial prescribing",
+        "url": "https://www.nice.org.uk/guidance/ng109/chapter/recommendations"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar sintomas urinários e investigar sinais sistêmicos, corrimento e gestação."
+        ],
+        "criticalActions": [
+          "Pesquisar febre, dor lombar e possibilidade de gestação."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Procurar febre, dor em flancos e sinais peritoneais."
+        ],
+        "criticalActions": [
+          "Verificar sinais sistêmicos."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Reconhecer o diagnóstico clínico típico; justificar teste de gestação ou cultura conforme contexto."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Distinguir infecção urinária baixa de pielonefrite e uretrite pelos achados documentados."
+        ],
+        "criticalActions": [
+          "Não classificar como não complicada sem avaliar condições de risco."
+        ]
+      },
+      "treatment": {
+        "criteria": [
+          "Propor manejo contextualizado e retorno por ausência de melhora ou sinais de infecção alta."
+        ],
+        "criticalActions": [
+          "Orientar procura de atendimento se surgirem febre ou dor lombar."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar os dados positivos e negativos sem inventar achados.",
+          "Comunicar a hipótese, suas incertezas e os próximos passos em linguagem compreensível.",
+          "Priorizar segurança, decisão compartilhada e acompanhamento proporcional ao risco."
+        ],
+        "criticalActions": [
+          "Reconhecer quando o percurso de baixo risco deixa de ser adequado."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "seed",
+    "reviewNote": "Caso inteiramente fictício, preparado para demonstração educacional com consulta a fontes institucionais. Não houve validação clínica humana; revisar antes de uso curricular ou avaliativo."
+  },
+  {
+    "caseId": "cefaleia-recorrente-03",
+    "caseTitle": "Crises de dor de cabeça",
+    "specialty": "Neurologia",
+    "difficulty": "Intermediário",
+    "summary": "Crises recorrentes de dor de cabeça há seis meses.",
+    "patientProfile": {
+      "name": "Lívia Moreira",
+      "age_value": 31,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Analista de sistemas",
+      "chief_complaint": "Crises recorrentes de dor de cabeça há seis meses.",
+      "present_illness_history": "Crises semelhantes há seis meses, duas ou três vezes por mês, durando de seis a doze horas. Dor pulsátil do lado esquerdo, intensidade sete de dez, pior ao caminhar, com enjoo e incômodo com luz e barulho. Não começa subitamente, não houve pior dor da vida, febre, trauma, alteração visual prévia, perda de força ou convulsão. Entre crises fica bem. Usa analgésico simples em até quatro dias por mês.",
+      "past_medical_history": "Não tenho doença crônica conhecida. Nunca tive câncer ou imunossupressão.",
+      "personal_history": "Não fumo; passo várias horas no computador e às vezes durmo pouco.",
+      "family_history": "Minha mãe tem crises de dor de cabeça semelhantes.",
+      "other_medical_history": "Uso analgésico simples em até quatro dias por mês.",
+      "allergy_history": "Não conheço alergia a remédios.",
+      "symptom_details": {
+        "Início dos sintomas": "A primeira crise desse padrão foi há seis meses; a dor vai aumentando aos poucos.",
+        "Características dos sintomas": "É uma dor que pulsa, chega a sete de dez.",
+        "Localização dos sintomas": "Costuma ficar no lado esquerdo da cabeça.",
+        "Duração e frequência": "Tenho duas ou três crises por mês, de seis a doze horas cada.",
+        "Fatores de melhora ou piora": "Caminhar piora; deitar num quarto escuro ajuda.",
+        "Sintomas associados": "Fico enjoada e incomodada com luz e barulho. Não tive febre, desmaio, convulsão, fraqueza ou mudança visual antes da dor.",
+        "Evolução do quadro": "As crises são parecidas entre si e fico bem entre elas. Não surgiu uma dor nova diferente.",
+        "Fatores desencadeantes": "Algumas crises vêm após dormir pouco."
+      },
+      "concern": "Tenho medo de ser um problema grave dentro da cabeça.",
+      "expectation": "Quero conseguir trabalhar sem essas crises."
+    },
+    "mustConsultionItems": [
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Duração e frequência",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Fatores de melhora ou piora"
+    ],
+    "optionalConsultionItems": [
+      "História familiar",
+      "Fatores desencadeantes"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame neurológico",
+      "Pesquisa de sinais meníngeos"
+    ],
+    "optionalPhysicalExams": [
+      "Fundoscopia"
+    ],
+    "mustAuxiliaryLabs": [],
+    "optionalAuxiliaryLabs": [],
+    "physicalExams": {
+      "Sinais vitais": "PA 116/74 mmHg; FC 72 bpm; temperatura 36,5 °C.",
+      "Exame neurológico": "Alerta e orientada; linguagem, pares cranianos, força, sensibilidade, coordenação e marcha preservados.",
+      "Pesquisa de sinais meníngeos": "Ausentes.",
+      "Fundoscopia": "Sem edema de papila no exame simulado."
+    },
+    "auxiliaryLabs": {},
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Migrânea sem aura"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Cefaleia do tipo tensional"
+        },
+        {
+          "disease": "Cefaleia secundária"
+        }
+      ]
+    },
+    "treatments": "Explicar o padrão clínico e discutir tratamento das crises conforme contraindicações e protocolo local. Usar diário de cefaleia, rotina de sono e orientação sobre uso excessivo de analgésicos. Considerar prevenção conforme frequência, incapacidade e preferência. Não solicitar neuroimagem apenas para tranquilização na ausência de sinais de alarme. Orientar avaliação urgente se dor súbita intensa, déficit focal, febre com rigidez ou mudança importante do padrão.",
+    "learningObjectives": [
+      "Reconhecer padrão migranoso e explicitar por que cefaleia tensional e causas secundárias são menos prováveis.",
+      "Caracterizar padrão temporal, intensidade, incapacidade, sintomas associados e uso de analgésicos.",
+      "Discutir manejo de crises, acompanhamento e risco de uso excessivo de analgésicos."
+    ],
+    "references": [
+      {
+        "title": "NICE CG150 — Headaches in over 12s: diagnosis and management",
+        "url": "https://www.nice.org.uk/guidance/cg150/chapter/recommendations"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar padrão temporal, intensidade, incapacidade, sintomas associados e uso de analgésicos."
+        ],
+        "criticalActions": [
+          "Pesquisar início súbito e déficits neurológicos."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Documentar exame neurológico e pesquisar alterações que mudariam a urgência."
+        ],
+        "criticalActions": [
+          "Realizar avaliação neurológica."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Evitar neuroimagem de rotina no padrão estável sem sinais de alarme."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Reconhecer padrão migranoso e explicitar por que cefaleia tensional e causas secundárias são menos prováveis."
+        ],
+        "criticalActions": [
+          "Não ignorar um sinal de alarme caso presente."
+        ]
+      },
+      "treatment": {
+        "criteria": [
+          "Discutir manejo de crises, acompanhamento e risco de uso excessivo de analgésicos."
+        ],
+        "criticalActions": [
+          "Fornecer sinais de alarme para retorno."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar os dados positivos e negativos sem inventar achados.",
+          "Comunicar a hipótese, suas incertezas e os próximos passos em linguagem compreensível.",
+          "Priorizar segurança, decisão compartilhada e acompanhamento proporcional ao risco."
+        ],
+        "criticalActions": [
+          "Diferenciar quadro recorrente estável de emergência neurológica."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "seed",
+    "reviewNote": "Caso inteiramente fictício, preparado para demonstração educacional com consulta a fontes institucionais. Não houve validação clínica humana; revisar antes de uso curricular ou avaliativo."
+  },
+  {
+    "caseId": "dor-lombar-04",
+    "caseTitle": "Dor nas costas após esforço",
+    "specialty": "Ortopedia",
+    "difficulty": "Iniciante",
+    "summary": "Dor na parte baixa das costas há cinco dias após carregar uma caixa.",
+    "patientProfile": {
+      "name": "Rafael Almeida",
+      "age_value": 38,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Técnico de manutenção",
+      "chief_complaint": "Dor na parte baixa das costas há cinco dias após carregar uma caixa.",
+      "present_illness_history": "Dor lombar começou depois de levantar uma caixa pesada, há cinco dias. É localizada, intensidade cinco de dez, pior ao curvar o tronco e melhora ao mudar de posição. Não irradia para pernas. Sem febre, trauma de alta energia, perda de peso, perda de força, dormência na região genital, retenção ou perda de urina e fezes. Não há história de câncer nem uso prolongado de corticoide.",
+      "past_medical_history": "Não tive câncer, doença óssea ou doença crônica conhecida.",
+      "personal_history": "Não fumo; caminho nos fins de semana.",
+      "family_history": "Não conheço doença importante de coluna na família.",
+      "other_medical_history": "Não uso medicamento contínuo nem corticoide.",
+      "allergy_history": "Não tenho alergia medicamentosa conhecida.",
+      "symptom_details": {
+        "Início dos sintomas": "Começou há cinco dias quando levantei uma caixa pesada.",
+        "Fatores desencadeantes": "Estava carregando uma caixa no trabalho.",
+        "Localização dos sintomas": "É na parte baixa das costas, sem descer para as pernas.",
+        "Características dos sintomas": "É uma dor de cinco de dez, como um peso.",
+        "Fatores de melhora ou piora": "Piora ao me curvar; mudar de posição ajuda.",
+        "Sintomas associados": "Não tive febre, fraqueza nas pernas ou dormência entre as pernas.",
+        "Hábitos intestinais e urinários": "Urino e evacuo normalmente. Não tive perda ou dificuldade de segurar.",
+        "Mudança de peso": "Não perdi peso sem querer."
+      }
+    },
+    "mustConsultionItems": [
+      "Início dos sintomas",
+      "Fatores desencadeantes",
+      "Localização dos sintomas",
+      "Fatores de melhora ou piora",
+      "Sintomas associados",
+      "Hábitos intestinais e urinários"
+    ],
+    "optionalConsultionItems": [
+      "Mudança de peso",
+      "História ocupacional",
+      "Medicamentos em uso"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame da coluna",
+      "Exame neurológico dos membros inferiores"
+    ],
+    "optionalPhysicalExams": [
+      "Elevação da perna estendida"
+    ],
+    "mustAuxiliaryLabs": [],
+    "optionalAuxiliaryLabs": [],
+    "physicalExams": {
+      "Sinais vitais": "PA 122/78 mmHg; FC 76 bpm; temperatura 36,4 °C.",
+      "Exame da coluna": "Sensibilidade paravertebral lombar e dor à flexão; sem deformidade ou dor óssea focal.",
+      "Exame neurológico dos membros inferiores": "Força, sensibilidade, reflexos e marcha preservados.",
+      "Elevação da perna estendida": "Sem reprodução de dor radicular bilateralmente."
+    },
+    "auxiliaryLabs": {},
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Lombalgia mecânica aguda inespecífica"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Radiculopatia lombossacra"
+        },
+        {
+          "disease": "Síndrome da cauda equina"
+        }
+      ]
+    },
+    "treatments": "Explicar a evolução esperada, estimular manutenção de atividades toleradas e retorno gradual à rotina. Discutir controle de dor individualizado conforme riscos e protocolo local. Evitar repouso prolongado e imagem sem indicação. Reavaliar se persistência ou piora; orientar atendimento imediato se retenção urinária, perda esfincteriana, anestesia em sela, fraqueza progressiva ou febre.",
+    "learningObjectives": [
+      "Sustentar dor mecânica e distinguir radiculopatia e compressão neurológica grave.",
+      "Identificar esforço relacionado e investigar déficits neurológicos, alterações esfincterianas e sintomas sistêmicos.",
+      "Orientar atividade tolerada, seguimento e retorno diante de sinais neurológicos de alarme."
+    ],
+    "references": [
+      {
+        "title": "NICE NG59 — Low back pain and sciatica in over 16s",
+        "url": "https://www.nice.org.uk/guidance/ng59/chapter/recommendations"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Identificar esforço relacionado e investigar déficits neurológicos, alterações esfincterianas e sintomas sistêmicos."
+        ],
+        "criticalActions": [
+          "Perguntar sobre retenção urinária, anestesia em sela e fraqueza progressiva."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Avaliar mobilidade, dor focal e função neurológica dos membros inferiores."
+        ],
+        "criticalActions": [
+          "Avaliar função neurológica."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Justificar ausência de exames de imagem imediatos quando não há sinais de alarme."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar dor mecânica e distinguir radiculopatia e compressão neurológica grave."
+        ],
+        "criticalActions": [
+          "Reconhecer sinais que exigiriam investigação urgente."
+        ]
+      },
+      "treatment": {
+        "criteria": [
+          "Orientar atividade tolerada, seguimento e retorno diante de sinais neurológicos de alarme."
+        ],
+        "criticalActions": [
+          "Explicitar quando procurar atendimento imediato."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar os dados positivos e negativos sem inventar achados.",
+          "Comunicar a hipótese, suas incertezas e os próximos passos em linguagem compreensível.",
+          "Priorizar segurança, decisão compartilhada e acompanhamento proporcional ao risco."
+        ],
+        "criticalActions": [
+          "Não atribuir déficits neurológicos graves a uma distensão simples."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "seed",
+    "reviewNote": "Caso inteiramente fictício, preparado para demonstração educacional com consulta a fontes institucionais. Não houve validação clínica humana; revisar antes de uso curricular ou avaliativo."
+  },
+  {
+    "caseId": "desanimo-05",
+    "caseTitle": "Desânimo e perda de interesse",
+    "specialty": "Psiquiatria",
+    "difficulty": "Avançado",
+    "summary": "Desânimo, sono ruim e perda de interesse há seis semanas.",
+    "patientProfile": {
+      "name": "André Freitas",
+      "age_value": 35,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Assistente administrativo",
+      "chief_complaint": "Desânimo, sono ruim e perda de interesse há seis semanas.",
+      "present_illness_history": "Há seis semanas sente tristeza quase todos os dias e não tem vontade de tocar violão ou encontrar amigos. Dorme mal, come menos, sente culpa, cansaço e dificuldade de concentração, com faltas ao trabalho. Já pensou que seria mais fácil não acordar, mas nega plano, intenção atual, preparativos ou tentativa anterior. A irmã o acompanha e oferece apoio. Nega fases de euforia ou energia excessiva com pouca necessidade de sono, vozes ou uso de drogas. Não há acesso a arma relatado.",
+      "past_medical_history": "Não conheço doença crônica e nunca fiz tratamento psiquiátrico.",
+      "personal_history": "Não uso drogas. Bebo uma cerveja em encontros ocasionais, sem aumento recente. Moro perto da minha irmã.",
+      "family_history": "Minha mãe já tratou períodos de tristeza com acompanhamento profissional.",
+      "other_medical_history": "Não tomo remédios regularmente.",
+      "allergy_history": "Não tenho alergia conhecida.",
+      "symptom_details": {
+        "Início dos sintomas": "Estou assim há seis semanas, quase todos os dias.",
+        "Estado geral": "Durmo mal, como menos e me sinto sem energia.",
+        "Características dos sintomas": "Perdi a vontade de tocar violão e encontrar meus amigos. Sinto culpa e não consigo me concentrar.",
+        "Sintomas associados": "Já pensei que seria mais fácil não acordar. Não fiz plano, não quero agir agora, não preparei nada e nunca tentei. Não tenho arma. Minha irmã sabe que estou mal e veio comigo. Nunca tive fases de muita energia com pouco sono nem ouvi vozes.",
+        "Evolução do quadro": "Tenho faltado ao trabalho e me isolado mais.",
+        "Preocupações do paciente": "Tenho medo de perder o emprego e de não melhorar.",
+        "Expectativas do paciente": "Quero voltar a ter vontade de fazer minhas coisas."
+      },
+      "concern": "Tenho medo de perder o emprego e de não melhorar.",
+      "expectation": "Quero voltar a gostar das minhas atividades."
+    },
+    "mustConsultionItems": [
+      "Início dos sintomas",
+      "Estado geral",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Hábitos de vida",
+      "Doenças crônicas"
+    ],
+    "optionalConsultionItems": [
+      "História familiar",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Exame do estado mental",
+      "Avaliação clínica geral"
+    ],
+    "optionalPhysicalExams": [
+      "Sinais vitais"
+    ],
+    "mustAuxiliaryLabs": [],
+    "optionalAuxiliaryLabs": [
+      "TSH",
+      "Hemograma"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 118/72 mmHg; FC 74 bpm; temperatura 36,5 °C.",
+      "Exame do estado mental": "Higiene preservada, contato cooperativo, fala lenta, humor deprimido e afeto reduzido; pensamento organizado, sem delírios; orientado. A avaliação do risco exige entrevista direta.",
+      "Avaliação clínica geral": "Sem sinais de intoxicação ou alteração neurológica focal."
+    },
+    "auxiliaryLabs": {
+      "TSH": "2,1 mUI/L (referência 0,4–4,0); solicitar conforme suspeita clínica, não como substituto da entrevista.",
+      "Hemograma": "Hemoglobina 14,5 g/dL, leucócitos e plaquetas dentro da referência."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Episódio depressivo"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Transtorno de adaptação"
+        },
+        {
+          "disease": "Transtorno bipolar"
+        }
+      ]
+    },
+    "treatments": "Realizar avaliação direta e individual de risco de suicídio, incluindo plano, intenção, meios, tentativas e proteção. Construir plano de segurança e acesso a ajuda, com participação consentida da rede de apoio. Se risco imediato ou impossibilidade de manter segurança, encaminhar urgentemente. Discutir intervenções psicológicas e eventual tratamento medicamentoso conforme gravidade, preferência, avaliação profissional e protocolo local. Programar seguimento próximo e revisar risco; não reduzir a avaliação a uma escala.",
+    "learningObjectives": [
+      "Relacionar síndrome depressiva à duração e funcionalidade, mantendo investigação de bipolaridade e outros diferenciais.",
+      "Investigar sintomas, duração, prejuízo funcional, substâncias e episódios de elevação do humor.",
+      "Construir plano de segurança, compartilhar opções de cuidado e programar acompanhamento próximo."
+    ],
+    "references": [
+      {
+        "title": "NICE NG222 — Depression in adults: treatment and management",
+        "url": "https://www.nice.org.uk/guidance/ng222/chapter/recommendations"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Investigar sintomas, duração, prejuízo funcional, substâncias e episódios de elevação do humor.",
+          "Explorar ideação de morte, intenção, plano, acesso a meios, tentativas e rede de apoio de forma direta e acolhedora."
+        ],
+        "criticalActions": [
+          "Avaliar risco atual de suicídio diretamente."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Descrever estado mental e excluir alterações clínicas relevantes."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Pedir exames somente se houver hipótese clínica de causa secundária; não substituir entrevista por exames."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Relacionar síndrome depressiva à duração e funcionalidade, mantendo investigação de bipolaridade e outros diferenciais."
+        ],
+        "criticalActions": [
+          "Não concluir ausência de risco apenas pela negação de plano."
+        ]
+      },
+      "treatment": {
+        "criteria": [
+          "Construir plano de segurança, compartilhar opções de cuidado e programar acompanhamento próximo."
+        ],
+        "criticalActions": [
+          "Encaminhar com urgência se risco iminente; definir segurança e seguimento."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar os dados positivos e negativos sem inventar achados.",
+          "Comunicar a hipótese, suas incertezas e os próximos passos em linguagem compreensível.",
+          "Priorizar segurança, decisão compartilhada e acompanhamento proporcional ao risco."
+        ],
+        "criticalActions": [
+          "Priorizar proteção e acesso a ajuda antes de finalizar a consulta."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "seed",
+    "reviewNote": "Caso inteiramente fictício, preparado para demonstração educacional com consulta a fontes institucionais. Não houve validação clínica humana; revisar antes de uso curricular ou avaliativo."
+  },
+  {
+    "caseId": "sede-cansaco-06",
+    "caseTitle": "Sede persistente e cansaço",
+    "specialty": "Endocrinologia",
+    "difficulty": "Intermediário",
+    "summary": "Muita sede, urina frequente e cansaço há um mês.",
+    "patientProfile": {
+      "name": "Paulo Ribeiro",
+      "age_value": 52,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Motorista",
+      "chief_complaint": "Muita sede, urina frequente e cansaço há um mês.",
+      "present_illness_history": "Há um mês bebe água várias vezes ao dia e levanta três vezes à noite para urinar. Está cansado e perdeu dois quilos sem tentar. Sem vômitos, dor abdominal, respiração diferente, confusão ou sonolência excessiva. Não houve uso de corticoide. Alimentação com horários irregulares e bebidas açucaradas frequentes.",
+      "past_medical_history": "Tenho pressão alta controlada. Nunca me disseram que meu açúcar estava alto.",
+      "personal_history": "Não fumo. Trabalho sentado por longos períodos, faço pouco exercício e bebo refrigerante diariamente.",
+      "family_history": "Meu pai tem diabetes.",
+      "other_medical_history": "Uso losartana conforme a receita habitual. Não uso corticoides.",
+      "allergy_history": "Não tenho alergia conhecida.",
+      "symptom_details": {
+        "Início dos sintomas": "Começou há um mês.",
+        "Hábitos intestinais e urinários": "Urino bastante, inclusive três vezes durante a noite. As fezes não mudaram.",
+        "Sintomas associados": "Sinto muita sede. Não tive vômitos, dor na barriga, respiração diferente ou confusão.",
+        "Estado geral": "Tenho ficado cansado, mas continuo trabalhando.",
+        "Mudança de peso": "Perdi dois quilos no último mês sem tentar.",
+        "Evolução do quadro": "A sede e as idas ao banheiro estão mais frequentes."
+      }
+    },
+    "mustConsultionItems": [
+      "Início dos sintomas",
+      "Hábitos intestinais e urinários",
+      "Sintomas associados",
+      "Mudança de peso",
+      "Medicamentos em uso",
+      "História familiar"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "Doenças crônicas"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Avaliação de hidratação e consciência"
+    ],
+    "optionalPhysicalExams": [
+      "Exame dos pés"
+    ],
+    "mustAuxiliaryLabs": [
+      "Glicemia plasmática casual",
+      "Hemoglobina glicada"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Creatinina e eletrólitos",
+      "Cetonas sanguíneas"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 132/82 mmHg; FC 82 bpm; FR 16 irpm; temperatura 36,5 °C; IMC 31 kg/m².",
+      "Avaliação de hidratação e consciência": "Alerta, orientado, mucosas discretamente secas, perfusão preservada; sem respiração de Kussmaul.",
+      "Exame dos pés": "Pele íntegra, pulsos pediosos presentes e sensibilidade protetora preservada no cenário simulado."
+    },
+    "auxiliaryLabs": {
+      "Glicemia plasmática casual": "248 mg/dL.",
+      "Hemoglobina glicada": "8,3%.",
+      "Creatinina e eletrólitos": "Creatinina 0,9 mg/dL; sódio 138 mEq/L; potássio 4,3 mEq/L.",
+      "Cetonas sanguíneas": "Beta-hidroxibutirato 0,2 mmol/L; sem cetonemia significativa."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Diabetes mellitus tipo 2"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Diabetes mellitus tipo 1"
+        },
+        {
+          "disease": "Diabetes insípido"
+        }
+      ]
+    },
+    "treatments": "Avaliar sinais de crise hiperglicêmica e individualizar a investigação do tipo de diabetes. Explicar os resultados e pactuar mudanças de alimentação, atividade física e acompanhamento. Discutir tratamento farmacológico segundo protocolo, função renal e comorbidades, sem doses automáticas. Planejar avaliação de risco cardiovascular e complicações, educação e seguimento. Orientar urgência se surgirem vômitos, dor abdominal, alteração respiratória ou de consciência.",
+    "learningObjectives": [
+      "Reconhecer diabetes, justificar fenótipo provável de tipo 2 e manter atenção a apresentações alternativas.",
+      "Caracterizar poliúria, sede, emagrecimento e pesquisar manifestações de descompensação aguda.",
+      "Propor educação, plano individualizado, rastreio de complicações e acompanhamento."
+    ],
+    "references": [
+      {
+        "title": "NIDDK — Diabetes tests and diagnosis",
+        "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/tests-diagnosis"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar poliúria, sede, emagrecimento e pesquisar manifestações de descompensação aguda."
+        ],
+        "criticalActions": [
+          "Pesquisar vômitos, dor abdominal e mudança do estado mental."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Avaliar hidratação, consciência e sinais respiratórios de gravidade."
+        ],
+        "criticalActions": [
+          "Avaliar sinais de desidratação e alteração de consciência."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Interpretar hiperglicemia plasmática associada a sintomas e HbA1c elevada; exames adicionais conforme risco."
+        ],
+        "criticalActions": [
+          "Verificar hiperglicemia por exame apropriado."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Reconhecer diabetes, justificar fenótipo provável de tipo 2 e manter atenção a apresentações alternativas."
+        ],
+        "criticalActions": [
+          "Distinguir diagnóstico de diabetes da identificação de uma crise aguda."
+        ]
+      },
+      "treatment": {
+        "criteria": [
+          "Propor educação, plano individualizado, rastreio de complicações e acompanhamento."
+        ],
+        "criticalActions": [
+          "Orientar sinais de crise e necessidade de atendimento urgente."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar os dados positivos e negativos sem inventar achados.",
+          "Comunicar a hipótese, suas incertezas e os próximos passos em linguagem compreensível.",
+          "Priorizar segurança, decisão compartilhada e acompanhamento proporcional ao risco."
+        ],
+        "criticalActions": [
+          "Não manejar crise hiperglicêmica como consulta ambulatorial de rotina."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "seed",
+    "reviewNote": "Caso inteiramente fictício, preparado para demonstração educacional com consulta a fontes institucionais. Não houve validação clínica humana; revisar antes de uso curricular ou avaliativo."
+  },
+  {
+    "caseId": "diarreia-infantil-07",
+    "caseTitle": "Diarreia e vômitos em criança",
+    "specialty": "Pediatria",
+    "difficulty": "Intermediário",
+    "summary": "Diarreia e dois episódios de vômito desde ontem, segundo a mãe.",
+    "patientProfile": {
+      "name": "Sofia Martins",
+      "age_value": 3,
+      "age_unit": "anos",
+      "gender": "Menina",
+      "occupation": "Criança em idade pré-escolar",
+      "chief_complaint": "Diarreia e dois episódios de vômito desde ontem, segundo a mãe.",
+      "present_illness_history": "Mãe relata cinco evacuações líquidas e dois vômitos nas últimas 24 horas. Sem sangue nas fezes, vômito verde ou dor intensa localizada. A criança está menos ativa, mas conversa e aceita pequenos goles. Urinou menos que o habitual; última micção há quatro horas. Colega da creche teve sintomas parecidos. Sem viagem recente ou doença crônica.",
+      "past_medical_history": "Ela não tem doenças conhecidas e cresce bem.",
+      "personal_history": "Frequenta creche. A família tem água tratada. Não oferecemos bebida açucarada para tratar o quadro.",
+      "family_history": "Nenhum familiar em casa está doente.",
+      "other_medical_history": "Ela não toma remédios e ainda não recebeu medicamento para este episódio.",
+      "allergy_history": "Não conhecemos alergias.",
+      "symptom_details": {
+        "Início dos sintomas": "Ela começou ontem, depois de voltar da creche.",
+        "Hábitos intestinais e urinários": "Foram cinco cocôs líquidos e fez menos xixi. O último foi há quatro horas.",
+        "Sintomas associados": "Vomitou duas vezes. Não vi sangue nas fezes nem vômito verde. Não reclamou de dor forte em um ponto da barriga.",
+        "Estado geral": "Está menos animada, mas conversa e aceita pequenos goles de líquido.",
+        "Duração e frequência": "Cinco evacuações e dois vômitos em 24 horas.",
+        "Fatores desencadeantes": "Um colega da creche estava com sintomas parecidos.",
+        "Evolução do quadro": "Hoje ela está bebendo menos e urinando menos."
+      },
+      "respondent": "A mãe responde pela criança.",
+      "vaccination_history": "As vacinas estão em dia segundo a caderneta apresentada.",
+      "travel_history": "Não viajamos recentemente.",
+      "concern": "Tenho medo de ela ficar sem água no corpo."
+    },
+    "mustConsultionItems": [
+      "Início dos sintomas",
+      "Duração e frequência",
+      "Hábitos intestinais e urinários",
+      "Sintomas associados",
+      "Estado geral",
+      "Evolução do quadro"
+    ],
+    "optionalConsultionItems": [
+      "Vacinação",
+      "Fatores desencadeantes"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Avaliação de hidratação e perfusão",
+      "Exame abdominal"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [],
+    "optionalAuxiliaryLabs": [
+      "Eletrólitos e glicemia"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "Peso 14 kg; FC 118 bpm; FR 24 irpm; temperatura 37,5 °C; SpO₂ 98% em ar ambiente.",
+      "Avaliação de hidratação e perfusão": "Mucosas secas, olhos discretamente fundos, redução das lágrimas; responde normalmente; extremidades quentes e enchimento capilar de 2 segundos; pulsos presentes.",
+      "Exame abdominal": "Abdome flácido, ruídos aumentados, sem dor localizada, defesa ou distensão importante."
+    },
+    "auxiliaryLabs": {
+      "Eletrólitos e glicemia": "Sódio 137 mEq/L; potássio 3,8 mEq/L; glicemia 88 mg/dL. Exame não necessário de rotina em criança estável que tolera reidratação oral."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Gastroenterite aguda com desidratação clínica"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Infecção urinária"
+        },
+        {
+          "disease": "Abdome agudo cirúrgico"
+        }
+      ]
+    },
+    "treatments": "Classificar hidratação e procurar sinais de choque ou causa alternativa. Realizar reidratação oral supervisionada com solução apropriada, em pequenas ofertas frequentes, conforme protocolo pediátrico e peso, sem cálculo automático de dose neste caso. Reavaliar resposta e diurese. Retomar alimentação habitual após reidratação e manter aleitamento se aplicável. Não indicar antibiótico ou antidiarreico de rotina. Orientar responsáveis a procurar ajuda se prostração, incapacidade de beber, vômito bilioso, sangue nas fezes, piora ou redução importante da urina.",
+    "learningObjectives": [
+      "Identificar síndrome gastrointestinal com desidratação sem presumir agente infeccioso específico.",
+      "Quantificar perdas, ingestão e diurese; investigar sangue, vômito bilioso e sinais de doença grave.",
+      "Propor reidratação oral supervisionada, reavaliação e orientações claras à responsável."
+    ],
+    "references": [
+      {
+        "title": "NICE CG84 — Diarrhoea and vomiting caused by gastroenteritis in under 5s",
+        "url": "https://www.nice.org.uk/guidance/cg84/chapter/recommendations"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Quantificar perdas, ingestão e diurese; investigar sangue, vômito bilioso e sinais de doença grave."
+        ],
+        "criticalActions": [
+          "Investigar tolerância oral e diurese."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Classificar hidratação e procurar choque, alteração de consciência e abdome agudo."
+        ],
+        "criticalActions": [
+          "Avaliar perfusão e consciência."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Reconhecer que exames laboratoriais não são rotineiros em quadro estável que tolera reidratação oral."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Identificar síndrome gastrointestinal com desidratação sem presumir agente infeccioso específico."
+        ],
+        "criticalActions": [
+          "Reconhecer desidratação e diferenciar choque."
+        ]
+      },
+      "treatment": {
+        "criteria": [
+          "Propor reidratação oral supervisionada, reavaliação e orientações claras à responsável."
+        ],
+        "criticalActions": [
+          "Reavaliar após reidratação e encaminhar se deterioração ou intolerância persistente."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar os dados positivos e negativos sem inventar achados.",
+          "Comunicar a hipótese, suas incertezas e os próximos passos em linguagem compreensível.",
+          "Priorizar segurança, decisão compartilhada e acompanhamento proporcional ao risco."
+        ],
+        "criticalActions": [
+          "Não encerrar atendimento de criança com sinais de desidratação sem plano de reidratação e reavaliação."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "seed",
+    "reviewNote": "Caso inteiramente fictício, preparado para demonstração educacional com consulta a fontes institucionais. Não houve validação clínica humana; revisar antes de uso curricular ou avaliativo."
+  },
+  {
+    "caseId": "chiado-noturno-08",
+    "caseTitle": "Chiado e tosse à noite",
+    "specialty": "Pneumologia",
+    "difficulty": "Intermediário",
+    "summary": "Episódios de chiado, tosse noturna e aperto no peito há três meses.",
+    "patientProfile": {
+      "name": "Bruno Azevedo",
+      "age_value": 24,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Estudante",
+      "chief_complaint": "Episódios de chiado, tosse noturna e aperto no peito há três meses.",
+      "present_illness_history": "Há três meses apresenta chiado e tosse variável, pior à noite e ao correr no frio, cerca de três dias por semana. Acorda duas noites por semana e melhora espontaneamente ao descansar. Hoje está confortável. Sem febre, catarro purulento, dor focal no peito, sangue no escarro ou desmaio. Tem rinite desde a adolescência e nunca recebeu diagnóstico respiratório formal.",
+      "past_medical_history": "Tenho rinite desde a adolescência. Nunca fui internado por falta de ar.",
+      "personal_history": "Não fumo nem uso cigarro eletrônico. Há mofo em um quarto da república onde moro.",
+      "family_history": "Minha irmã usa tratamento contínuo para chiado no peito.",
+      "other_medical_history": "Uso lavagem nasal quando a rinite incomoda. Não uso bombinha nem medicamento contínuo.",
+      "allergy_history": "Não tive alergia conhecida a medicamento.",
+      "symptom_details": {
+        "Início dos sintomas": "Começou há três meses.",
+        "Características dos sintomas": "Ouço um chiado quando respiro e sinto aperto no peito.",
+        "Duração e frequência": "Acontece uns três dias por semana. A tosse me acorda duas noites por semana.",
+        "Fatores de melhora ou piora": "Correr no frio piora. Parar e descansar costuma ajudar.",
+        "Sintomas associados": "Não tive febre, catarro com pus, sangue no catarro ou desmaio. Hoje estou respirando confortável.",
+        "Evolução do quadro": "Os sintomas vão e voltam; entre os episódios me sinto bem.",
+        "Fatores desencadeantes": "Frio, poeira e corrida costumam provocar."
+      },
+      "concern": "Tenho receio de não conseguir mais praticar esportes.",
+      "expectation": "Quero dormir melhor e voltar a correr com segurança."
+    },
+    "mustConsultionItems": [
+      "Início dos sintomas",
+      "Duração e frequência",
+      "Fatores de melhora ou piora",
+      "Sintomas associados",
+      "Doenças crônicas",
+      "Medicamentos em uso"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História ocupacional",
+      "História familiar"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Ausculta pulmonar",
+      "Avaliação do esforço respiratório"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Espirometria com broncodilatador"
+    ],
+    "optionalAuxiliaryLabs": [
+      "FeNO",
+      "Eosinófilos sanguíneos"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 118/72 mmHg; FC 78 bpm; FR 16 irpm; SpO₂ 98% em ar ambiente; temperatura 36,4 °C.",
+      "Ausculta pulmonar": "Sibilos expiratórios discretos bilaterais; entrada de ar preservada.",
+      "Avaliação do esforço respiratório": "Fala frases completas, sem tiragem ou uso de musculatura acessória."
+    },
+    "auxiliaryLabs": {
+      "Espirometria com broncodilatador": "VEF1/CVF abaixo do limite inferior da normalidade; VEF1 2,80 L antes e 3,20 L após broncodilatador (aumento de 400 mL e 14,3%).",
+      "FeNO": "34 ppb. Resultado isolado abaixo do limiar diagnóstico adulto da diretriz citada, sem excluir doença.",
+      "Eosinófilos sanguíneos": "220 células/µL; dentro do intervalo de referência do laboratório."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Asma"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Disfunção laríngea induzível"
+        },
+        {
+          "disease": "Refluxo gastroesofágico"
+        }
+      ]
+    },
+    "treatments": "Explicar a variabilidade dos sintomas e a evidência de limitação reversível do fluxo. Discutir tratamento contendo corticoide inalatório conforme protocolo local; não propor apenas broncodilatador de curta ação como manejo contínuo isolado. Ensinar técnica inalatória, identificar barreiras e exposições, construir plano de ação e agendar reavaliação. Orientar atendimento urgente se dificuldade para falar, piora rápida ou redução importante da respiração.",
+    "learningObjectives": [
+      "Integrar sintomas variáveis e evidência objetiva, considerando diagnósticos alternativos.",
+      "Caracterizar variabilidade, sintomas noturnos, gatilhos, limitação funcional e exposições.",
+      "Discutir estratégia contendo corticoide inalatório, técnica, plano de ação e seguimento."
+    ],
+    "references": [
+      {
+        "title": "BTS/NICE/SIGN NG245 — Asthma: diagnosis, monitoring and chronic asthma management",
+        "url": "https://www.nice.org.uk/guidance/ng245/chapter/recommendations"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar variabilidade, sintomas noturnos, gatilhos, limitação funcional e exposições."
+        ],
+        "criticalActions": [
+          "Pesquisar sinais de gravidade e tratamentos prévios."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Avaliar oxigenação e sinais de esforço ou crise grave."
+        ],
+        "criticalActions": [
+          "Avaliar esforço respiratório e oxigenação."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Interpretar reversibilidade documentada na espirometria e evitar excluir doença por FeNO isolado baixo."
+        ],
+        "criticalActions": [
+          "Obter evidência objetiva quando paciente estável."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Integrar sintomas variáveis e evidência objetiva, considerando diagnósticos alternativos."
+        ],
+        "criticalActions": [
+          "Não presumir diagnóstico somente pela presença de chiado."
+        ]
+      },
+      "treatment": {
+        "criteria": [
+          "Discutir estratégia contendo corticoide inalatório, técnica, plano de ação e seguimento."
+        ],
+        "criticalActions": [
+          "Evitar manejo contínuo baseado apenas em broncodilatador de curta ação."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar os dados positivos e negativos sem inventar achados.",
+          "Comunicar a hipótese, suas incertezas e os próximos passos em linguagem compreensível.",
+          "Priorizar segurança, decisão compartilhada e acompanhamento proporcional ao risco."
+        ],
+        "criticalActions": [
+          "Explicitar plano para piora respiratória."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "seed",
+    "reviewNote": "Caso inteiramente fictício, preparado para demonstração educacional com consulta a fontes institucionais. Não houve validação clínica humana; revisar antes de uso curricular ou avaliativo."
+  }
+]

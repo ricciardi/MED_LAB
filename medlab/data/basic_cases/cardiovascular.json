@@ -1,0 +1,1339 @@
+[
+  {
+    "caseId": "basic-cardiovascular-01",
+    "caseTitle": "Coração acelerado de início súbito",
+    "specialty": "Cardiologia",
+    "difficulty": "Iniciante",
+    "caseType": "Palpitações e desmaios",
+    "summary": "Meu coração disparou de repente e não parou.",
+    "publicPresentation": "Meu coração disparou de repente e não parou.",
+    "patientProfile": {
+      "name": "Marina Duarte",
+      "age_value": 31,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Recepcionista",
+      "chief_complaint": "Meu coração disparou de repente e não parou.",
+      "present_illness_history": "Há quarenta minutos, enquanto estava sentada, sentiu o coração acelerar de uma vez, como se batesse no pescoço. Já teve três episódios menores que pararam sozinhos. Hoje sente tontura leve, sem desmaio, dor torácica forte ou falta de ar importante. Tomou dois cafés, mas não energético ou drogas. Não tem doença cardíaca conhecida. Está com medo, porém consegue conversar.",
+      "past_medical_history": "Antes deste episódio não havia doença crônica conhecida nem internações recentes.",
+      "personal_history": "Nunca fumei. Não uso drogas nem anabolizantes. Bebo uma taça de vinho, no máximo duas vezes por mês. Costumo caminhar três vezes por semana e comer arroz, feijão, verduras e frutas.",
+      "family_history": "Mãe viva, com pressão alta controlada; pai vivo, sem doença conhecida. Uma irmã saudável. Sem episódios semelhantes conhecidos na família.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Casado(a); vive com o cônjuge.",
+      "address": "Mora em Campinas, São Paulo, em área urbana; nasceu em Sorocaba e mudou há seis anos. Endereço fictício, sem necessidade de informar número de documento.",
+      "basic_info": "Nome completo: Marina Duarte. Naturalidade: Sorocaba, São Paulo. Cor autodeclarada: parda. Identifica-se com o gênero informado; acolhe pergunta respeitosa. Nome da mãe: Rosa Duarte. Religião católica, sem restrição de cuidado por crença. Todos os dados pessoais são fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "O próprio paciente responde em linguagem leiga.",
+      "symptom_details": {
+        "Queixa principal": "Meu coração disparou de repente e não parou.",
+        "Características dos sintomas": "Há quarenta minutos, enquanto estava sentada, sentiu o coração acelerar de uma vez, como se batesse no pescoço. Já teve três episódios menores que pararam sozinhos. Hoje sente tontura leve, sem desmaio, dor torácica forte ou falta de ar importante. Tomou dois cafés, mas não energético ou drogas. Não tem doença cardíaca conhecida. Está com medo, porém consegue conversar.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      }
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "cardiovascular",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais e perfusão",
+      "Ausculta cardíaca"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Sinais vitais e perfusão": "PA 108/70 mmHg; FC 182 bpm regular; pulso radial 182/min; FR 20 irpm; SpO₂ 98%; perfusão preservada.",
+      "Ausculta cardíaca": "Ritmo regular muito rápido, sem sopro audível; sem sinais de congestão."
+    },
+    "mustAuxiliaryLabs": [
+      "Eletrocardiograma de 12 derivações"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Eletrólitos e função renal"
+    ],
+    "auxiliaryLabs": {
+      "Eletrocardiograma de 12 derivações": "Taquicardia regular de complexos estreitos, frequência 180 bpm; ondas P não claramente separadas.",
+      "Eletrólitos e função renal": "Potássio 4,1 mEq/L, magnésio 2,0 mg/dL, creatinina 0,8 mg/dL."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Taquicardia supraventricular paroxística"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Taquicardia sinusal"
+        },
+        {
+          "disease": "Fibrilação atrial"
+        }
+      ]
+    },
+    "treatments": "Monitorizar, avaliar estabilidade e tratar segundo algoritmo de taquicardia e equipe capacitada; manobras vagais podem ser consideradas se estável. Encaminhar para investigação das recorrências. Instabilidade muda a prioridade para intervenção imediata.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Taquicardia, Taquisfigmia, Eletrocardiografia.",
+      "Caracterizar início/término abruptos, duração, regularidade percebida e episódios anteriores.",
+      "Pesquisar síncope, dor, dispneia, estimulantes e medicamentos."
+    ],
+    "references": [
+      {
+        "title": "NHLBI — Arrhythmias",
+        "url": "https://www.nhlbi.nih.gov/health/arrhythmias"
+      }
+    ],
+    "referenceReasoning": "ECG durante o episódio diferencia mecanismos e orienta conduta. Taquicardia é frequência cardíaca elevada; taquisfigmia é pulso periférico rápido, que nem sempre coincide com a frequência cardíaca. Exames laboratoriais podem investigar gatilhos, sem atrasar abordagem da instabilidade.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar início/término abruptos, duração, regularidade percebida e episódios anteriores.",
+          "Pesquisar síncope, dor, dispneia, estimulantes e medicamentos."
+        ],
+        "criticalActions": [
+          "Reconhecer hipotensão, dor isquêmica, alteração de consciência ou choque."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Sinais vitais e perfusão, Ausculta cardíaca com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Reconhecer hipotensão, dor isquêmica, alteração de consciência ou choque."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "ECG durante o episódio diferencia mecanismos e orienta conduta. Taquicardia é frequência cardíaca elevada; taquisfigmia é pulso periférico rápido, que nem sempre coincide com a frequência cardíaca. Exames laboratoriais podem investigar gatilhos, sem atrasar abordagem da instabilidade."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Taquicardia supraventricular paroxística com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Taquicardia sinusal, Fibrilação atrial e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Monitorizar, avaliar estabilidade e tratar segundo algoritmo de taquicardia e equipe capacitada; manobras vagais podem ser consideradas se estável. Encaminhar para investigação das recorrências. Instabilidade muda a prioridade para intervenção imediata."
+        ],
+        "criticalActions": [
+          "Reconhecer hipotensão, dor isquêmica, alteração de consciência ou choque."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Reconhecer hipotensão, dor isquêmica, alteração de consciência ou choque."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-cardiovascular-02",
+    "caseTitle": "Tontura e quase desmaio",
+    "specialty": "Cardiologia",
+    "difficulty": "Intermediário",
+    "caseType": "Palpitações e desmaios",
+    "summary": "Fico tonto e hoje quase apaguei ao levantar.",
+    "publicPresentation": "Fico tonto e hoje quase apaguei ao levantar.",
+    "patientProfile": {
+      "name": "Eduardo Lopes",
+      "age_value": 72,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Aposentado",
+      "chief_complaint": "Fico tonto e hoje quase apaguei ao levantar.",
+      "present_illness_history": "Há três dias sente fraqueza e escurecimento da vista, inclusive sentado. Hoje quase caiu, mas não perdeu completamente a consciência. Não refere dor no peito ou febre. Não usa remédio para baixar os batimentos, colírio com betabloqueador ou digoxina. Antes caminhava sem dificuldade. A filha veio acompanhá-lo.",
+      "past_medical_history": "Antes deste episódio não havia doença crônica conhecida nem internações recentes.",
+      "personal_history": "Nunca fumei. Não uso drogas nem anabolizantes. Bebo uma taça de vinho, no máximo duas vezes por mês. Costumo caminhar três vezes por semana e comer arroz, feijão, verduras e frutas.",
+      "family_history": "Pais falecidos idosos; filha saudável. Não conhece mortes súbitas precoces na família.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Casado(a); vive com o cônjuge.",
+      "address": "Mora em Campinas, São Paulo, em área urbana; nasceu em Sorocaba e mudou há seis anos. Endereço fictício, sem necessidade de informar número de documento.",
+      "basic_info": "Nome completo: Eduardo Lopes. Naturalidade: Sorocaba, São Paulo. Cor autodeclarada: parda. Identifica-se com o gênero informado; acolhe pergunta respeitosa. Nome da mãe: Rosa Duarte. Religião católica, sem restrição de cuidado por crença. Todos os dados pessoais são fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "O próprio paciente responde em linguagem leiga.",
+      "symptom_details": {
+        "Queixa principal": "Fico tonto e hoje quase apaguei ao levantar.",
+        "Características dos sintomas": "Há três dias sente fraqueza e escurecimento da vista, inclusive sentado. Hoje quase caiu, mas não perdeu completamente a consciência. Não refere dor no peito ou febre. Não usa remédio para baixar os batimentos, colírio com betabloqueador ou digoxina. Antes caminhava sem dificuldade. A filha veio acompanhá-lo.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      }
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "cardiovascular",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais e perfusão",
+      "Ausculta e exame neurológico breve"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Sinais vitais e perfusão": "PA 94/60 mmHg; pulso 34/min regular; pele fria, alerta, enchimento capilar discretamente lento.",
+      "Ausculta e exame neurológico breve": "Bradicardia, primeira bulha variável; sem déficit focal."
+    },
+    "mustAuxiliaryLabs": [
+      "Eletrocardiograma de 12 derivações"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Potássio e função renal"
+    ],
+    "auxiliaryLabs": {
+      "Eletrocardiograma de 12 derivações": "Ondas P regulares a 80/min e complexos QRS a 34/min sem relação fixa entre P e QRS, caracterizando dissociação atrioventricular.",
+      "Potássio e função renal": "Potássio 4,3 mEq/L; creatinina 1,0 mg/dL."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Bloqueio atrioventricular completo sintomático"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Bradicardia medicamentosa"
+        },
+        {
+          "disease": "Síncope vasovagal"
+        }
+      ]
+    },
+    "treatments": "Acionar emergência, monitorizar e preparar suporte para bradicardia conforme protocolo, incluindo estimulação quando indicada; investigar causas reversíveis e avaliação cardiológica para tratamento definitivo.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Bradicardia.",
+      "Investigar síncope, trauma por queda, dor, dispneia e relação com esforço.",
+      "Revisar medicamentos inclusive colírios e substâncias que reduzem frequência."
+    ],
+    "references": [
+      {
+        "title": "NHLBI — Arrhythmias",
+        "url": "https://www.nhlbi.nih.gov/health/arrhythmias"
+      }
+    ],
+    "referenceReasoning": "ECG documenta o distúrbio de condução. Pesquisa de eletrólitos e causas reversíveis é pertinente, mas não pode atrasar suporte diante de hipoperfusão. Pulso lento sintomático não deve ser considerado normal pela idade.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Investigar síncope, trauma por queda, dor, dispneia e relação com esforço.",
+          "Revisar medicamentos inclusive colírios e substâncias que reduzem frequência."
+        ],
+        "criticalActions": [
+          "Não liberar paciente com bradicardia e hipoperfusão."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Sinais vitais e perfusão, Ausculta e exame neurológico breve com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Não liberar paciente com bradicardia e hipoperfusão."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "ECG documenta o distúrbio de condução. Pesquisa de eletrólitos e causas reversíveis é pertinente, mas não pode atrasar suporte diante de hipoperfusão. Pulso lento sintomático não deve ser considerado normal pela idade."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Bloqueio atrioventricular completo sintomático com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Bradicardia medicamentosa, Síncope vasovagal e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Acionar emergência, monitorizar e preparar suporte para bradicardia conforme protocolo, incluindo estimulação quando indicada; investigar causas reversíveis e avaliação cardiológica para tratamento definitivo."
+        ],
+        "criticalActions": [
+          "Não liberar paciente com bradicardia e hipoperfusão."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Não liberar paciente com bradicardia e hipoperfusão."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-cardiovascular-03",
+    "caseTitle": "Cansaço e pernas inchadas",
+    "specialty": "Cardiologia",
+    "difficulty": "Intermediário",
+    "caseType": "Edema e alterações circulatórias",
+    "summary": "Minhas pernas incharam e preciso de três travesseiros para dormir.",
+    "publicPresentation": "Minhas pernas incharam e preciso de três travesseiros para dormir.",
+    "patientProfile": {
+      "name": "Lucas Prado",
+      "age_value": 58,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Vigilante",
+      "chief_complaint": "Minhas pernas incharam e preciso de três travesseiros para dormir.",
+      "present_illness_history": "Há dois meses cansa ao caminhar; na última semana ganhou três quilos e os tornozelos incharam. Acorda à noite sem ar e melhora ao sentar. Antes dormia com um travesseiro. Não tem febre nem dor torácica atual. Teve quadro gripal meses antes e não sabe a causa do cansaço. Está tomando os remédios de pressão de modo irregular por dificuldade financeira.",
+      "past_medical_history": "Pressão alta há cinco anos; não teve infarto conhecido.",
+      "personal_history": "Nunca fumei. Não uso drogas nem anabolizantes. Bebo uma taça de vinho, no máximo duas vezes por mês. Costumo caminhar três vezes por semana e comer arroz, feijão, verduras e frutas.",
+      "family_history": "Mãe viva, com pressão alta controlada; pai vivo, sem doença conhecida. Uma irmã saudável. Sem episódios semelhantes conhecidos na família.",
+      "other_medical_history": "Tem receita de losartana, mas às vezes fica sem comprar. Não usa diurético nem outros remédios de coração.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Casado(a); vive com o cônjuge.",
+      "address": "Mora em Campinas, São Paulo, em área urbana; nasceu em Sorocaba e mudou há seis anos. Endereço fictício, sem necessidade de informar número de documento.",
+      "basic_info": "Nome completo: Lucas Prado. Naturalidade: Sorocaba, São Paulo. Cor autodeclarada: parda. Identifica-se com o gênero informado; acolhe pergunta respeitosa. Nome da mãe: Rosa Duarte. Religião católica, sem restrição de cuidado por crença. Todos os dados pessoais são fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "O próprio paciente responde em linguagem leiga.",
+      "symptom_details": {
+        "Queixa principal": "Minhas pernas incharam e preciso de três travesseiros para dormir.",
+        "Características dos sintomas": "Há dois meses cansa ao caminhar; na última semana ganhou três quilos e os tornozelos incharam. Acorda à noite sem ar e melhora ao sentar. Antes dormia com um travesseiro. Não tem febre nem dor torácica atual. Teve quadro gripal meses antes e não sabe a causa do cansaço. Está tomando os remédios de pressão de modo irregular por dificuldade financeira.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      }
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "cardiovascular",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame cardiovascular e pulmonar"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Sinais vitais": "PA 144/92 mmHg; FC 104 bpm; FR 24 irpm; SpO₂ 94%.",
+      "Exame cardiovascular e pulmonar": "Turgência jugular, terceira bulha, estertores bibasais e edema bilateral depressível de pernas."
+    },
+    "mustAuxiliaryLabs": [
+      "Radiografia de tórax",
+      "Ecocardiograma",
+      "Função renal e eletrólitos"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Peptídeo natriurético"
+    ],
+    "auxiliaryLabs": {
+      "Radiografia de tórax": "Silhueta cardíaca aumentada, redistribuição vascular e congestão intersticial.",
+      "Ecocardiograma": "Coração em posição habitual à esquerda (levocardia), ventrículo esquerdo dilatado, hipocinesia global e fração de ejeção 30%; sem lesão valvar primária importante.",
+      "Função renal e eletrólitos": "Creatinina 1,2 mg/dL; sódio 136 mEq/L; potássio 4,2 mEq/L.",
+      "Peptídeo natriurético": "BNP 980 pg/mL; interpretar considerando contexto e função renal."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Insuficiência cardíaca com fração de ejeção reduzida por cardiomiopatia dilatada"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Doença renal com retenção de volume"
+        },
+        {
+          "disease": "Doença pulmonar obstrutiva"
+        }
+      ]
+    },
+    "treatments": "Avaliar necessidade de cuidado hospitalar, tratar congestão e iniciar/ajustar terapia orientada por diretrizes conforme estabilidade, função renal e contraindicações. Investigar etiologia sem presumir viral, organizar acesso aos medicamentos e seguimento.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Cardiomegalia, Miocardiopatias, Hipervolemia, Levocardia, Ortopnéia.",
+      "Caracterizar tolerância ao esforço, ortopneia, despertar noturno, edema e peso.",
+      "Explorar adesão e barreiras de acesso sem culpabilizar; investigar álcool, infecção e história familiar."
+    ],
+    "references": [
+      {
+        "title": "NHLBI — Heart failure",
+        "url": "https://www.nhlbi.nih.gov/health/heart-failure"
+      },
+      {
+        "title": "NHLBI — Cardiomyopathy",
+        "url": "https://www.nhlbi.nih.gov/health/cardiomyopathy"
+      }
+    ],
+    "referenceReasoning": "Eco quantifica função e estrutura; radiografia e peptídeos ajudam a avaliar congestão. Função renal/eletrólitos são importantes para manejo. Cardiomegalia não identifica sozinha a causa. Levocardia é posição anatômica habitual, não cardiopatia. Hipervolemia e congestão exigem integração clínica, não apenas peso.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar tolerância ao esforço, ortopneia, despertar noturno, edema e peso.",
+          "Explorar adesão e barreiras de acesso sem culpabilizar; investigar álcool, infecção e história familiar."
+        ],
+        "criticalActions": [
+          "Reconhecer piora respiratória e sinais de congestão; não atribuir tudo à ansiedade."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Sinais vitais, Exame cardiovascular e pulmonar com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Reconhecer piora respiratória e sinais de congestão; não atribuir tudo à ansiedade."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Eco quantifica função e estrutura; radiografia e peptídeos ajudam a avaliar congestão. Função renal/eletrólitos são importantes para manejo. Cardiomegalia não identifica sozinha a causa. Levocardia é posição anatômica habitual, não cardiopatia. Hipervolemia e congestão exigem integração clínica, não apenas peso."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Insuficiência cardíaca com fração de ejeção reduzida por cardiomiopatia dilatada com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Doença renal com retenção de volume, Doença pulmonar obstrutiva e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Avaliar necessidade de cuidado hospitalar, tratar congestão e iniciar/ajustar terapia orientada por diretrizes conforme estabilidade, função renal e contraindicações. Investigar etiologia sem presumir viral, organizar acesso aos medicamentos e seguimento."
+        ],
+        "criticalActions": [
+          "Reconhecer piora respiratória e sinais de congestão; não atribuir tudo à ansiedade."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Reconhecer piora respiratória e sinais de congestão; não atribuir tudo à ansiedade."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-cardiovascular-04",
+    "caseTitle": "Tontura ao subir a ladeira",
+    "specialty": "Cardiologia",
+    "difficulty": "Intermediário",
+    "caseType": "Palpitações e desmaios",
+    "summary": "Ao subir a ladeira fico tonta e sinto aperto no peito.",
+    "publicPresentation": "Ao subir a ladeira fico tonta e sinto aperto no peito.",
+    "patientProfile": {
+      "name": "Ana Teixeira",
+      "age_value": 76,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Aposentada",
+      "chief_complaint": "Ao subir a ladeira fico tonta e sinto aperto no peito.",
+      "present_illness_history": "Há seis meses diminuiu o ritmo das caminhadas porque fica cansada. Nas últimas semanas sente aperto no peito ao esforço e quase desmaiou numa subida; melhora ao parar. Sem sintomas em repouso no momento, febre ou palpitação de início súbito. Não sabia de problema nas válvulas.",
+      "past_medical_history": "Antes deste episódio não havia doença crônica conhecida nem internações recentes.",
+      "personal_history": "Nunca fumei. Não uso drogas nem anabolizantes. Bebo uma taça de vinho, no máximo duas vezes por mês. Costumo caminhar três vezes por semana e comer arroz, feijão, verduras e frutas.",
+      "family_history": "Pais falecidos em idade avançada. Duas filhas adultas saudáveis.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Casado(a); vive com o cônjuge.",
+      "address": "Mora em Campinas, São Paulo, em área urbana; nasceu em Sorocaba e mudou há seis anos. Endereço fictício, sem necessidade de informar número de documento.",
+      "basic_info": "Nome completo: Ana Teixeira. Naturalidade: Sorocaba, São Paulo. Cor autodeclarada: parda. Identifica-se com o gênero informado; acolhe pergunta respeitosa. Nome da mãe: Rosa Duarte. Religião católica, sem restrição de cuidado por crença. Todos os dados pessoais são fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "O próprio paciente responde em linguagem leiga.",
+      "symptom_details": {
+        "Queixa principal": "Ao subir a ladeira fico tonta e sinto aperto no peito.",
+        "Características dos sintomas": "Há seis meses diminuiu o ritmo das caminhadas porque fica cansada. Nas últimas semanas sente aperto no peito ao esforço e quase desmaiou numa subida; melhora ao parar. Sem sintomas em repouso no momento, febre ou palpitação de início súbito. Não sabia de problema nas válvulas.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      }
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "cardiovascular",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Ausculta e pulsos"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Sinais vitais": "PA 126/72 mmHg; FC 78 bpm; SpO₂ 97%.",
+      "Ausculta e pulsos": "Sopro sistólico ejetivo no foco aórtico com irradiação para carótidas; pulso de ascensão lenta."
+    },
+    "mustAuxiliaryLabs": [
+      "Ecocardiograma"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Eletrocardiograma"
+    ],
+    "auxiliaryLabs": {
+      "Ecocardiograma": "Valva aórtica calcificada; área valvar 0,7 cm², velocidade máxima 4,3 m/s e gradiente médio 45 mmHg; fração de ejeção 58%.",
+      "Eletrocardiograma": "Ritmo sinusal, critérios de sobrecarga ventricular esquerda."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Estenose aórtica importante sintomática"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Doença coronariana"
+        },
+        {
+          "disease": "Cardiomiopatia hipertrófica"
+        }
+      ]
+    },
+    "treatments": "Encaminhar prontamente à cardiologia/equipe valvar para avaliação de intervenção e risco; orientar evitar esforço que desencadeia sintomas até avaliação e procurar emergência por síncope, dor persistente ou dispneia de repouso.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Valvulopatia, Cardiopatia.",
+      "Investigar síncope/pré-síncope, angina, dispneia e progressão funcional.",
+      "Perguntar antecedentes valvares e compreender apoio e autonomia."
+    ],
+    "references": [
+      {
+        "title": "NHLBI — Heart valve diseases",
+        "url": "https://www.nhlbi.nih.gov/health/heart-valve-diseases/types"
+      }
+    ],
+    "referenceReasoning": "Ecocardiograma define anatomia e gravidade; sopro sozinho não quantifica obstrução. Sintomas tornam a avaliação especializada prioritária. Teste de esforço indiscriminado em estenose grave sintomática pode ser inadequado.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Investigar síncope/pré-síncope, angina, dispneia e progressão funcional.",
+          "Perguntar antecedentes valvares e compreender apoio e autonomia."
+        ],
+        "criticalActions": [
+          "Não solicitar exercício provocativo sem avaliação especializada de obstrução importante sintomática."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Sinais vitais, Ausculta e pulsos com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Não solicitar exercício provocativo sem avaliação especializada de obstrução importante sintomática."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Ecocardiograma define anatomia e gravidade; sopro sozinho não quantifica obstrução. Sintomas tornam a avaliação especializada prioritária. Teste de esforço indiscriminado em estenose grave sintomática pode ser inadequado."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Estenose aórtica importante sintomática com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Doença coronariana, Cardiomiopatia hipertrófica e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhar prontamente à cardiologia/equipe valvar para avaliação de intervenção e risco; orientar evitar esforço que desencadeia sintomas até avaliação e procurar emergência por síncope, dor persistente ou dispneia de repouso."
+        ],
+        "criticalActions": [
+          "Não solicitar exercício provocativo sem avaliação especializada de obstrução importante sintomática."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Não solicitar exercício provocativo sem avaliação especializada de obstrução importante sintomática."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-cardiovascular-05",
+    "caseTitle": "Febre prolongada e cansaço",
+    "specialty": "Cardiologia",
+    "difficulty": "Intermediário",
+    "caseType": "Febre e sintomas gerais",
+    "summary": "Tenho febre quase todo dia e estou sem energia.",
+    "publicPresentation": "Tenho febre quase todo dia e estou sem energia.",
+    "patientProfile": {
+      "name": "Lucas Costa",
+      "age_value": 45,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Marceneiro",
+      "chief_complaint": "Tenho febre quase todo dia e estou sem energia.",
+      "present_illness_history": "Febre intermitente há três semanas, calafrios, sudorese noturna e perda de dois quilos. Sabe que nasceu com uma alteração na válvula, mas não lembra o nome. Teve infecção dentária recente. Não usa drogas injetáveis e não tomou antibiótico nesta semana. Não tem tosse importante nem ardor urinário. Hoje sente cansaço para atividades usuais.",
+      "past_medical_history": "Alteração valvar congênita informada na infância; sem prótese ou cirurgia.",
+      "personal_history": "Nunca fumei. Não uso drogas nem anabolizantes. Bebo uma taça de vinho, no máximo duas vezes por mês. Costumo caminhar três vezes por semana e comer arroz, feijão, verduras e frutas.",
+      "family_history": "Mãe viva, com pressão alta controlada; pai vivo, sem doença conhecida. Uma irmã saudável. Sem episódios semelhantes conhecidos na família.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Casado(a); vive com o cônjuge.",
+      "address": "Mora em Campinas, São Paulo, em área urbana; nasceu em Sorocaba e mudou há seis anos. Endereço fictício, sem necessidade de informar número de documento.",
+      "basic_info": "Nome completo: Lucas Costa. Naturalidade: Sorocaba, São Paulo. Cor autodeclarada: parda. Identifica-se com o gênero informado; acolhe pergunta respeitosa. Nome da mãe: Rosa Duarte. Religião católica, sem restrição de cuidado por crença. Todos os dados pessoais são fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "O próprio paciente responde em linguagem leiga.",
+      "symptom_details": {
+        "Queixa principal": "Tenho febre quase todo dia e estou sem energia.",
+        "Características dos sintomas": "Febre intermitente há três semanas, calafrios, sudorese noturna e perda de dois quilos. Sabe que nasceu com uma alteração na válvula, mas não lembra o nome. Teve infecção dentária recente. Não usa drogas injetáveis e não tomou antibiótico nesta semana. Não tem tosse importante nem ardor urinário. Hoje sente cansaço para atividades usuais.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      }
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "cardiovascular",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame cardíaco e periférico"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Sinais vitais": "PA 112/70 mmHg; FC 102 bpm; temperatura 38,3 °C; SpO₂ 97%.",
+      "Exame cardíaco e periférico": "Sopro previamente não documentado, pequenas petéquias conjuntivais; sem déficit neurológico ou congestão franca."
+    },
+    "mustAuxiliaryLabs": [
+      "Hemoculturas",
+      "Ecocardiografia"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Hemograma e marcadores inflamatórios"
+    ],
+    "auxiliaryLabs": {
+      "Hemoculturas": "Três conjuntos colhidos antes de antimicrobianos sem retardar atendimento: Streptococcus do grupo viridans em múltiplos frascos.",
+      "Ecocardiografia": "Imagem móvel aderida à valva aórtica com regurgitação; complementar por via transesofágica conforme avaliação.",
+      "Hemograma e marcadores inflamatórios": "Hb 10,8 g/dL; leucócitos 13.600/mm³; PCR elevada."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Endocardite infecciosa de valva nativa"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Infecção oculta não cardíaca"
+        },
+        {
+          "disease": "Doença inflamatória sistêmica"
+        }
+      ]
+    },
+    "treatments": "Encaminhar para avaliação hospitalar, tratamento dirigido por culturas e equipe especializada, além de pesquisa de complicações embólicas/valvares e necessidade de intervenção. Não orientar antibioticoterapia curta empírica ambulatorial sem investigação.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Endocardite, Cardite.",
+      "Investigar febre, duração, procedimentos, dispositivos, valvulopatia e fontes infecciosas.",
+      "Pesquisar dispneia, dor focal, sintomas neurológicos e uso prévio de antibióticos."
+    ],
+    "references": [
+      {
+        "title": "NHLBI — Heart inflammation",
+        "url": "https://www.nhlbi.nih.gov/health/heart-inflammation"
+      },
+      {
+        "title": "NHLBI — Diagnosis of heart inflammation",
+        "url": "https://www.nhlbi.nih.gov/health/heart-inflammation/diagnosis"
+      }
+    ],
+    "referenceReasoning": "Hemoculturas seriadas e ecocardiografia sustentam diagnóstico; colher cultura antes do antibiótico quando possível, sem atrasar terapia em instabilidade. Cardite é termo amplo, e endocardite não é sinônimo de toda inflamação cardíaca. Um exame inflamatório isolado é inespecífico.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Investigar febre, duração, procedimentos, dispositivos, valvulopatia e fontes infecciosas.",
+          "Pesquisar dispneia, dor focal, sintomas neurológicos e uso prévio de antibióticos."
+        ],
+        "criticalActions": [
+          "Reconhecer risco de sepse, insuficiência valvar e embolização."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Sinais vitais, Exame cardíaco e periférico com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Reconhecer risco de sepse, insuficiência valvar e embolização."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Hemoculturas seriadas e ecocardiografia sustentam diagnóstico; colher cultura antes do antibiótico quando possível, sem atrasar terapia em instabilidade. Cardite é termo amplo, e endocardite não é sinônimo de toda inflamação cardíaca. Um exame inflamatório isolado é inespecífico."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Endocardite infecciosa de valva nativa com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Infecção oculta não cardíaca, Doença inflamatória sistêmica e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhar para avaliação hospitalar, tratamento dirigido por culturas e equipe especializada, além de pesquisa de complicações embólicas/valvares e necessidade de intervenção. Não orientar antibioticoterapia curta empírica ambulatorial sem investigação."
+        ],
+        "criticalActions": [
+          "Reconhecer risco de sepse, insuficiência valvar e embolização."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Reconhecer risco de sepse, insuficiência valvar e embolização."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-cardiovascular-06",
+    "caseTitle": "Dor no peito que muda com a posição",
+    "specialty": "Cardiologia",
+    "difficulty": "Intermediário",
+    "caseType": "Dor torácica",
+    "summary": "Sinto uma pontada no peito que piora quando deito.",
+    "publicPresentation": "Sinto uma pontada no peito que piora quando deito.",
+    "patientProfile": {
+      "name": "Ana Nogueira",
+      "age_value": 27,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Designer",
+      "chief_complaint": "Sinto uma pontada no peito que piora quando deito.",
+      "present_illness_history": "Dor central há dois dias, pior com inspiração e ao deitar, aliviada ao sentar inclinada para frente. Teve coriza e mal-estar na semana anterior. A dor não é provocada especificamente por caminhada. Não tem desmaio, inchaço nas pernas, hemoptise ou febre alta. Ainda assim está preocupada por ser no peito.",
+      "past_medical_history": "Antes deste episódio não havia doença crônica conhecida nem internações recentes.",
+      "personal_history": "Nunca fumei. Não uso drogas nem anabolizantes. Bebo uma taça de vinho, no máximo duas vezes por mês. Costumo caminhar três vezes por semana e comer arroz, feijão, verduras e frutas.",
+      "family_history": "Mãe viva, com pressão alta controlada; pai vivo, sem doença conhecida. Uma irmã saudável. Sem episódios semelhantes conhecidos na família.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Casado(a); vive com o cônjuge.",
+      "address": "Mora em Campinas, São Paulo, em área urbana; nasceu em Sorocaba e mudou há seis anos. Endereço fictício, sem necessidade de informar número de documento.",
+      "basic_info": "Nome completo: Ana Nogueira. Naturalidade: Sorocaba, São Paulo. Cor autodeclarada: parda. Identifica-se com o gênero informado; acolhe pergunta respeitosa. Nome da mãe: Rosa Duarte. Religião católica, sem restrição de cuidado por crença. Todos os dados pessoais são fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "O próprio paciente responde em linguagem leiga.",
+      "symptom_details": {
+        "Queixa principal": "Sinto uma pontada no peito que piora quando deito.",
+        "Características dos sintomas": "Dor central há dois dias, pior com inspiração e ao deitar, aliviada ao sentar inclinada para frente. Teve coriza e mal-estar na semana anterior. A dor não é provocada especificamente por caminhada. Não tem desmaio, inchaço nas pernas, hemoptise ou febre alta. Ainda assim está preocupada por ser no peito.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      }
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "cardiovascular",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame cardiovascular"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Sinais vitais": "PA 116/72 mmHg; FC 92 bpm; temperatura 37,4 °C; SpO₂ 98%.",
+      "Exame cardiovascular": "Atrito pericárdico discreto; sem turgência jugular ou sinais de tamponamento."
+    },
+    "mustAuxiliaryLabs": [
+      "Eletrocardiograma",
+      "Troponina",
+      "Ecocardiograma"
+    ],
+    "optionalAuxiliaryLabs": [],
+    "auxiliaryLabs": {
+      "Eletrocardiograma": "Elevação difusa côncava de ST e depressão de PR, sem padrão territorial típico.",
+      "Troponina": "Dentro do limite do ensaio; avaliação seriada conforme quadro.",
+      "Ecocardiograma": "Pequeno derrame pericárdico, sem repercussão hemodinâmica; função ventricular preservada."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Pericardite aguda"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Síndrome coronariana aguda"
+        },
+        {
+          "disease": "Tromboembolismo pulmonar"
+        }
+      ]
+    },
+    "treatments": "Estratificar risco, discutir anti-inflamatórios/colchicina conforme contraindicações e protocolo, repouso relativo e seguimento. Encaminhar urgentemente se hipotensão, derrame importante, febre alta, imunossupressão ou suspeita de comprometimento miocárdico.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Pericardite.",
+      "Caracterizar posição, respiração, duração e infecção recente.",
+      "Investigar sinais de instabilidade e fatores de alto risco, sem excluir isquemia apenas pela idade."
+    ],
+    "references": [
+      {
+        "title": "NHLBI — Heart inflammation",
+        "url": "https://www.nhlbi.nih.gov/health/heart-inflammation"
+      },
+      {
+        "title": "NHLBI — Diagnosis of heart inflammation",
+        "url": "https://www.nhlbi.nih.gov/health/heart-inflammation/diagnosis"
+      }
+    ],
+    "referenceReasoning": "Conjunto de dor típica, atrito e ECG sustenta hipótese; ecocardiograma pesquisa derrame/tamponamento. Troponina ajuda a avaliar acometimento miocárdico e diferencial. Painel autoimune extenso não é obrigatório sem contexto sugestivo.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar posição, respiração, duração e infecção recente.",
+          "Investigar sinais de instabilidade e fatores de alto risco, sem excluir isquemia apenas pela idade."
+        ],
+        "criticalActions": [
+          "Pesquisar tamponamento e síndrome coronariana no diagnóstico diferencial."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Sinais vitais, Exame cardiovascular com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Pesquisar tamponamento e síndrome coronariana no diagnóstico diferencial."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Conjunto de dor típica, atrito e ECG sustenta hipótese; ecocardiograma pesquisa derrame/tamponamento. Troponina ajuda a avaliar acometimento miocárdico e diferencial. Painel autoimune extenso não é obrigatório sem contexto sugestivo."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Pericardite aguda com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Síndrome coronariana aguda, Tromboembolismo pulmonar e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Estratificar risco, discutir anti-inflamatórios/colchicina conforme contraindicações e protocolo, repouso relativo e seguimento. Encaminhar urgentemente se hipotensão, derrame importante, febre alta, imunossupressão ou suspeita de comprometimento miocárdico."
+        ],
+        "criticalActions": [
+          "Pesquisar tamponamento e síndrome coronariana no diagnóstico diferencial."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Pesquisar tamponamento e síndrome coronariana no diagnóstico diferencial."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-cardiovascular-07",
+    "caseTitle": "Aperto no peito ao caminhar",
+    "specialty": "Cardiologia",
+    "difficulty": "Intermediário",
+    "caseType": "Dor torácica",
+    "summary": "Quando ando mais rápido sinto um aperto no meio do peito.",
+    "publicPresentation": "Quando ando mais rápido sinto um aperto no meio do peito.",
+    "patientProfile": {
+      "name": "Lucas Ferreira",
+      "age_value": 60,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Comerciante",
+      "chief_complaint": "Quando ando mais rápido sinto um aperto no meio do peito.",
+      "present_illness_history": "Há dois meses sente aperto retroesternal ao subir escadas, durando cinco minutos e melhorando com repouso. Não aconteceu em repouso, não aumentou de frequência e está sem dor agora. Às vezes a sensação vai para o braço esquerdo. Fuma e tem colesterol alto. O pai teve infarto aos cinquenta anos. Não tem febre, dor ao respirar ou dor à palpação.",
+      "past_medical_history": "Colesterol alto conhecido; sem diabetes diagnosticado.",
+      "personal_history": "Fuma um maço por dia há trinta anos. Sedentário e costuma consumir ultraprocessados.",
+      "family_history": "Pai faleceu de infarto aos cinquenta anos; mãe viva com pressão alta.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Casado(a); vive com o cônjuge.",
+      "address": "Mora em Campinas, São Paulo, em área urbana; nasceu em Sorocaba e mudou há seis anos. Endereço fictício, sem necessidade de informar número de documento.",
+      "basic_info": "Nome completo: Lucas Ferreira. Naturalidade: Sorocaba, São Paulo. Cor autodeclarada: parda. Identifica-se com o gênero informado; acolhe pergunta respeitosa. Nome da mãe: Rosa Duarte. Religião católica, sem restrição de cuidado por crença. Todos os dados pessoais são fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "O próprio paciente responde em linguagem leiga.",
+      "symptom_details": {
+        "Queixa principal": "Quando ando mais rápido sinto um aperto no meio do peito.",
+        "Características dos sintomas": "Há dois meses sente aperto retroesternal ao subir escadas, durando cinco minutos e melhorando com repouso. Não aconteceu em repouso, não aumentou de frequência e está sem dor agora. Às vezes a sensação vai para o braço esquerdo. Fuma e tem colesterol alto. O pai teve infarto aos cinquenta anos. Não tem febre, dor ao respirar ou dor à palpação.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      }
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "cardiovascular",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame cardiopulmonar"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Sinais vitais": "PA 138/84 mmHg; FC 76 bpm; SpO₂ 98%.",
+      "Exame cardiopulmonar": "Sem alterações agudas, sem dor reproduzida à palpação."
+    },
+    "mustAuxiliaryLabs": [
+      "Eletrocardiograma em repouso"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Perfil lipídico",
+      "Avaliação anatômica coronariana dirigida"
+    ],
+    "auxiliaryLabs": {
+      "Eletrocardiograma em repouso": "Ritmo sinusal sem alteração isquêmica aguda; normalidade não exclui doença coronariana.",
+      "Avaliação anatômica coronariana dirigida": "Angiotomografia, escolhida após estratificação: placa aterosclerótica com estenose importante em artéria descendente anterior.",
+      "Perfil lipídico": "LDL-colesterol 174 mg/dL; HDL 39 mg/dL; triglicerídeos 180 mg/dL."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Angina estável por doença arterial coronariana aterosclerótica"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Doença do refluxo gastroesofágico"
+        },
+        {
+          "disease": "Dor musculoesquelética"
+        }
+      ]
+    },
+    "treatments": "Organizar avaliação cardiológica, prevenção cardiovascular e tratamento antianginoso individualizado. Explicar que dor em repouso, prolongada ou em piora exige emergência; abordar tabagismo e acesso ao cuidado.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Isquemia, Aterosclerose, Precordialgia.",
+      "Caracterizar esforço, duração, alívio, irradiação e mudança recente de padrão.",
+      "Investigar fatores de risco, história familiar e impacto funcional."
+    ],
+    "references": [
+      {
+        "title": "NHLBI — Coronary heart disease",
+        "url": "https://www.nhlbi.nih.gov/health/coronary-heart-disease"
+      }
+    ],
+    "referenceReasoning": "A hipótese depende da história; ECG normal fora da dor não a exclui. Escolha de teste anatômico ou funcional depende de probabilidade, capacidade de esforço e recursos, sem exigir todos. Precordialgia é localização de dor, não sinônimo de infarto.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar esforço, duração, alívio, irradiação e mudança recente de padrão.",
+          "Investigar fatores de risco, história familiar e impacto funcional."
+        ],
+        "criticalActions": [
+          "Diferenciar padrão estável de sinais de síndrome coronariana aguda."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Sinais vitais, Exame cardiopulmonar com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Diferenciar padrão estável de sinais de síndrome coronariana aguda."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "A hipótese depende da história; ECG normal fora da dor não a exclui. Escolha de teste anatômico ou funcional depende de probabilidade, capacidade de esforço e recursos, sem exigir todos. Precordialgia é localização de dor, não sinônimo de infarto."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Angina estável por doença arterial coronariana aterosclerótica com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Doença do refluxo gastroesofágico, Dor musculoesquelética e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Organizar avaliação cardiológica, prevenção cardiovascular e tratamento antianginoso individualizado. Explicar que dor em repouso, prolongada ou em piora exige emergência; abordar tabagismo e acesso ao cuidado."
+        ],
+        "criticalActions": [
+          "Diferenciar padrão estável de sinais de síndrome coronariana aguda."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Diferenciar padrão estável de sinais de síndrome coronariana aguda."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  },
+  {
+    "caseId": "basic-cardiovascular-08",
+    "caseTitle": "Pressão elevada em medidas repetidas",
+    "specialty": "Cardiologia",
+    "difficulty": "Iniciante",
+    "caseType": "Acompanhamento e prevenção",
+    "summary": "Mediram minha pressão várias vezes e disseram que estava alta.",
+    "publicPresentation": "Mediram minha pressão várias vezes e disseram que estava alta.",
+    "patientProfile": {
+      "name": "Ana Almeida",
+      "age_value": 52,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Auxiliar de cozinha",
+      "chief_complaint": "Mediram minha pressão várias vezes e disseram que estava alta.",
+      "present_illness_history": "Em três ocasiões no último mês, na unidade de saúde e em casa com aparelho de braço, anotou valores entre 152/94 e 164/100. Não tem dor no peito, falta de ar, déficit de força, confusão ou alteração visual. Dorme pouco e costuma salgar a comida. Quer saber se a pressão alta sempre precisa dar dor de cabeça. Não está grávida e não usa anticoncepcional hormonal.",
+      "past_medical_history": "Antes deste episódio não havia doença crônica conhecida nem internações recentes.",
+      "personal_history": "Nunca fumei. Não uso drogas nem anabolizantes. Bebo uma taça de vinho, no máximo duas vezes por mês. Costumo caminhar três vezes por semana e comer arroz, feijão, verduras e frutas.",
+      "family_history": "Mãe viva, com pressão alta controlada; pai vivo, sem doença conhecida. Uma irmã saudável. Sem episódios semelhantes conhecidos na família.",
+      "other_medical_history": "Não uso medicamentos contínuos nem suplementos. Já contei na história o que tentei para aliviar este episódio.",
+      "allergy_history": "Nenhuma reação alérgica conhecida a medicamentos ou alimentos.",
+      "marital_status": "Casado(a); vive com o cônjuge.",
+      "address": "Mora em Campinas, São Paulo, em área urbana; nasceu em Sorocaba e mudou há seis anos. Endereço fictício, sem necessidade de informar número de documento.",
+      "basic_info": "Nome completo: Ana Almeida. Naturalidade: Sorocaba, São Paulo. Cor autodeclarada: parda. Identifica-se com o gênero informado; acolhe pergunta respeitosa. Nome da mãe: Rosa Duarte. Religião católica, sem restrição de cuidado por crença. Todos os dados pessoais são fictícios.",
+      "social_background": "Tem ensino médio completo, renda familiar aproximada de três salários mínimos e apoio do cônjuge. Mora em casa de alvenaria com quatro cômodos, banheiro interno, água tratada, eletricidade, coleta regular de lixo e rede de esgoto. Não mora perto de rio nem toma banho em rio. Tem um cão vacinado no quintal. Não viajou no último ano. Gosta de música e de estar com a família; está preocupado com a saúde, mas sente apoio em casa.",
+      "surgery_injury_history": "Nenhuma cirurgia, trauma relevante ou transfusão anterior.",
+      "transfusion_history": "Nunca recebeu transfusão.",
+      "infection_history": "Sem infecções importantes prévias além do que foi descrito na história.",
+      "vaccination_history": "Refere vacinação de rotina em dia; cartão pode ser conferido.",
+      "travel_history": "Sem viagens recentes, contato com enchentes ou banhos de rio.",
+      "system_review": "Fora das queixas e dos antecedentes já descritos, não percebe outras mudanças recentes. Se perguntado, pode detalhar hábitos cotidianos coerentes; não conhece valores de exames ainda não feitos.",
+      "idea": "Ainda não sei a causa. Acho que algo mudou e quero entender.",
+      "concern": "Estou preocupado com a possibilidade de isso piorar e atrapalhar a rotina da família.",
+      "expectation": "Quero que escutem minha história, expliquem o que pode ser e orientem os próximos passos.",
+      "respondent": "O próprio paciente responde em linguagem leiga.",
+      "symptom_details": {
+        "Queixa principal": "Mediram minha pressão várias vezes e disseram que estava alta.",
+        "Características dos sintomas": "Em três ocasiões no último mês, na unidade de saúde e em casa com aparelho de braço, anotou valores entre 152/94 e 164/100. Não tem dor no peito, falta de ar, déficit de força, confusão ou alteração visual. Dorme pouco e costuma salgar a comida. Quer saber se a pressão alta sempre precisa dar dor de cabeça. Não está grávida e não usa anticoncepcional hormonal.",
+        "Preocupações do paciente": "Tenho receio de piorar e preciso entender a situação."
+      }
+    },
+    "catalogType": "fictional",
+    "learningTrack": "basic",
+    "bodySystem": "cardiovascular",
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Evolução do quadro",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Informações pessoais",
+      "Fatores de melhora ou piora",
+      "História familiar",
+      "Hábitos de vida",
+      "História ocupacional",
+      "Estado geral",
+      "Preocupações do paciente",
+      "Expectativas do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Pressão com técnica padronizada",
+      "Exame geral"
+    ],
+    "optionalPhysicalExams": [],
+    "physicalExams": {
+      "Pressão com técnica padronizada": "Após repouso, manguito adequado: média de duas leituras 158/96 mmHg; braço contralateral semelhante.",
+      "Exame geral": "IMC 29 kg/m²; sem sinais de emergência hipertensiva ou congestão."
+    },
+    "mustAuxiliaryLabs": [
+      "Monitorização residencial da pressão",
+      "Função renal, eletrólitos e urina",
+      "Eletrocardiograma"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Ecocardiograma"
+    ],
+    "auxiliaryLabs": {
+      "Monitorização residencial da pressão": "Média de leituras protocoladas 151/93 mmHg.",
+      "Função renal, eletrólitos e urina": "Creatinina 0,9 mg/dL; potássio 4,0 mEq/L; relação albumina/creatinina urinária 12 mg/g.",
+      "Eletrocardiograma": "Critérios de sobrecarga ventricular esquerda.",
+      "Ecocardiograma": "Espessamento concêntrico de paredes do ventrículo esquerdo, fração de ejeção preservada."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Hipertensão arterial sistêmica persistente"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Efeito do avental branco"
+        },
+        {
+          "disease": "Hipertensão secundária"
+        }
+      ]
+    },
+    "treatments": "Estimar risco global, pactuar mudanças viáveis e tratamento medicamentoso segundo protocolo, com acompanhamento de pressão, função renal e adesão. Evitar queda abrupta de pressão na ausência de emergência.",
+    "learningObjectives": [
+      "Explorar no contexto do caso: Hipertensão arterial, Hipertrofia.",
+      "Conferir técnica, repetição, medicamentos, história familiar e estilo de vida.",
+      "Pesquisar sintomas de lesão aguda de órgão-alvo sem associar toda cefaleia à pressão."
+    ],
+    "references": [
+      {
+        "title": "NHLBI — High blood pressure",
+        "url": "https://www.nhlbi.nih.gov/health/high-blood-pressure"
+      }
+    ],
+    "referenceReasoning": "Medidas fora do consultório ajudam a confirmar persistência. Exames avaliam risco e órgãos-alvo; ecocardiograma pode ser indicado por ECG/suspeita, mas não é obrigatório universalmente. Hipertrofia é adaptação estrutural e não equivale sozinha a insuficiência cardíaca.",
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Conferir técnica, repetição, medicamentos, história familiar e estilo de vida.",
+          "Pesquisar sintomas de lesão aguda de órgão-alvo sem associar toda cefaleia à pressão."
+        ],
+        "criticalActions": [
+          "Distinguir pressão elevada sem sintomas de emergência com lesão aguda de órgão-alvo."
+        ]
+      },
+      "physical": {
+        "criteria": [
+          "Relacionar os achados de Pressão com técnica padronizada, Exame geral com a história; obter consentimento e explicar o exame."
+        ],
+        "criticalActions": [
+          "Distinguir pressão elevada sem sintomas de emergência com lesão aguda de órgão-alvo."
+        ]
+      },
+      "auxiliary": {
+        "criteria": [
+          "Medidas fora do consultório ajudam a confirmar persistência. Exames avaliam risco e órgãos-alvo; ecocardiograma pode ser indicado por ECG/suspeita, mas não é obrigatório universalmente. Hipertrofia é adaptação estrutural e não equivale sozinha a insuficiência cardíaca."
+        ],
+        "criticalActions": [
+          "Justificar exames pelo problema clínico e pelo momento da consulta; resultados disponíveis não tornam todo pedido obrigatório."
+        ]
+      },
+      "diagnosis": {
+        "criteria": [
+          "Sustentar Hipertensão arterial sistêmica persistente com achados do caso; aceitar hipótese sindrômica bem fundamentada antes da confirmação.",
+          "Comparar Efeito do avental branco, Hipertensão secundária e reconhecer incertezas."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Estimar risco global, pactuar mudanças viáveis e tratamento medicamentoso segundo protocolo, com acompanhamento de pressão, função renal e adesão. Evitar queda abrupta de pressão na ausência de emergência."
+        ],
+        "criticalActions": [
+          "Distinguir pressão elevada sem sintomas de emergência com lesão aguda de órgão-alvo."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Integrar história, exame e exames indicados sem inventar dados.",
+          "Explicar raciocínio e próximos passos em linguagem acessível, com escuta e decisão compartilhada."
+        ],
+        "criticalActions": [
+          "Distinguir pressão elevada sem sintomas de emergência com lesão aguda de órgão-alvo."
+        ]
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-curriculum-ai-2026-10",
+    "reviewNote": "Cenário inteiramente fictício criado por IA para os objetivos das imagens fornecidas. Valores de exames, identidade e contexto são simulados. Fontes institucionais embasam os conceitos; não houve revisão clínica humana. A classificação Casos Básicos indica o percurso de estudo, não baixa gravidade nem validação docente."
+  }
+]

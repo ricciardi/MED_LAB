@@ -1,0 +1,47 @@
+{% if leaderboards is defined %}
+<section id="ranking" class="section container ranking-section" aria-labelledby="ranking-heading">
+  <div class="section-heading ranking-heading">
+    <div><p class="eyebrow">CONSTÂNCIA E DIVERSIDADE NA PRÁTICA</p><h2 id="ranking-heading">Top 15.<br><em>Duas trajetórias de aprendizado.</em></h2></div>
+    <p>Casos Básicos e Casos Clínicos têm classificações independentes. Acompanhe sua evolução em cada uma.</p>
+  </div>
+  <div class="ranking-boards">
+    {% for key in ['basic', 'clinical'] %}
+    {% set board = leaderboards[key] %}
+    <article id="ranking-{{ key }}" class="ranking-board" aria-labelledby="ranking-title-{{ key }}">
+      <header class="ranking-board-header">
+        <div><span class="ranking-kicker">TOP 15</span><h3 id="ranking-title-{{ key }}">{{ board.title }}</h3></div>
+        <span class="ranking-board-symbol" aria-hidden="true">{{ icon('book' if key == 'basic' else 'case',25) }}</span>
+      </header>
+      <p class="ranking-minimum">A partir de <strong data-ranking-minimum="{{ key }}">{{ board.minimum_cases }} casos distintos</strong> com nota válida.</p>
+      <div data-ranking-content="{{ key }}">
+      {% if board.entries %}
+      <table class="ranking-table">
+        <caption class="ranking-sr-only">Top 15 de {{ board.title }}. Média de zero a cem; casos distintos com nota válida.</caption>
+        <thead><tr><th scope="col" class="ranking-position">Posição</th><th scope="col">Participante</th><th scope="col" class="ranking-number">Média</th><th scope="col" class="ranking-number ranking-case-count">Casos</th></tr></thead>
+        <tbody>
+        {% for entry in board.entries[:15] %}
+          <tr{% if entry.is_current_user %} class="ranking-current"{% endif %}>
+            <td class="ranking-position"><span class="ranking-place{% if entry.rank <= 3 %} ranking-place-leading{% endif %}">{{ entry.rank }}º</span></td>
+            <th scope="row" class="ranking-name">{{ entry.display_name }}{% if entry.is_current_user %}<span class="ranking-you">Você</span>{% endif %}</th>
+            <td class="ranking-number"><strong>{{ ('%.2f'|format(entry.average_score))|replace('.', ',') }}</strong><span class="ranking-sr-only"> de 100</span></td>
+            <td class="ranking-number ranking-case-count">{{ entry.distinct_cases }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="ranking-empty"><span aria-hidden="true">{{ icon('spark',28) }}</span><h4>Esta trajetória está começando.</h4><p>A classificação aparecerá quando houver participantes com pelo menos {{ board.minimum_cases }} casos distintos avaliados nesta categoria.</p></div>
+      {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  <details class="ranking-rules">
+    <summary>Como a classificação é calculada</summary>
+    <p>Primeiro, calculamos a média de todas as tentativas válidas de cada caso. Depois, a média entre os casos distintos da categoria. Assim, repetir um caso não aumenta o peso dele no ranking.</p>
+    <p>Apenas avaliações concluídas com nota válida contam. Avaliações pendentes e consultas de demonstração ficam de fora. Antes do mínimo de casos distintos, sua posição aparece como <strong>Em formação</strong>.</p>
+    <p>Médias iguais em duas casas decimais compartilham a posição, como 1º, 1º e 3º. Os nomes públicos aparecem abreviados. A classificação acompanha a prática na plataforma e não certifica competência clínica.</p>
+    <p>Com a página aberta, a classificação é atualizada a cada minuto. Você também pode recarregar a página para consultar os dados atuais.</p>
+  </details>
+</section>
+{% endif %}

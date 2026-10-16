@@ -1,0 +1,1251 @@
+[
+  {
+    "caseId": "basic-urinary-ardor-frequencia",
+    "caseTitle": "Ardor e idas frequentes ao banheiro",
+    "specialty": "Urologia",
+    "difficulty": "Iniciante",
+    "summary": "Arde quando faço xixi e vou ao banheiro muitas vezes desde ontem.",
+    "publicPresentation": "Arde quando faço xixi e vou ao banheiro muitas vezes desde ontem.",
+    "learningTrack": "basic",
+    "bodySystem": "urinary",
+    "catalogType": "fictional",
+    "caseType": "Sintomas urinários",
+    "patientProfile": {
+      "name": "Lívia Andrade",
+      "age_value": 27,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Bibliotecária",
+      "chief_complaint": "Arde quando faço xixi e vou ao banheiro muitas vezes desde ontem.",
+      "present_illness_history": "Começou ontem de manhã. Arde mais no fim do xixi, sai pouco de cada vez e fica uma pressão abaixo do umbigo. Não tive febre, calafrios, dor nas costas, vômitos ou corrimento vaginal. Consigo beber e comer normalmente.",
+      "past_medical_history": "Não tenho doença crônica. Tive um episódio parecido há dois anos.",
+      "personal_history": "Não fumo. Às vezes adio a ida ao banheiro durante o trabalho.",
+      "family_history": "Minha mãe tem pressão alta; não conheço doença renal na família.",
+      "other_medical_history": "Não uso remédio contínuo nem tomei antibiótico neste episódio.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Moro com minha companheira e consigo retornar à unidade se precisar.",
+      "concern": "Tenho medo de piorar enquanto estou trabalhando.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Arde quando faço xixi e vou ao banheiro muitas vezes desde ontem.",
+        "Características dos sintomas": "Começou ontem de manhã. Arde mais no fim do xixi, sai pouco de cada vez e fica uma pressão abaixo do umbigo. Não tive febre, calafrios, dor nas costas, vômitos ou corrimento vaginal. Consigo beber e comer normalmente.",
+        "Doenças crônicas": "Não tenho doença crônica. Tive um episódio parecido há dois anos.",
+        "Hábitos de vida": "Não fumo. Às vezes adio a ida ao banheiro durante o trabalho.",
+        "História familiar": "Minha mãe tem pressão alta; não conheço doença renal na família.",
+        "Medicamentos em uso": "Não uso remédio contínuo nem tomei antibiótico neste episódio.",
+        "Preocupações do paciente": "Tenho medo de piorar enquanto estou trabalhando.",
+        "Início dos sintomas": "Ontem de manhã.",
+        "Hábitos intestinais e urinários": "Vou quase de hora em hora, com pouco xixi de cada vez. Não é um grande volume ao longo do dia.",
+        "História reprodutiva": "Minha última menstruação foi há dez dias; não tive relação com possibilidade de gravidez.",
+        "História sexual": "Tenho uma parceira fixa; não notei feridas ou secreção."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame abdominal e lombar"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [],
+    "optionalAuxiliaryLabs": [
+      "Urina tipo I",
+      "Urocultura"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 112/72 mmHg; FC 78 bpm; temperatura 36,7 °C; FR 16 irpm.",
+      "Exame abdominal e lombar": "Leve desconforto suprapúbico; sem defesa abdominal ou dor à percussão lombar."
+    },
+    "auxiliaryLabs": {
+      "Urina tipo I": "Esterase leucocitária positiva; nitrito positivo; leucócitos 45 por campo; hemácias 3 por campo; sem cilindros.",
+      "Urocultura": "Resultado didático opcional: Escherichia coli, 100.000 UFC/mL. Não é exame obrigatório no episódio típico simples."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Cistite aguda não complicada"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Uretrite"
+        },
+        {
+          "disease": "Vaginite"
+        },
+        {
+          "disease": "Pielonefrite"
+        }
+      ]
+    },
+    "treatments": "Explicar a hipótese, oferecer analgesia e selecionar antimicrobiano conforme protocolo local, alergias e risco individual. Orientar ingestão habitual de líquidos e evitar automedicação. Reavaliar se persistir ou piorar; procurar atendimento com febre, vômitos ou dor lombar.",
+    "referenceReasoning": "Disúria e polaciúria de início recente, desconforto suprapúbico e ausência de sinais sistêmicos sustentam infecção baixa. Piúria apoia inflamação, mas isoladamente não demonstra infecção bacteriana.\nJustificativa dos exames: O diagnóstico pode ser clínico no quadro típico; urina tipo I ajuda em dúvida. Não exigir cultura, ultrassom ou tomografia de rotina. Reservar cultura para apresentação atípica, recorrência, falha, gestação ou outros fatores de complicação.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer disúria como dor ou ardor ao urinar.",
+      "Distinguir polaciúria, com micções frequentes e pequenas, de aumento do volume diário.",
+      "Interpretar piúria como leucócitos na urina, que exige correlação clínica.",
+      "Relacionar cistite a sintomas urinários baixos, distinguindo infecção renal."
+    ],
+    "references": [
+      {
+        "title": "NIDDK — Infecções e outras doenças urológicas",
+        "url": "https://www.niddk.nih.gov/health-information/urologic-diseases"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Distinguir frequência aumentada com pequeno volume de poliúria verdadeira.",
+          "Perguntar febre, dor lombar, sintomas vaginais, risco de gestação e uso prévio de antibióticos."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Exame abdominal e lombar.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "O diagnóstico pode ser clínico no quadro típico; urina tipo I ajuda em dúvida. Não exigir cultura, ultrassom ou tomografia de rotina.",
+          "Reservar cultura para apresentação atípica, recorrência, falha, gestação ou outros fatores de complicação."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Disúria e polaciúria de início recente, desconforto suprapúbico e ausência de sinais sistêmicos sustentam infecção baixa. Piúria apoia inflamação, mas isoladamente não demonstra infecção bacteriana.",
+          "Distinguir as alternativas Uretrite, Vaginite, Pielonefrite, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Explicar a hipótese, oferecer analgesia e selecionar antimicrobiano conforme protocolo local, alergias e risco individual. Orientar ingestão habitual de líquidos e evitar automedicação.",
+          "Reavaliar se persistir ou piorar; procurar atendimento com febre, vômitos ou dor lombar."
+        ],
+        "criticalActions": []
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-urinary-febre-lombar",
+    "caseTitle": "Febre e dor nas costas em criança",
+    "specialty": "Pediatria",
+    "difficulty": "Intermediário",
+    "summary": "Minha filha está com febre e dor de um lado das costas.",
+    "publicPresentation": "Minha filha está com febre e dor de um lado das costas.",
+    "learningTrack": "basic",
+    "bodySystem": "urinary",
+    "catalogType": "fictional",
+    "caseType": "Queixa pediátrica",
+    "patientProfile": {
+      "name": "Helena Costa",
+      "age_value": 6,
+      "age_unit": "anos",
+      "gender": "Menina",
+      "occupation": "Estudante",
+      "chief_complaint": "Minha filha está com febre e dor de um lado das costas.",
+      "present_illness_history": "A mãe conta que a febre começou há dois dias, chegou a 39 °C e veio com dor à direita das costas e ardor para urinar. Vomitou duas vezes hoje, mas aceita pequenos goles. Não tem tosse ou diarreia. Teve outra infecção urinária com febre aos quatro anos e não fez investigação depois.",
+      "past_medical_history": "A mãe informa desenvolvimento habitual e nenhuma doença crônica conhecida.",
+      "personal_history": "Bebe pouca água na escola e às vezes segura o xixi. Evacua regularmente.",
+      "family_history": "Não há malformação urinária conhecida na família.",
+      "other_medical_history": "Recebeu antitérmico em casa; ainda não tomou antibiótico.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Vive com a mãe, que trouxe a caderneta e pode acompanhá-la no hospital.",
+      "concern": "A mãe teme que a filha não consiga beber o suficiente.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Minha filha está com febre e dor de um lado das costas.",
+        "Características dos sintomas": "A mãe conta que a febre começou há dois dias, chegou a 39 °C e veio com dor à direita das costas e ardor para urinar. Vomitou duas vezes hoje, mas aceita pequenos goles. Não tem tosse ou diarreia. Teve outra infecção urinária com febre aos quatro anos e não fez investigação depois.",
+        "Doenças crônicas": "A mãe informa desenvolvimento habitual e nenhuma doença crônica conhecida.",
+        "Hábitos de vida": "Bebe pouca água na escola e às vezes segura o xixi. Evacua regularmente.",
+        "História familiar": "Não há malformação urinária conhecida na família.",
+        "Medicamentos em uso": "Recebeu antitérmico em casa; ainda não tomou antibiótico.",
+        "Preocupações do paciente": "A mãe teme que a filha não consiga beber o suficiente.",
+        "Início dos sintomas": "A febre começou há dois dias.",
+        "Sintomas associados": "A mãe relata ardor para urinar, calafrios e dois vômitos.",
+        "Estado geral": "A mãe percebe cansaço; a criança conversa e aceita pequenos goles."
+      },
+      "respondent": "Mãe; a criança confirma onde dói.",
+      "respondent_gender": "female"
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Hidratação e perfusão",
+      "Exame abdominal e lombar"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Urina tipo I",
+      "Urocultura"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Creatinina e eletrólitos",
+      "Ultrassonografia dos rins e bexiga",
+      "Cistografia miccional"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "Peso 21 kg; temperatura 38,8 °C; FC 120 bpm; PA 98/60 mmHg; FR 24 irpm.",
+      "Hidratação e perfusão": "Lábios discretamente secos; alerta; enchimento capilar de 2 segundos.",
+      "Exame abdominal e lombar": "Dor à percussão lombar direita; abdome sem defesa."
+    },
+    "auxiliaryLabs": {
+      "Urina tipo I": "Leucócitos 80 por campo; nitrito positivo; bactérias numerosas. Amostra coletada por jato médio orientado.",
+      "Urocultura": "Escherichia coli, 100.000 UFC/mL, sensível ao antimicrobiano selecionado pelo protocolo do serviço.",
+      "Creatinina e eletrólitos": "Creatinina 0,5 mg/dL; sódio 136 mmol/L; potássio 4,0 mmol/L.",
+      "Ultrassonografia dos rins e bexiga": "Discreta dilatação da pelve renal direita, sem cálculo ou coleção.",
+      "Cistografia miccional": "Etapa posterior, após controle do episódio agudo e avaliação especializada por recorrência e alteração ultrassonográfica: refluxo vesicoureteral à direita, grau III."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Pielonefrite aguda"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Cistite"
+        },
+        {
+          "disease": "Apendicite"
+        },
+        {
+          "disease": "Gastroenterite"
+        }
+      ]
+    },
+    "treatments": "Avaliar necessidade de hidratação e observação hospitalar pela tolerância oral. Iniciar antimicrobiano segundo protocolo pediátrico e ajustar pela cultura. Planejar seguimento da recorrência e dos hábitos miccionais. URGENTE: encaminhar para avaliação imediata se prostração, perfusão ruim, incapacidade de beber ou redução importante da urina; não adiar tratamento para cistografia.",
+    "referenceReasoning": "Febre, dor lombar e alterações urinárias sustentam infecção renal. Avaliar hidratação e tolerância oral antes de decidir o local de tratamento; o refluxo é informação de investigação posterior, não deve ser antecipado na fala da mãe.\nJustificativa dos exames: Coletar urina e cultura antes de antibiótico se isso não atrasar o cuidado. Ultrassom é pertinente na recorrência; cistografia é seletiva após avaliação especializada e não uma obrigação em toda primeira infecção.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer pielonefrite pelo conjunto de febre, dor lombar e evidência urinária.",
+      "Explicar que a cistografia avalia bexiga e refluxo em situações selecionadas; não solicitá-la indiscriminadamente na fase aguda."
+    ],
+    "references": [
+      {
+        "title": "NIDDK — Kidney infection: definition and facts",
+        "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis/definition-facts"
+      },
+      {
+        "title": "NIDDK — Infecções e outras doenças urológicas",
+        "url": "https://www.niddk.nih.gov/health-information/urologic-diseases"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Confirmar febre, dor, vômitos, ingestão e volume urinário.",
+          "Investigar infecções urinárias anteriores, coleta de amostra e hábitos miccionais."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Hidratação e perfusão, Exame abdominal e lombar.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Coletar urina e cultura antes de antibiótico se isso não atrasar o cuidado.",
+          "Ultrassom é pertinente na recorrência; cistografia é seletiva após avaliação especializada e não uma obrigação em toda primeira infecção."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Febre, dor lombar e alterações urinárias sustentam infecção renal. Avaliar hidratação e tolerância oral antes de decidir o local de tratamento; o refluxo é informação de investigação posterior, não deve ser antecipado na fala da mãe.",
+          "Distinguir as alternativas Cistite, Apendicite, Gastroenterite, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Avaliar necessidade de hidratação e observação hospitalar pela tolerância oral. Iniciar antimicrobiano segundo protocolo pediátrico e ajustar pela cultura. Planejar seguimento da recorrência e dos hábitos miccionais.",
+          "URGENTE: encaminhar para avaliação imediata se prostração, perfusão ruim, incapacidade de beber ou redução importante da urina; não adiar tratamento para cistografia."
+        ],
+        "criticalActions": [
+          "URGENTE: encaminhar para avaliação imediata se prostração, perfusão ruim, incapacidade de beber ou redução importante da urina; não adiar tratamento para cistografia."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-urinary-urina-escura-edema",
+    "caseTitle": "Urina escura e rosto inchado",
+    "specialty": "Nefrologia",
+    "difficulty": "Intermediário",
+    "summary": "Meu xixi está escuro e meu rosto amanheceu inchado.",
+    "publicPresentation": "Meu xixi está escuro e meu rosto amanheceu inchado.",
+    "learningTrack": "basic",
+    "bodySystem": "urinary",
+    "catalogType": "fictional",
+    "caseType": "Sintomas urinários",
+    "patientProfile": {
+      "name": "Caio Martins",
+      "age_value": 11,
+      "age_unit": "anos",
+      "gender": "Menino",
+      "occupation": "Estudante",
+      "chief_complaint": "Meu xixi está escuro e meu rosto amanheceu inchado.",
+      "present_illness_history": "Há três dias a urina está da cor de chá e sai bem menos. A mãe percebeu inchaço nas pálpebras ao acordar. Há cerca de duas semanas ele teve dor de garganta, que melhorou sem consulta. Não tem ardor para urinar, dor lombar ou ferimentos recentes.",
+      "past_medical_history": "Nunca teve problema nos rins ou pressão alta conhecida.",
+      "personal_history": "Joga futebol na escola; não usa suplementos.",
+      "family_history": "Não há doença renal familiar conhecida.",
+      "other_medical_history": "Não usa medicamento contínuo; não tomou antibiótico pela garganta.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Mora com os pais, que podem acompanhá-lo na investigação.",
+      "concern": "A mãe está preocupada com o pouco xixi.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Meu xixi está escuro e meu rosto amanheceu inchado.",
+        "Características dos sintomas": "Há três dias a urina está da cor de chá e sai bem menos. A mãe percebeu inchaço nas pálpebras ao acordar. Há cerca de duas semanas ele teve dor de garganta, que melhorou sem consulta. Não tem ardor para urinar, dor lombar ou ferimentos recentes.",
+        "Doenças crônicas": "Nunca teve problema nos rins ou pressão alta conhecida.",
+        "Hábitos de vida": "Joga futebol na escola; não usa suplementos.",
+        "História familiar": "Não há doença renal familiar conhecida.",
+        "Medicamentos em uso": "Não usa medicamento contínuo; não tomou antibiótico pela garganta.",
+        "Preocupações do paciente": "A mãe está preocupada com o pouco xixi.",
+        "Início dos sintomas": "A urina mudou há três dias, depois da dor de garganta de duas semanas atrás.",
+        "Hábitos intestinais e urinários": "A mãe mediu aproximadamente 250 mL de urina nas últimas 24 horas.",
+        "Sintomas associados": "Rosto inchado pela manhã; sem falta de ar ou convulsão."
+      },
+      "respondent": "Paciente e mãe, que informa volume e antecedentes.",
+      "respondent_gender": "female"
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Edema e ausculta pulmonar",
+      "Exame abdominal"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Urina tipo I e relação proteína/creatinina",
+      "Função renal e eletrólitos",
+      "Complemento C3 e anticorpos antiestreptocócicos"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Ultrassonografia renal"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "Peso 36 kg; PA 138/90 mmHg, confirmada com manguito adequado; FC 86 bpm; temperatura 36,5 °C.",
+      "Edema e ausculta pulmonar": "Edema palpebral bilateral e discreto edema maleolar; pulmões sem estertores.",
+      "Exame abdominal": "Abdome flácido; sem globo vesical."
+    },
+    "auxiliaryLabs": {
+      "Urina tipo I e relação proteína/creatinina": "Hemácias dismórficas numerosas; cilindros hemáticos; proteína 2+; relação proteína/creatinina urinária 0,8 g/g.",
+      "Função renal e eletrólitos": "Creatinina 1,3 mg/dL; ureia 68 mg/dL; potássio 4,8 mmol/L.",
+      "Complemento C3 e anticorpos antiestreptocócicos": "C3 38 mg/dL (referência 90–180); ASLO acima do limite do laboratório.",
+      "Ultrassonografia renal": "Rins de tamanho preservado, sem dilatação de vias urinárias."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Glomerulonefrite aguda pós-estreptocócica"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Nefropatia por IgA"
+        },
+        {
+          "disease": "Síndrome nefrótica"
+        },
+        {
+          "disease": "Obstrução urinária"
+        }
+      ]
+    },
+    "treatments": "Avaliação pediátrica/nefrólogica, monitorização de pressão, peso, diurese e eletrólitos; controle individualizado de edema e hipertensão. Tratar foco estreptocócico residual conforme protocolo e programar seguimento renal. URGENTE: reconhecer hipertensão e redução da diurese como sinais que exigem avaliação presencial imediata, sobretudo se dispneia, alteração neurológica ou hipercalemia.",
+    "referenceReasoning": "Hematúria glomerular, proteinúria, edema, hipertensão e oligúria após infecção, com C3 baixo, compõem síndrome nefrítica. Aceitar essa identificação sindrômica antes da confirmação etiológica.\nJustificativa dos exames: Sedimento distingue sangramento glomerular; creatinina, potássio e pressão orientam risco. C3 e evidência estreptocócica ajudam na etiologia; imagem exclui obstrução se houver dúvida, não substitui o sedimento.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Quantificar oligúria por idade, peso e tempo; não confundi-la com micções pequenas frequentes.",
+      "Reconhecer hematúria glomerular pelo sedimento, distinguindo pigmentos sem hemácias.",
+      "Interpretar proteinúria no conjunto de uma síndrome renal, sem assumir automaticamente síndrome nefrótica.",
+      "Reconhecer glomerulonefrite como processo renal inflamatório com síndrome nefrítica neste cenário."
+    ],
+    "references": [
+      {
+        "title": "CDC — Clinical guidance for post-streptococcal glomerulonephritis",
+        "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/post-streptococcal-glomerulonephritis.html"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Quantificar a urina e pesquisar edema, dispneia, cefaleia e convulsões.",
+          "Perguntar intervalo desde infecção de garganta ou pele e medicamentos potencialmente nefrotóxicos."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Edema e ausculta pulmonar, Exame abdominal.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Sedimento distingue sangramento glomerular; creatinina, potássio e pressão orientam risco.",
+          "C3 e evidência estreptocócica ajudam na etiologia; imagem exclui obstrução se houver dúvida, não substitui o sedimento."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Hematúria glomerular, proteinúria, edema, hipertensão e oligúria após infecção, com C3 baixo, compõem síndrome nefrítica. Aceitar essa identificação sindrômica antes da confirmação etiológica.",
+          "Distinguir as alternativas Nefropatia por IgA, Síndrome nefrótica, Obstrução urinária, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Avaliação pediátrica/nefrólogica, monitorização de pressão, peso, diurese e eletrólitos; controle individualizado de edema e hipertensão. Tratar foco estreptocócico residual conforme protocolo e programar seguimento renal.",
+          "URGENTE: reconhecer hipertensão e redução da diurese como sinais que exigem avaliação presencial imediata, sobretudo se dispneia, alteração neurológica ou hipercalemia."
+        ],
+        "criticalActions": [
+          "URGENTE: reconhecer hipertensão e redução da diurese como sinais que exigem avaliação presencial imediata, sobretudo se dispneia, alteração neurológica ou hipercalemia."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-urinary-ardor-secrecao",
+    "caseTitle": "Ardor e secreção pelo pênis",
+    "specialty": "Urologia",
+    "difficulty": "Iniciante",
+    "summary": "Está ardendo para urinar e apareceu uma secreção.",
+    "publicPresentation": "Está ardendo para urinar e apareceu uma secreção.",
+    "learningTrack": "basic",
+    "bodySystem": "urinary",
+    "catalogType": "fictional",
+    "caseType": "Sintomas urinários",
+    "patientProfile": {
+      "name": "Rafael Lima",
+      "age_value": 24,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Atendente",
+      "chief_complaint": "Está ardendo para urinar e apareceu uma secreção.",
+      "present_illness_history": "Há quatro dias sente ardor mais no começo do xixi e percebe secreção amarelada pela manhã. Teve relação sem preservativo com uma nova parceira há duas semanas. Não tem febre, dor nas costas ou nos testículos. Não houve ferida genital percebida.",
+      "past_medical_history": "Não tenho doença crônica ou infecção sexual previamente diagnosticada.",
+      "personal_history": "Não fumo; bebo ocasionalmente. Quero conversar com privacidade.",
+      "family_history": "Não conheço doenças hereditárias relevantes.",
+      "other_medical_history": "Não tomei antibiótico nem uso remédio regular.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Mora com colegas e prefere contato sigiloso sobre resultados.",
+      "concern": "Tenho vergonha e medo de passar algo para outra pessoa.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Está ardendo para urinar e apareceu uma secreção.",
+        "Características dos sintomas": "Há quatro dias sente ardor mais no começo do xixi e percebe secreção amarelada pela manhã. Teve relação sem preservativo com uma nova parceira há duas semanas. Não tem febre, dor nas costas ou nos testículos. Não houve ferida genital percebida.",
+        "Doenças crônicas": "Não tenho doença crônica ou infecção sexual previamente diagnosticada.",
+        "Hábitos de vida": "Não fumo; bebo ocasionalmente. Quero conversar com privacidade.",
+        "História familiar": "Não conheço doenças hereditárias relevantes.",
+        "Medicamentos em uso": "Não tomei antibiótico nem uso remédio regular.",
+        "Preocupações do paciente": "Tenho vergonha e medo de passar algo para outra pessoa.",
+        "Início dos sintomas": "O ardor começou há quatro dias.",
+        "História sexual": "Relação vaginal sem preservativo com nova parceira há duas semanas.",
+        "Sintomas associados": "Secreção amarelada; sem dor testicular ou febre."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame genital consentido"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Teste molecular em primeiro jato de urina"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Urina tipo I",
+      "Testagem de HIV e sífilis"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 118/74 mmHg; FC 76 bpm; temperatura 36,6 °C.",
+      "Exame genital consentido": "Secreção uretral mucopurulenta; sem úlcera visível; testículos sem dor ou edema."
+    },
+    "auxiliaryLabs": {
+      "Teste molecular em primeiro jato de urina": "Neisseria gonorrhoeae detectada; Chlamydia trachomatis não detectada.",
+      "Urina tipo I": "Leucócitos 30 por campo; nitrito negativo.",
+      "Testagem de HIV e sífilis": "Testes iniciais não reagentes; interpretar conforme janela e programar seguimento."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Uretrite gonocócica"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Uretrite por clamídia"
+        },
+        {
+          "disease": "Cistite"
+        },
+        {
+          "disease": "Irritação química uretral"
+        }
+      ]
+    },
+    "treatments": "Tratar conforme protocolo de infecções sexualmente transmissíveis, avaliar parceiros e orientar prevenção e intervalo sem relações conforme tratamento. Programar reteste e seguimento apropriados. Orientar retorno por febre, dor testicular, piora ou persistência; preservar confidencialidade e não culpabilizar o paciente.",
+    "referenceReasoning": "Secreção uretral e exposição sexual sustentam uretrite; o teste identifica a etiologia. Leucócitos urinários não tornam o quadro automaticamente cistite.\nJustificativa dos exames: Teste molecular no primeiro jato identifica agentes; oferecer rastreio adicional conforme risco e consentimento. Não solicitar urografia ou cistografia para o episódio típico.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Distinguir uretrite de cistite pelo local, secreção e contexto sexual."
+    ],
+    "references": [
+      {
+        "title": "CDC — Urethritis and cervicitis",
+        "url": "https://www.cdc.gov/std/treatment-guidelines/urethritis-and-cervicitis.htm"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Investigar secreção, exposição sexual, dor testicular e febre com linguagem não julgadora.",
+          "Perguntar tratamentos prévios e combinar comunicação confidencial e avaliação de parceiros."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Exame genital consentido.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Teste molecular no primeiro jato identifica agentes; oferecer rastreio adicional conforme risco e consentimento.",
+          "Não solicitar urografia ou cistografia para o episódio típico."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Secreção uretral e exposição sexual sustentam uretrite; o teste identifica a etiologia. Leucócitos urinários não tornam o quadro automaticamente cistite.",
+          "Distinguir as alternativas Uretrite por clamídia, Cistite, Irritação química uretral, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Tratar conforme protocolo de infecções sexualmente transmissíveis, avaliar parceiros e orientar prevenção e intervalo sem relações conforme tratamento. Programar reteste e seguimento apropriados.",
+          "Orientar retorno por febre, dor testicular, piora ou persistência; preservar confidencialidade e não culpabilizar o paciente."
+        ],
+        "criticalActions": []
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-urinary-sede-muito-xixi",
+    "caseTitle": "Sede e grande volume de urina",
+    "specialty": "Endocrinologia e metabologia",
+    "difficulty": "Iniciante",
+    "summary": "Estou com muita sede e faço muito xixi, inclusive à noite.",
+    "publicPresentation": "Estou com muita sede e faço muito xixi, inclusive à noite.",
+    "learningTrack": "basic",
+    "bodySystem": "urinary",
+    "catalogType": "fictional",
+    "caseType": "Sede, fome e alterações de peso",
+    "patientProfile": {
+      "name": "Marcos Freire",
+      "age_value": 48,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Motorista",
+      "chief_complaint": "Estou com muita sede e faço muito xixi, inclusive à noite.",
+      "present_illness_history": "Há três semanas sente sede quase o tempo todo. Cada ida ao banheiro produz bastante urina; acorda três vezes por noite. Perdeu 4 kg sem querer. Não tem ardor, febre, vômitos, dor abdominal ou dificuldade para respirar.",
+      "past_medical_history": "Já me disseram que o açúcar estava no limite, mas não acompanhei.",
+      "personal_history": "Passo o dia sentado dirigindo; tomo refrigerante nas refeições; não fumo.",
+      "family_history": "Meu pai tem diabetes.",
+      "other_medical_history": "Não uso diuréticos nem outros remédios regulares.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Trabalha por conta própria e organiza horários para consultas.",
+      "concern": "Estou dormindo mal e preocupado com a perda de peso.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Estou com muita sede e faço muito xixi, inclusive à noite.",
+        "Características dos sintomas": "Há três semanas sente sede quase o tempo todo. Cada ida ao banheiro produz bastante urina; acorda três vezes por noite. Perdeu 4 kg sem querer. Não tem ardor, febre, vômitos, dor abdominal ou dificuldade para respirar.",
+        "Doenças crônicas": "Já me disseram que o açúcar estava no limite, mas não acompanhei.",
+        "Hábitos de vida": "Passo o dia sentado dirigindo; tomo refrigerante nas refeições; não fumo.",
+        "História familiar": "Meu pai tem diabetes.",
+        "Medicamentos em uso": "Não uso diuréticos nem outros remédios regulares.",
+        "Preocupações do paciente": "Estou dormindo mal e preocupado com a perda de peso.",
+        "Início dos sintomas": "Há três semanas.",
+        "Hábitos intestinais e urinários": "Medi 4,2 litros de xixi em 24 horas num recipiente orientado pela unidade; acordo três vezes para urinar.",
+        "Mudança de peso": "Perdi 4 kg em três semanas sem dieta.",
+        "Sintomas associados": "Sede intensa; não vomitei nem tive dor abdominal."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Hidratação e consciência"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Glicemia plasmática casual"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Hemoglobina glicada",
+      "Urina tipo I",
+      "Eletrólitos e função renal"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 128/82 mmHg; FC 88 bpm; FR 17 irpm; temperatura 36,4 °C.",
+      "Hidratação e consciência": "Alerta e orientado; mucosa oral discretamente seca; sem respiração profunda."
+    },
+    "auxiliaryLabs": {
+      "Glicemia plasmática casual": "326 mg/dL.",
+      "Hemoglobina glicada": "9,4%.",
+      "Urina tipo I": "Glicose 3+; cetonas negativas; sem piúria.",
+      "Eletrólitos e função renal": "Sódio 136 mmol/L; potássio 4,3 mmol/L; bicarbonato 24 mmol/L; creatinina 0,9 mg/dL."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Diabetes mellitus com hiperglicemia sintomática"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Diabetes insípido"
+        },
+        {
+          "disease": "Polidipsia primária"
+        },
+        {
+          "disease": "Uso de diuréticos"
+        }
+      ]
+    },
+    "treatments": "Organizar avaliação clínica e início de manejo do diabetes conforme gravidade, com educação, hidratação, alimentação e acompanhamento individualizados. Considerar necessidade de insulinização sem impor um esquema único no exercício. Encaminhar imediatamente se vômitos, desidratação intensa, alteração de consciência ou dificuldade respiratória.",
+    "referenceReasoning": "Poliúria de grande volume, polidipsia, perda de peso e hiperglicemia sustentam diabetes. A ausência de cetonúria e acidose no roteiro afasta crise cetótica neste momento; não exigir classificação definitiva do tipo pela idade apenas.\nJustificativa dos exames: Glicemia com sintomas estabelece a hipótese e permite avaliar urgência; hemoglobina glicada informa cronicidade. Eletrólitos e cetonas são úteis se suspeita de descompensação; não pedir imagem urinária de rotina.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer poliúria como aumento do volume total de urina, não apenas frequência.",
+      "Identificar nictúria como despertar para urinar e investigar sua causa."
+    ],
+    "references": [
+      {
+        "title": "NIDDK — Symptoms and causes of diabetes",
+        "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/symptoms-causes"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Distinguir poliúria de polaciúria e quantificar ingestão, diurese e perda de peso.",
+          "Pesquisar vômitos, dor abdominal, sonolência, respiração anormal e uso de diuréticos."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Hidratação e consciência.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Glicemia com sintomas estabelece a hipótese e permite avaliar urgência; hemoglobina glicada informa cronicidade.",
+          "Eletrólitos e cetonas são úteis se suspeita de descompensação; não pedir imagem urinária de rotina."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Poliúria de grande volume, polidipsia, perda de peso e hiperglicemia sustentam diabetes. A ausência de cetonúria e acidose no roteiro afasta crise cetótica neste momento; não exigir classificação definitiva do tipo pela idade apenas.",
+          "Distinguir as alternativas Diabetes insípido, Polidipsia primária, Uso de diuréticos, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Organizar avaliação clínica e início de manejo do diabetes conforme gravidade, com educação, hidratação, alimentação e acompanhamento individualizados. Considerar necessidade de insulinização sem impor um esquema único no exercício.",
+          "Encaminhar imediatamente se vômitos, desidratação intensa, alteração de consciência ou dificuldade respiratória."
+        ],
+        "criticalActions": []
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-urinary-sem-conseguir-urinar",
+    "caseTitle": "Vontade intensa sem conseguir urinar",
+    "specialty": "Urologia",
+    "difficulty": "Iniciante",
+    "summary": "Estou com muita vontade de fazer xixi, mas não sai.",
+    "publicPresentation": "Estou com muita vontade de fazer xixi, mas não sai.",
+    "learningTrack": "basic",
+    "bodySystem": "urinary",
+    "catalogType": "fictional",
+    "caseType": "Sintomas urinários",
+    "patientProfile": {
+      "name": "Antônio Duarte",
+      "age_value": 69,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Aposentado",
+      "chief_complaint": "Estou com muita vontade de fazer xixi, mas não sai.",
+      "present_illness_history": "Há dez horas não consegue urinar e sente pressão dolorosa abaixo do umbigo. Nos últimos seis meses o jato ficou fraco, demora a começar e acorda três vezes por noite. Tomou um antialérgico por conta própria ontem. Não tem febre, trauma, fraqueza nas pernas ou dormência na região íntima.",
+      "past_medical_history": "Tenho pressão alta controlada; nunca tive cirurgia urinária.",
+      "personal_history": "Não fumo; costumo beber água normalmente.",
+      "family_history": "Meu irmão teve aumento da próstata, sem câncer conhecido.",
+      "other_medical_history": "Uso losartana; tomei um antialérgico que não sei nomear.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Vive com a esposa, que trouxe as embalagens disponíveis.",
+      "concern": "Estou com medo de a bexiga estourar.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Estou com muita vontade de fazer xixi, mas não sai.",
+        "Características dos sintomas": "Há dez horas não consegue urinar e sente pressão dolorosa abaixo do umbigo. Nos últimos seis meses o jato ficou fraco, demora a começar e acorda três vezes por noite. Tomou um antialérgico por conta própria ontem. Não tem febre, trauma, fraqueza nas pernas ou dormência na região íntima.",
+        "Doenças crônicas": "Tenho pressão alta controlada; nunca tive cirurgia urinária.",
+        "Hábitos de vida": "Não fumo; costumo beber água normalmente.",
+        "História familiar": "Meu irmão teve aumento da próstata, sem câncer conhecido.",
+        "Medicamentos em uso": "Uso losartana; tomei um antialérgico que não sei nomear.",
+        "Preocupações do paciente": "Estou com medo de a bexiga estourar.",
+        "Início dos sintomas": "Não consigo urinar há dez horas.",
+        "Hábitos intestinais e urinários": "Jato fraco há meses; agora só caem algumas gotas. Evacuei ontem.",
+        "Sintomas associados": "Pressão dolorosa abaixo do umbigo; sem febre ou sintomas nas pernas."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame abdominal",
+      "Exame neurológico dirigido"
+    ],
+    "optionalPhysicalExams": [
+      "Toque retal consentido"
+    ],
+    "mustAuxiliaryLabs": [
+      "Ultrassom de bexiga à beira-leito"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Creatinina e potássio",
+      "Urina tipo I após drenagem"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 146/86 mmHg; FC 96 bpm; temperatura 36,5 °C.",
+      "Exame abdominal": "Abaulamento e dor suprapúbica compatíveis com globo vesical.",
+      "Exame neurológico dirigido": "Força e sensibilidade nas pernas preservadas; sem alteração perineal referida.",
+      "Toque retal consentido": "Próstata aumentada, lisa, elástica e sem dor."
+    },
+    "auxiliaryLabs": {
+      "Ultrassom de bexiga à beira-leito": "Volume vesical estimado de 780 mL antes de qualquer sondagem.",
+      "Creatinina e potássio": "Creatinina 1,2 mg/dL; potássio 4,4 mmol/L.",
+      "Urina tipo I após drenagem": "Sem piúria significativa; hemácias 2 por campo."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Retenção urinária aguda por obstrução prostática provável"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Bexiga neurogênica"
+        },
+        {
+          "disease": "Estenose uretral"
+        },
+        {
+          "disease": "Anúria por lesão renal aguda"
+        }
+      ]
+    },
+    "treatments": "Promover descompressão vesical por equipe treinada, com técnica e contraindicações avaliadas; monitorar volume drenado, função renal e eventual diurese pós-obstrutiva. Rever medicação precipitante e organizar seguimento urológico. URGENTE: aliviar a retenção e encaminhar se sondagem inviável, suspeita de lesão uretral ou déficit neurológico; não mandar aguardar em casa.",
+    "referenceReasoning": "Bexiga cheia com incapacidade de esvaziar é retenção, não prova de anúria renal. Sintomas obstrutivos prévios e possível medicamento precipitante favorecem aumento prostático.\nJustificativa dos exames: Medida vesical confirma retenção e orienta descompressão; função renal e eletrólitos avaliam repercussão. Não atrasar alívio por urografia, PSA ou investigação eletiva da próstata.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Distinguir anúria verdadeira de retenção urinária: não urinar não demonstra que os rins deixaram de produzir urina."
+    ],
+    "references": [
+      {
+        "title": "NIDDK — Urinary retention",
+        "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/urinary-retention"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Distinguir ausência de eliminação de urina de ausência de produção, pesquisando dor e jato prévio.",
+          "Investigar medicamentos, trauma, febre, constipação e sinais neurológicos."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Exame abdominal, Exame neurológico dirigido.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Medida vesical confirma retenção e orienta descompressão; função renal e eletrólitos avaliam repercussão.",
+          "Não atrasar alívio por urografia, PSA ou investigação eletiva da próstata."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Bexiga cheia com incapacidade de esvaziar é retenção, não prova de anúria renal. Sintomas obstrutivos prévios e possível medicamento precipitante favorecem aumento prostático.",
+          "Distinguir as alternativas Bexiga neurogênica, Estenose uretral, Anúria por lesão renal aguda, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Promover descompressão vesical por equipe treinada, com técnica e contraindicações avaliadas; monitorar volume drenado, função renal e eventual diurese pós-obstrutiva. Rever medicação precipitante e organizar seguimento urológico.",
+          "URGENTE: aliviar a retenção e encaminhar se sondagem inviável, suspeita de lesão uretral ou déficit neurológico; não mandar aguardar em casa."
+        ],
+        "criticalActions": [
+          "URGENTE: aliviar a retenção e encaminhar se sondagem inviável, suspeita de lesão uretral ou déficit neurológico; não mandar aguardar em casa."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-urinary-sangue-sem-dor",
+    "caseTitle": "Urina avermelhada sem ardor",
+    "specialty": "Urologia",
+    "difficulty": "Iniciante",
+    "summary": "Minha urina ficou vermelha duas vezes, mas não doeu.",
+    "publicPresentation": "Minha urina ficou vermelha duas vezes, mas não doeu.",
+    "learningTrack": "basic",
+    "bodySystem": "urinary",
+    "catalogType": "fictional",
+    "caseType": "Sintomas urinários",
+    "patientProfile": {
+      "name": "Roberto Silva",
+      "age_value": 63,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Ex-pintor",
+      "chief_complaint": "Minha urina ficou vermelha duas vezes, mas não doeu.",
+      "present_illness_history": "Há uma semana percebeu urina vermelha com pequenos coágulos em duas ocasiões. Não teve dor, febre, ardor ou esforço intenso. O jato continua habitual. Não comeu beterraba nem usou remédio que conheça por mudar a cor da urina.",
+      "past_medical_history": "Tenho pressão alta, sem doença renal conhecida.",
+      "personal_history": "Fumei por 35 anos, um maço por dia; parei há cinco anos.",
+      "family_history": "Não conheço câncer urinário na família.",
+      "other_medical_history": "Uso amlodipino; não uso anticoagulante.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Aposentado, vive com a esposa e tem acesso à unidade básica.",
+      "concern": "Quero saber por que apareceu sangue mesmo sem dor.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Minha urina ficou vermelha duas vezes, mas não doeu.",
+        "Características dos sintomas": "Vermelho vivo com alguns coágulos, sem dor.",
+        "Doenças crônicas": "Tenho pressão alta, sem doença renal conhecida.",
+        "Hábitos de vida": "Fumei por 35 anos, um maço por dia; parei há cinco anos.",
+        "História familiar": "Não conheço câncer urinário na família.",
+        "Medicamentos em uso": "Uso amlodipino; não uso anticoagulante.",
+        "Preocupações do paciente": "Quero saber por que apareceu sangue mesmo sem dor.",
+        "Início dos sintomas": "A primeira vez foi há uma semana.",
+        "História ocupacional": "Trabalhei por muitos anos com tintas e solventes, usando proteção de forma irregular."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame abdominal e lombar"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Urina tipo I"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Hemograma e creatinina",
+      "Urotomografia",
+      "Cistoscopia"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 130/80 mmHg; FC 74 bpm; temperatura 36,5 °C.",
+      "Exame abdominal e lombar": "Sem massa palpável, globo vesical ou dor lombar."
+    },
+    "auxiliaryLabs": {
+      "Urina tipo I": "Hemácias numerosas; sem cilindros hemáticos; sem piúria significativa; proteína traços.",
+      "Hemograma e creatinina": "Hemoglobina 13,6 g/dL; creatinina 0,9 mg/dL.",
+      "Urotomografia": "Etapa de investigação especializada: lesão focal na parede lateral da bexiga; sem cálculo ou massa renal.",
+      "Cistoscopia": "Etapa especializada posterior: lesão papilar vesical; colhida amostra para histologia, ainda não disponível."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Suspeita de neoplasia urotelial vesical"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Litíase urinária"
+        },
+        {
+          "disease": "Infecção urinária"
+        },
+        {
+          "disease": "Sangramento prostático"
+        }
+      ]
+    },
+    "treatments": "Encaminhar prioritariamente à urologia para investigação, discutir risco sem anunciar câncer confirmado e apoiar cessação tabágica e seguimento. Atendimento imediato se retenção por coágulos, sangramento volumoso, tontura ou instabilidade.",
+    "referenceReasoning": "Hematúria visível indolor, idade e exposição tabágica justificam investigação urológica. A lesão aumenta a suspeita, mas a confirmação e o estadiamento dependem de histologia; não exigir diagnóstico histológico inexistente.\nJustificativa dos exames: Confirmar hemácias no sedimento e verificar anemia/função renal. Explicar urografia como estudo das vias urinárias; a modalidade atual pode ser urotomografia selecionada conforme risco e função renal, complementada por cistoscopia. Não pedir cistografia miccional como substituta.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Relacionar urografia ao estudo de vias urinárias; discutir modalidade e risco sem exigir urografia excretora como rotina universal."
+    ],
+    "references": [
+      {
+        "title": "NIDDK — Hematuria",
+        "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/hematuria-blood-urine"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar cor, coágulos, dor, duração, tabagismo e medicamentos.",
+          "Perguntar perda de peso, retenção por coágulos e sintomas de instabilidade."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Exame abdominal e lombar.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Confirmar hemácias no sedimento e verificar anemia/função renal.",
+          "Explicar urografia como estudo das vias urinárias; a modalidade atual pode ser urotomografia selecionada conforme risco e função renal, complementada por cistoscopia. Não pedir cistografia miccional como substituta."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Hematúria visível indolor, idade e exposição tabágica justificam investigação urológica. A lesão aumenta a suspeita, mas a confirmação e o estadiamento dependem de histologia; não exigir diagnóstico histológico inexistente.",
+          "Distinguir as alternativas Litíase urinária, Infecção urinária, Sangramento prostático, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhar prioritariamente à urologia para investigação, discutir risco sem anunciar câncer confirmado e apoiar cessação tabágica e seguimento.",
+          "Atendimento imediato se retenção por coágulos, sangramento volumoso, tontura ou instabilidade."
+        ],
+        "criticalActions": []
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-urinary-urina-marrom-cansaco",
+    "caseTitle": "Urina marrom e fraqueza súbita",
+    "specialty": "Hematologia e hemoterapia",
+    "difficulty": "Intermediário",
+    "summary": "A urina ficou marrom e estou muito fraco desde ontem.",
+    "publicPresentation": "A urina ficou marrom e estou muito fraco desde ontem.",
+    "learningTrack": "basic",
+    "bodySystem": "urinary",
+    "catalogType": "fictional",
+    "caseType": "Sintomas urinários",
+    "patientProfile": {
+      "name": "Diego Souza",
+      "age_value": 31,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Cozinheiro",
+      "chief_complaint": "A urina ficou marrom e estou muito fraco desde ontem.",
+      "present_illness_history": "Após uma refeição com favas há dois dias, começou a sentir fraqueza e notou urina marrom. A companheira percebeu os olhos amarelados. Não há dor ao urinar, coágulos, dor muscular intensa ou exercício extenuante. Teve episódio parecido na infância, sem diagnóstico que recorde.",
+      "past_medical_history": "Não conheço doença crônica; lembro de uma internação na infância por palidez.",
+      "personal_history": "Não fumo; não uso drogas ou suplementos.",
+      "family_history": "Um tio materno já teve problema de sangue depois de um remédio, mas não sei qual.",
+      "other_medical_history": "Não comecei medicamento recentemente.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Mora com a companheira, que pode acompanhar a avaliação.",
+      "concern": "Tenho medo de estar perdendo sangue pela urina.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "A urina ficou marrom e estou muito fraco desde ontem.",
+        "Características dos sintomas": "Após uma refeição com favas há dois dias, começou a sentir fraqueza e notou urina marrom. A companheira percebeu os olhos amarelados. Não há dor ao urinar, coágulos, dor muscular intensa ou exercício extenuante. Teve episódio parecido na infância, sem diagnóstico que recorde.",
+        "Doenças crônicas": "Não conheço doença crônica; lembro de uma internação na infância por palidez.",
+        "Hábitos de vida": "Não fumo; não uso drogas ou suplementos.",
+        "História familiar": "Um tio materno já teve problema de sangue depois de um remédio, mas não sei qual.",
+        "Medicamentos em uso": "Não comecei medicamento recentemente.",
+        "Preocupações do paciente": "Tenho medo de estar perdendo sangue pela urina.",
+        "Início dos sintomas": "Começou ontem, após comer favas no dia anterior.",
+        "Sintomas associados": "Fraqueza e olhos amarelados; não há dor muscular ou coágulos.",
+        "Transfusões": "Não me lembro se recebi sangue na internação da infância."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Pele, mucosas e abdome"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Urina tipo I",
+      "Hemograma, reticulócitos e hemólise"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Creatinina e creatinoquinase"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 110/70 mmHg; FC 108 bpm; temperatura 36,8 °C; SpO₂ 98%.",
+      "Pele, mucosas e abdome": "Palidez e icterícia discretas; sem dor lombar ou massa abdominal."
+    },
+    "auxiliaryLabs": {
+      "Urina tipo I": "Reação para sangue 3+; hemácias 0–1 por campo; bilirrubina negativa.",
+      "Hemograma, reticulócitos e hemólise": "Hemoglobina 8,7 g/dL; reticulócitos 8%; LDH 980 U/L (referência até 250); haptoglobina baixa; bilirrubina indireta 3,2 mg/dL.",
+      "Creatinina e creatinoquinase": "Creatinina 1,0 mg/dL; CK 110 U/L (referência 40–200)."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Hemólise intravascular aguda com hemoglobinúria"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Hematúria"
+        },
+        {
+          "disease": "Mioglobinúria"
+        },
+        {
+          "disease": "Bilirrubinúria"
+        }
+      ]
+    },
+    "treatments": "Avaliação urgente, interrupção de possível desencadeante, hidratação e monitorização conforme estado clínico e função renal. Avaliar necessidade de transfusão individualmente e investigar deficiência enzimática depois da crise. URGENTE: reconhecer anemia sintomática e risco renal; não tratar como infecção urinária só pela cor da urina.",
+    "referenceReasoning": "Fita positiva para sangue com poucas hemácias, anemia e marcadores de hemólise sustentam hemoglobinúria. CK normal e ausência de lesão muscular tornam mioglobina menos provável; bilirrubina indireta não explica bilirrubinúria.\nJustificativa dos exames: Confrontar fita com microscopia: a fita sozinha não distingue hemoglobina de hemácias ou mioglobina. Hemograma e marcadores de hemólise confirmam o mecanismo; CK e bilirrubina ajudam no diferencial. Não exigir confirmação enzimática durante a crise.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer hemoglobinúria quando há pigmento heme urinário com poucas hemácias e evidência de hemólise."
+    ],
+    "references": [
+      {
+        "title": "NHLBI — Hemolytic anemia",
+        "url": "https://www.nhlbi.nih.gov/health/anemia/hemolytic-anemia"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Pesquisar alimentos, medicamentos, infecção, esforço, dor muscular e episódios familiares.",
+          "Avaliar dispneia, síncope, dor torácica e redução da urina."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Pele, mucosas e abdome.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Confrontar fita com microscopia: a fita sozinha não distingue hemoglobina de hemácias ou mioglobina.",
+          "Hemograma e marcadores de hemólise confirmam o mecanismo; CK e bilirrubina ajudam no diferencial. Não exigir confirmação enzimática durante a crise."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Fita positiva para sangue com poucas hemácias, anemia e marcadores de hemólise sustentam hemoglobinúria. CK normal e ausência de lesão muscular tornam mioglobina menos provável; bilirrubina indireta não explica bilirrubinúria.",
+          "Distinguir as alternativas Hematúria, Mioglobinúria, Bilirrubinúria, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Avaliação urgente, interrupção de possível desencadeante, hidratação e monitorização conforme estado clínico e função renal. Avaliar necessidade de transfusão individualmente e investigar deficiência enzimática depois da crise.",
+          "URGENTE: reconhecer anemia sintomática e risco renal; não tratar como infecção urinária só pela cor da urina."
+        ],
+        "criticalActions": [
+          "URGENTE: reconhecer anemia sintomática e risco renal; não tratar como infecção urinária só pela cor da urina."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  }
+]

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block body_class %}app-page{% endblock %}
+{% block navigation %}
+<aside class="sidebar" id="sidebar">
+  {{ brand(url_for('web.dashboard'), 'meu painel') }}
+  <div class="workspace-label">SEU ESPAÇO DE PRÁTICA</div>
+  {% set basic_navigation = selected_track|default('') == 'basic' or (training is defined and training.learning_track|default('') == 'basic') %}
+  <nav class="side-nav" aria-label="Navegação principal">
+    <a href="{{ url_for('web.dashboard') }}" class="{{ 'active' if request.endpoint == 'web.dashboard' else '' }}" {% if request.endpoint == 'web.dashboard' %}aria-current="page"{% endif %}>{{ icon('grid',20) }}<span>Visão geral</span></a>
+    <a href="{{ url_for('web.cases') }}" class="{{ 'active' if request.endpoint in ['web.cases','web.consultation','web.result'] and not basic_navigation else '' }}" {% if request.endpoint == 'web.cases' and not basic_navigation %}aria-current="page"{% endif %}>{{ icon('case',20) }}<span>Casos clínicos</span></a>
+    <a href="{{ url_for('web.cases', track='basic') }}" class="{{ 'active' if basic_navigation else '' }}" {% if request.endpoint == 'web.cases' and basic_navigation %}aria-current="page"{% endif %}>{{ icon('book',20) }}<span>Casos Básicos</span></a>
+    <a href="{{ url_for('web.history') }}" class="{{ 'active' if request.endpoint == 'web.history' else '' }}" {% if request.endpoint == 'web.history' %}aria-current="page"{% endif %}>{{ icon('history',20) }}<span>Minha trajetória</span></a>
+  </nav>
+  <div class="sidebar-note"><span class="note-drawing">{{ icon('spark',30) }}</span><h3>A prática faz<br>a diferença.</h3><p>Uma nova conversa.<br>Uma nova oportunidade<br>de aprender.</p><div class="note-line"></div><span>CONTINUE CURIOSO.</span></div>
+  <div class="sidebar-bottom"><div class="user-chip"><span class="user-avatar">{{ current_user.name[:1]|upper if current_user.name else 'M' }}</span><div><strong>{{ current_user.name }}</strong><span>Meu espaço de aprendizado</span></div></div><form method="post" action="{{ url_for('web.logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="logout-button" type="submit">{{ icon('logout',17) }} Sair da conta</button></form></div>
+</aside>
+<div class="app-shell">
+  <header class="app-topbar"><div class="topbar-left"><button class="mobile-menu icon-button" type="button" data-sidebar-toggle aria-controls="sidebar" aria-expanded="false" aria-label="Abrir menu">{{ icon('menu',22) }}</button><span>APRENDER É UMA PRÁTICA CONTÍNUA.</span></div><div class="topbar-status"><span class="live-dot"></span> Ambiente de simulação <span class="small-avatar">{{ current_user.name[:1]|upper if current_user.name else 'M' }}</span></div></header>
+{% endblock %}
+{% block content %}<main id="main" class="app-main">{% include 'personal_rankings.html' %}{% block app_content %}{% endblock %}</main>{% endblock %}
+{% block footer %}<footer class="app-footer"><span>BayesCore MedRounds <span class="footer-divider">/</span> Conhecimento em cuidado.</span><span>Uso exclusivamente educacional. <a href="/privacidade">Privacidade</a></span></footer></div><button type="button" class="sidebar-scrim" data-sidebar-toggle aria-label="Fechar menu"></button>{% endblock %}

@@ -1,0 +1,1101 @@
+[
+  {
+    "caseId": "basic-nervous-fraqueza-subita",
+    "caseTitle": "Perda súbita de força de um lado",
+    "specialty": "Neurologia",
+    "difficulty": "Intermediário",
+    "summary": "Meu marido parou de mexer o lado direito e a fala ficou diferente.",
+    "publicPresentation": "Meu marido parou de mexer o lado direito e a fala ficou diferente.",
+    "learningTrack": "basic",
+    "bodySystem": "nervous",
+    "catalogType": "fictional",
+    "caseType": "Cefaleia e sintomas neurológicos",
+    "patientProfile": {
+      "name": "Augusto Vieira",
+      "age_value": 67,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Aposentado",
+      "chief_complaint": "Meu marido parou de mexer o lado direito e a fala ficou diferente.",
+      "present_illness_history": "A esposa relata que ele estava habitual às 8h10 e, às 8h20, deixou a xícara cair, não conseguiu levantar o braço ou a perna direitos e passou a falar com dificuldade. Chegou ao atendimento às 9h00. Não houve queda, convulsão ou perda de consciência percebida. Ele compreende frases simples, mas tem dificuldade de responder.",
+      "past_medical_history": "A esposa informa hipertensão e fibrilação atrial; sem sangramento recente ou cirurgia nas últimas semanas.",
+      "personal_history": "Ex-fumante; caminha pouco. Era independente nas atividades.",
+      "family_history": "O pai teve derrame já idoso.",
+      "other_medical_history": "Usa losartana; interrompeu anticoagulante há dois meses por conta própria, segundo a esposa.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "A esposa presenciou o início e trouxe documentos; não há cuidador profissional.",
+      "concern": "A esposa está preocupada com a recuperação da fala e dos movimentos.",
+      "expectation": "A família espera atendimento rápido, explicação acessível e orientação sobre os próximos passos.",
+      "symptom_details": {
+        "Queixa principal": "Meu marido parou de mexer o lado direito e a fala ficou diferente.",
+        "Características dos sintomas": "A esposa relata que ele estava habitual às 8h10 e, às 8h20, deixou a xícara cair, não conseguiu levantar o braço ou a perna direitos e passou a falar com dificuldade. Chegou ao atendimento às 9h00. Não houve queda, convulsão ou perda de consciência percebida. Ele compreende frases simples, mas tem dificuldade de responder.",
+        "Doenças crônicas": "A esposa informa hipertensão e fibrilação atrial; sem sangramento recente ou cirurgia nas últimas semanas.",
+        "Hábitos de vida": "Ex-fumante; caminha pouco. Era independente nas atividades.",
+        "História familiar": "O pai teve derrame já idoso.",
+        "Medicamentos em uso": "Usa losartana; interrompeu anticoagulante há dois meses por conta própria, segundo a esposa.",
+        "Preocupações do paciente": "A esposa está preocupada com a recuperação da fala e dos movimentos.",
+        "Início dos sintomas": "Último momento habitual às 8h10; déficit observado às 8h20.",
+        "Sintomas associados": "Dificuldade de falar e de mover lado direito; sem convulsão presenciada.",
+        "Estado geral": "A esposa informa que ele estava independente até esta manhã."
+      },
+      "respondent": "Esposa, testemunha do início; paciente com dificuldade de expressão."
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame neurológico focal"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Glicemia capilar",
+      "Tomografia de crânio sem contraste"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Angiotomografia de cabeça e pescoço",
+      "Hemograma e coagulação"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 168/94 mmHg; FC 94 bpm irregular; temperatura 36,6 °C; SpO₂ 97%.",
+      "Exame neurológico focal": "Afasia expressiva, assimetria facial direita e força 0/5 em braço e perna direitos; lado esquerdo com força preservada; pupilas isocóricas e reativas."
+    },
+    "auxiliaryLabs": {
+      "Glicemia capilar": "108 mg/dL.",
+      "Tomografia de crânio sem contraste": "Sem hemorragia intracraniana; sinais precoces discretos no território da artéria cerebral média esquerda.",
+      "Angiotomografia de cabeça e pescoço": "Oclusão proximal da artéria cerebral média esquerda.",
+      "Hemograma e coagulação": "Plaquetas 230.000/mm³; INR 1,0; hemoglobina 13,8 g/dL."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Acidente vascular cerebral isquêmico agudo"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Hemorragia intracraniana"
+        },
+        {
+          "disease": "Hipoglicemia"
+        },
+        {
+          "disease": "Paralisia pós-crise epiléptica"
+        }
+      ]
+    },
+    "treatments": "Acionar imediatamente equipe de AVC, monitorar e avaliar elegibilidade para reperfusão conforme imagem, tempo e contraindicações. Manter segurança de via aérea e deglutição; depois investigar mecanismo e prevenção secundária. URGENTE: não aguardar melhora espontânea nem oferecer alimento antes de avaliar deglutição; não iniciar tratamento antitrombótico sem excluir hemorragia.",
+    "referenceReasoning": "Déficit focal súbito com hemiplegia direita e alteração da linguagem exige protocolo de AVC. A imagem exclui hemorragia e avalia oclusão; reconhecer urgência e tempo de início vale antes de nomear a artéria.\nJustificativa dos exames: Glicemia exclui causa reversível; TC sem contraste pesquisa hemorragia antes da decisão de reperfusão. Angiografia, aqui por angiotomografia, identifica oclusão e orienta possibilidade de trombectomia; não atrasar abordagem inicial por exames não essenciais.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer hemiplegia como perda de movimento em um lado, diferenciando-a de fraqueza parcial e registrando lateralidade.",
+      "Explicar angiografia como visualização vascular, incluindo modalidades por TC/RM ou cateter conforme indicação."
+    ],
+    "references": [
+      {
+        "title": "NICE NG128 — Stroke and transient ischaemic attack",
+        "url": "https://www.nice.org.uk/guidance/ng128/chapter/recommendations"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Estabelecer último momento sem sintomas e testemunha, funcionalidade prévia e evolução.",
+          "Perguntar anticoagulantes, sangramento, cirurgia recente, convulsão e causas alternativas sem atrasar o protocolo."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar sinais vitais e exame neurológico focal, registrando lateralidade, linguagem e nível de consciência.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Glicemia exclui causa reversível; TC sem contraste pesquisa hemorragia antes da decisão de reperfusão.",
+          "Angiografia, aqui por angiotomografia, identifica oclusão e orienta possibilidade de trombectomia; não atrasar abordagem inicial por exames não essenciais."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Déficit focal súbito com hemiplegia direita e alteração da linguagem exige protocolo de AVC. A imagem exclui hemorragia e avalia oclusão; reconhecer urgência e tempo de início vale antes de nomear a artéria.",
+          "Distinguir as alternativas Hemorragia intracraniana, Hipoglicemia, Paralisia pós-crise epiléptica, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Acionar imediatamente equipe de AVC, monitorar e avaliar elegibilidade para reperfusão conforme imagem, tempo e contraindicações. Manter segurança de via aérea e deglutição; depois investigar mecanismo e prevenção secundária.",
+          "URGENTE: não aguardar melhora espontânea nem oferecer alimento antes de avaliar deglutição; não iniciar tratamento antitrombótico sem excluir hemorragia."
+        ],
+        "criticalActions": [
+          "URGENTE: não aguardar melhora espontânea nem oferecer alimento antes de avaliar deglutição; não iniciar tratamento antitrombótico sem excluir hemorragia."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-nervous-pernas-bexiga",
+    "caseTitle": "Dor nas costas, pernas fracas e dificuldade urinária",
+    "specialty": "Neurocirurgia",
+    "difficulty": "Intermediário",
+    "summary": "Minhas pernas ficaram fracas e não consigo fazer xixi.",
+    "publicPresentation": "Minhas pernas ficaram fracas e não consigo fazer xixi.",
+    "learningTrack": "basic",
+    "bodySystem": "nervous",
+    "catalogType": "fictional",
+    "caseType": "Cefaleia e sintomas neurológicos",
+    "patientProfile": {
+      "name": "Henrique Moraes",
+      "age_value": 46,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Carregador",
+      "chief_complaint": "Minhas pernas ficaram fracas e não consigo fazer xixi.",
+      "present_illness_history": "Há três dias começou dor na parte baixa das costas após carregar caixas. Nas últimas oito horas perdeu força nas duas pernas, agora não consegue movimentá-las, e deixou de sentir bem a região entre as pernas. Não urina há seis horas, apesar de vontade. Não teve febre ou trauma com queda.",
+      "past_medical_history": "Já tive dor nas costas, mas nunca perdi força ou controle urinário.",
+      "personal_history": "Trabalho levantando peso; não uso drogas injetáveis ou suplementos.",
+      "family_history": "Sem doença neurológica familiar conhecida.",
+      "other_medical_history": "Tomou analgésico comum, sem melhora; não usa anticoagulante.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Chegou acompanhado do irmão, que o ajudou a sair de casa.",
+      "concern": "Tenho medo de não voltar a andar.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Minhas pernas ficaram fracas e não consigo fazer xixi.",
+        "Características dos sintomas": "Há três dias começou dor na parte baixa das costas após carregar caixas. Nas últimas oito horas perdeu força nas duas pernas, agora não consegue movimentá-las, e deixou de sentir bem a região entre as pernas. Não urina há seis horas, apesar de vontade. Não teve febre ou trauma com queda.",
+        "Doenças crônicas": "Já tive dor nas costas, mas nunca perdi força ou controle urinário.",
+        "Hábitos de vida": "Trabalho levantando peso; não uso drogas injetáveis ou suplementos.",
+        "História familiar": "Sem doença neurológica familiar conhecida.",
+        "Medicamentos em uso": "Tomou analgésico comum, sem melhora; não usa anticoagulante.",
+        "Preocupações do paciente": "Tenho medo de não voltar a andar.",
+        "Início dos sintomas": "Dor há três dias; perda importante de força há oito horas.",
+        "Localização dos sintomas": "Parte baixa das costas, duas pernas e região entre as pernas.",
+        "Hábitos intestinais e urinários": "Vontade de urinar sem conseguir há seis horas; perda de sensibilidade na região íntima."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame neurológico dos membros inferiores",
+      "Avaliação perineal consentida"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Ressonância lombossacra urgente"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Ultrassom vesical",
+      "Hemograma e função renal"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 132/80 mmHg; FC 96 bpm; temperatura 36,5 °C.",
+      "Exame neurológico dos membros inferiores": "Força 0/5 bilateralmente, arreflexia aquileia e redução da sensibilidade; membros superiores sem déficit.",
+      "Avaliação perineal consentida": "Ausência de percepção tátil na distribuição em sela; tônus anal reduzido, avaliado por profissional treinado."
+    },
+    "auxiliaryLabs": {
+      "Ultrassom vesical": "Bexiga com 650 mL, sem micção espontânea.",
+      "Ressonância lombossacra urgente": "Grande extrusão discal central em L4–L5, com compressão acentuada das raízes da cauda equina.",
+      "Hemograma e função renal": "Leucócitos 7.500/mm³; creatinina 1,0 mg/dL."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Síndrome da cauda equina por compressão discal"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Compressão medular"
+        },
+        {
+          "disease": "Polirradiculoneuropatia aguda"
+        },
+        {
+          "disease": "Lesão vascular espinal"
+        }
+      ]
+    },
+    "treatments": "Encaminhar imediatamente à equipe de coluna/neurocirurgia, manter cuidados de mobilização e bexiga e avaliar descompressão. Explicar urgência e incerteza de recuperação sem prometer resultado. URGENTE: não orientar apenas repouso ou fisioterapia diante de perda de força, anestesia em sela e retenção.",
+    "referenceReasoning": "Paraplegia aguda, anestesia em sela e retenção urinária são sinais de compressão neurológica urgente. A ressonância define anatomia; síndrome deve ser reconhecida antes da causa exata. Mielografia é alternativa especializada em situações selecionadas quando RM não é viável, não rotina inicial.\nJustificativa dos exames: Ressonância urgente confirma compressão; ultrassom vesical documenta retenção sem excluir síndrome quando normal. Não substituir avaliação urgente por radiografia simples; mielografia/TC-mielografia depende de decisão especializada e contraindicações.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer anestesia como ausência de sensibilidade, aqui em sela, distinguindo-a de anestesia farmacológica.",
+      "Reconhecer paraplegia como perda de movimento em ambos os membros inferiores e investigar localização e urgência.",
+      "Explicar mielografia como estudo com contraste do espaço ao redor das estruturas neurais, reservado a indicações específicas; não confundir com mielograma de medula óssea."
+    ],
+    "references": [
+      {
+        "title": "North Bristol NHS — Cauda equina syndrome",
+        "url": "https://www.nbt.nhs.uk/our-services/a-z-services/neurosurgery/neurosurgery-patient-information/same-day-emergency-clinic-sdec-cauda-equina-syndrome-sec"
+      },
+      {
+        "title": "RadiologyInfo — Myelography (ACR/RSNA)",
+        "url": "https://www.radiologyinfo.org/en/info/myelography"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Estabelecer progressão da fraqueza e pesquisar sensibilidade perineal e função urinária/intestinal.",
+          "Perguntar trauma, febre, neoplasia, anticoagulação e procedimentos recentes."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Exame neurológico dos membros inferiores, Avaliação perineal consentida.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Ressonância urgente confirma compressão; ultrassom vesical documenta retenção sem excluir síndrome quando normal.",
+          "Não substituir avaliação urgente por radiografia simples; mielografia/TC-mielografia depende de decisão especializada e contraindicações."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Paraplegia aguda, anestesia em sela e retenção urinária são sinais de compressão neurológica urgente. A ressonância define anatomia; síndrome deve ser reconhecida antes da causa exata. Mielografia é alternativa especializada em situações selecionadas quando RM não é viável, não rotina inicial.",
+          "Distinguir as alternativas Compressão medular, Polirradiculoneuropatia aguda, Lesão vascular espinal, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhar imediatamente à equipe de coluna/neurocirurgia, manter cuidados de mobilização e bexiga e avaliar descompressão. Explicar urgência e incerteza de recuperação sem prometer resultado.",
+          "URGENTE: não orientar apenas repouso ou fisioterapia diante de perda de força, anestesia em sela e retenção."
+        ],
+        "criticalActions": [
+          "URGENTE: não orientar apenas repouso ou fisioterapia diante de perda de força, anestesia em sela e retenção."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-nervous-queimacao-pes",
+    "caseTitle": "Queimação e dormência nos pés",
+    "specialty": "Neurologia",
+    "difficulty": "Iniciante",
+    "summary": "Meus pés queimam à noite e ao mesmo tempo parecem dormentes.",
+    "publicPresentation": "Meus pés queimam à noite e ao mesmo tempo parecem dormentes.",
+    "learningTrack": "basic",
+    "bodySystem": "nervous",
+    "catalogType": "fictional",
+    "caseType": "Cefaleia e sintomas neurológicos",
+    "patientProfile": {
+      "name": "Neusa Campos",
+      "age_value": 62,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Comerciante aposentada",
+      "chief_complaint": "Meus pés queimam à noite e ao mesmo tempo parecem dormentes.",
+      "present_illness_history": "Há seis meses sente queimação nas pontas dos dois pés, pior à noite, e às vezes não percebe pequenas pedras no sapato. Um toque leve incomoda muito em algumas áreas. Notou os músculos dos pés mais finos ao longo do último ano. Não houve perda súbita de força, dor nas costas ou alteração urinária.",
+      "past_medical_history": "Tenho diabetes há doze anos e dificuldade de manter o acompanhamento.",
+      "personal_history": "Costumo andar descalça em casa; não fumo e não consumo álcool.",
+      "family_history": "Minha mãe também tinha diabetes.",
+      "other_medical_history": "Uso metformina; esqueço doses algumas vezes por semana.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Mora com a irmã e pode receber ajuda para inspecionar os pés.",
+      "concern": "Tenho medo de machucar o pé sem perceber.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Meus pés queimam à noite e ao mesmo tempo parecem dormentes.",
+        "Características dos sintomas": "Queima, formiga e partes parecem adormecidas; um toque pode incomodar bastante.",
+        "Doenças crônicas": "Tenho diabetes há doze anos e dificuldade de manter o acompanhamento.",
+        "Hábitos de vida": "Costumo andar descalça em casa; não fumo e não consumo álcool.",
+        "História familiar": "Minha mãe também tinha diabetes.",
+        "Medicamentos em uso": "Uso metformina; esqueço doses algumas vezes por semana.",
+        "Preocupações do paciente": "Tenho medo de machucar o pé sem perceber.",
+        "Início dos sintomas": "A queimação começou há seis meses e foi avançando devagar.",
+        "Localização dos sintomas": "Nos dois pés, começando pelos dedos."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame neurológico periférico",
+      "Inspeção dos pés e pulsos"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Hemoglobina glicada"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Vitamina B12 e função renal",
+      "Eletroneuromiografia"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 128/78 mmHg; FC 76 bpm; temperatura 36,4 °C.",
+      "Exame neurológico periférico": "Hipoestesia tátil e vibratória distal em padrão de meias; em áreas dolorosas há resposta sensorial exagerada a estímulo leve; reflexos aquileus reduzidos. Discreta hipotrofia dos músculos intrínsecos dos pés.",
+      "Inspeção dos pés e pulsos": "Pele seca, sem úlcera; pulsos pediosos palpáveis e simétricos."
+    },
+    "auxiliaryLabs": {
+      "Hemoglobina glicada": "8,8%.",
+      "Vitamina B12 e função renal": "Vitamina B12 440 pg/mL; creatinina 0,9 mg/dL.",
+      "Eletroneuromiografia": "Opcional se dúvida, evolução atípica ou déficit motor: padrão de polineuropatia distal sensitivo-motora axonal."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Polineuropatia periférica distal associada ao diabetes"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Deficiência de vitamina B12"
+        },
+        {
+          "disease": "Radiculopatia lombar"
+        },
+        {
+          "disease": "Neuropatia por álcool"
+        }
+      ]
+    },
+    "treatments": "Otimizar controle metabólico com seguimento, cuidados e inspeção diária dos pés, calçados adequados e tratamento individualizado da dor neuropática. Rever vitamina B12 e outras causas conforme risco. Atendimento rápido se úlcera, infecção, pé quente/inchado ou déficit motor agudo; evitar calor intenso sobre áreas insensíveis.",
+    "referenceReasoning": "Evolução distal, bilateral e progressiva com diabetes favorece polineuropatia. Redução de sensibilidade pode coexistir com respostas dolorosas exageradas; não são mutuamente excludentes. Hipotrofia descreve redução de volume muscular, não mede força sozinha.\nJustificativa dos exames: Avaliação clínica de sensibilidade, reflexos, pele e circulação é central; glicemia e causas reversíveis orientam manejo. Eletroneuromiografia é seletiva, não obrigação em todo quadro distal típico.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Distinguir hiperestesia, sensibilidade aumentada, de hipoestesia; dor a toque normalmente indolor é descrita mais especificamente como alodinia.",
+      "Reconhecer hipoestesia como redução da sensibilidade e mapear sua distribuição.",
+      "Descrever hipotrofia como diminuição do volume muscular, diferenciando-a de medida de força."
+    ],
+    "references": [
+      {
+        "title": "NINDS — Peripheral neuropathy",
+        "url": "https://www.ninds.nih.gov/health-information/disorders/peripheral-neuropathy"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar distribuição, progressão, dor, quedas, lesões e controle metabólico.",
+          "Perguntar álcool, medicamentos, dieta e sintomas assimétricos ou rapidamente progressivos."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Exame neurológico periférico, Inspeção dos pés e pulsos.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Avaliação clínica de sensibilidade, reflexos, pele e circulação é central; glicemia e causas reversíveis orientam manejo.",
+          "Eletroneuromiografia é seletiva, não obrigação em todo quadro distal típico."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Evolução distal, bilateral e progressiva com diabetes favorece polineuropatia. Redução de sensibilidade pode coexistir com respostas dolorosas exageradas; não são mutuamente excludentes. Hipotrofia descreve redução de volume muscular, não mede força sozinha.",
+          "Distinguir as alternativas Deficiência de vitamina B12, Radiculopatia lombar, Neuropatia por álcool, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Otimizar controle metabólico com seguimento, cuidados e inspeção diária dos pés, calçados adequados e tratamento individualizado da dor neuropática. Rever vitamina B12 e outras causas conforme risco.",
+          "Atendimento rápido se úlcera, infecção, pé quente/inchado ou déficit motor agudo; evitar calor intenso sobre áreas insensíveis."
+        ],
+        "criticalActions": []
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-nervous-febre-cefaleia",
+    "caseTitle": "Febre, dor de cabeça e rigidez no pescoço",
+    "specialty": "Infectologia",
+    "difficulty": "Intermediário",
+    "summary": "Minha cabeça dói muito, estou com febre e o pescoço está duro.",
+    "publicPresentation": "Minha cabeça dói muito, estou com febre e o pescoço está duro.",
+    "learningTrack": "basic",
+    "bodySystem": "nervous",
+    "catalogType": "fictional",
+    "caseType": "Cefaleia e sintomas neurológicos",
+    "patientProfile": {
+      "name": "Daniel Lopes",
+      "age_value": 22,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Estudante",
+      "chief_complaint": "Minha cabeça dói muito, estou com febre e o pescoço está duro.",
+      "present_illness_history": "Há um dia começou febre e dor de cabeça intensa, com incômodo à luz e dois vômitos. Dói tentar baixar a cabeça. Não houve trauma, convulsão ou perda de força. Está acordado, mas sente muito mal-estar. Mora em alojamento estudantil.",
+      "past_medical_history": "Não tenho doença crônica, imunossupressão ou cirurgia no crânio.",
+      "personal_history": "Não fumo; convivo em alojamento com várias pessoas.",
+      "family_history": "Sem doença neurológica conhecida.",
+      "other_medical_history": "Tomou antitérmico; ainda não recebeu antibiótico.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Colega o acompanhou e pode fornecer contato dos responsáveis.",
+      "concern": "Quero aliviar a dor e saber por que a luz incomoda.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Minha cabeça dói muito, estou com febre e o pescoço está duro.",
+        "Características dos sintomas": "Há um dia começou febre e dor de cabeça intensa, com incômodo à luz e dois vômitos. Dói tentar baixar a cabeça. Não houve trauma, convulsão ou perda de força. Está acordado, mas sente muito mal-estar. Mora em alojamento estudantil.",
+        "Doenças crônicas": "Não tenho doença crônica, imunossupressão ou cirurgia no crânio.",
+        "Hábitos de vida": "Não fumo; convivo em alojamento com várias pessoas.",
+        "História familiar": "Sem doença neurológica conhecida.",
+        "Medicamentos em uso": "Tomou antitérmico; ainda não recebeu antibiótico.",
+        "Preocupações do paciente": "Quero aliviar a dor e saber por que a luz incomoda.",
+        "Início dos sintomas": "Febre e dor intensa começaram ontem.",
+        "Sintomas associados": "Luz incomoda e vomitei duas vezes; não tive convulsão.",
+        "Vacinação": "Não trouxe a caderneta e não sabe informar reforços recentes."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Estado neurológico e meningismo",
+      "Pele e perfusão"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Hemoculturas e glicemia simultânea",
+      "Líquor: contagem celular e diferencial",
+      "Líquor: proteínas e glicose"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Líquor: Gram, cultura e PCR"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "Temperatura 39,0 °C; PA 110/70 mmHg; FC 112 bpm; FR 22 irpm.",
+      "Estado neurológico e meningismo": "Glasgow 15; rigidez de nuca; sem déficit focal, papiledema identificado ou convulsão.",
+      "Pele e perfusão": "Sem exantema purpúrico; perfusão preservada."
+    },
+    "auxiliaryLabs": {
+      "Hemoculturas e glicemia simultânea": "Amostras colhidas sem atrasar tratamento; glicemia 100 mg/dL.",
+      "Líquor: contagem celular e diferencial": "Após avaliação de segurança da punção: 1.800 leucócitos/mm³, 90% neutrófilos; 8 hemácias/mm³.",
+      "Líquor: proteínas e glicose": "Proteínas 180 mg/dL; glicose 28 mg/dL, relação líquor/sangue 0,28.",
+      "Líquor: Gram, cultura e PCR": "Cultura e PCR posteriores identificam Neisseria meningitidis. O tratamento não deve aguardar esses resultados."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Meningite bacteriana aguda"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Meningite viral"
+        },
+        {
+          "disease": "Encefalite"
+        },
+        {
+          "disease": "Hemorragia subaracnoidea"
+        }
+      ]
+    },
+    "treatments": "Atendimento hospitalar imediato, antimicrobiano e medidas adjuvantes conforme protocolo, isolamento indicado e comunicação à vigilância. Avaliar profilaxia de contatos conforme agente e exposição. URGENTE: reconhecer possível infecção do sistema nervoso central e iniciar manejo sem esperar resultado confirmatório.",
+    "referenceReasoning": "Febre, cefaleia e meningismo exigem suspeita imediata; pleocitose neutrofílica, proteína elevada e glicose relativa baixa reforçam causa bacteriana. Ausência de exantema não exclui. Avaliar segurança da punção e tratar sem atraso evitável.\nJustificativa dos exames: Contagem celular quantifica e o diferencial descreve as células; proteinorraquia e glicorraquia são interpretadas com glicemia simultânea. Punção depende de segurança; TC antes dela é seletiva conforme sinais de risco. Não atrasar antibiótico para imagem, cultura ou confirmação etiológica.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer síndrome meníngea e investigar etiologia sem exigir todos os sinais clássicos.",
+      "Interpretar proteinorraquia como concentração de proteínas no líquor, considerando contexto e referência.",
+      "Interpretar glicorraquia junto à glicemia, sem usar um valor isolado para excluir meningite.",
+      "Distinguir contagem quantitativa de células do líquor de citometria de fluxo especializada, que não é rotina desta infecção.",
+      "Relacionar citologia à descrição morfológica/diferencial das células; não confundir com contagem total ou presumir pesquisa oncológica em todo líquor."
+    ],
+    "references": [
+      {
+        "title": "NICE NG240 — Bacterial meningitis: recommendations",
+        "url": "https://www.nice.org.uk/guidance/ng240/chapter/Recommendations"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Caracterizar início, febre, vômitos, fotofobia, consciência, convulsão e déficit focal.",
+          "Investigar vacinação, contatos, imunossupressão e antibióticos prévios."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Estado neurológico e meningismo, Pele e perfusão.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Contagem celular quantifica e o diferencial descreve as células; proteinorraquia e glicorraquia são interpretadas com glicemia simultânea.",
+          "Punção depende de segurança; TC antes dela é seletiva conforme sinais de risco. Não atrasar antibiótico para imagem, cultura ou confirmação etiológica."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Febre, cefaleia e meningismo exigem suspeita imediata; pleocitose neutrofílica, proteína elevada e glicose relativa baixa reforçam causa bacteriana. Ausência de exantema não exclui. Avaliar segurança da punção e tratar sem atraso evitável.",
+          "Distinguir as alternativas Meningite viral, Encefalite, Hemorragia subaracnoidea, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Atendimento hospitalar imediato, antimicrobiano e medidas adjuvantes conforme protocolo, isolamento indicado e comunicação à vigilância. Avaliar profilaxia de contatos conforme agente e exposição.",
+          "URGENTE: reconhecer possível infecção do sistema nervoso central e iniciar manejo sem esperar resultado confirmatório."
+        ],
+        "criticalActions": [
+          "URGENTE: reconhecer possível infecção do sistema nervoso central e iniciar manejo sem esperar resultado confirmatório."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-nervous-febre-confusao",
+    "caseTitle": "Febre e mudança de comportamento",
+    "specialty": "Neurologia",
+    "difficulty": "Intermediário",
+    "summary": "Minha esposa está com febre e começou a falar coisas sem sentido.",
+    "publicPresentation": "Minha esposa está com febre e começou a falar coisas sem sentido.",
+    "learningTrack": "basic",
+    "bodySystem": "nervous",
+    "catalogType": "fictional",
+    "caseType": "Cefaleia e sintomas neurológicos",
+    "patientProfile": {
+      "name": "Vera Monteiro",
+      "age_value": 53,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Técnica administrativa",
+      "chief_complaint": "Minha esposa está com febre e começou a falar coisas sem sentido.",
+      "present_illness_history": "O marido informa febre e dor de cabeça há três dias. Hoje ela se perdeu dentro de casa, trocou palavras e teve um episódio de abalos na mão direita por cerca de um minuto. Nunca apresentou isso antes. Não houve trauma nem uso de drogas; a paciente não consegue dar história confiável neste momento.",
+      "past_medical_history": "O marido nega doença neurológica prévia e imunossupressão conhecida.",
+      "personal_history": "Não fuma; consumo ocasional e pequeno de álcool.",
+      "family_history": "Não há epilepsia conhecida na família.",
+      "other_medical_history": "Usa apenas anti-hipertensivo habitual; não começou outro remédio.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Marido presente e capaz de informar a evolução.",
+      "concern": "O marido teme que ela não o reconheça e tenha nova crise.",
+      "expectation": "A família espera atendimento rápido, explicação acessível e orientação sobre os próximos passos.",
+      "symptom_details": {
+        "Queixa principal": "Minha esposa está com febre e começou a falar coisas sem sentido.",
+        "Características dos sintomas": "O marido informa febre e dor de cabeça há três dias. Hoje ela se perdeu dentro de casa, trocou palavras e teve um episódio de abalos na mão direita por cerca de um minuto. Nunca apresentou isso antes. Não houve trauma nem uso de drogas; a paciente não consegue dar história confiável neste momento.",
+        "Doenças crônicas": "O marido nega doença neurológica prévia e imunossupressão conhecida.",
+        "Hábitos de vida": "Não fuma; consumo ocasional e pequeno de álcool.",
+        "História familiar": "Não há epilepsia conhecida na família.",
+        "Medicamentos em uso": "Usa apenas anti-hipertensivo habitual; não começou outro remédio.",
+        "Preocupações do paciente": "O marido teme que ela não o reconheça e tenha nova crise.",
+        "Início dos sintomas": "Febre há três dias; confusão e alteração da fala hoje.",
+        "Sintomas associados": "Episódio de abalos na mão direita, testemunhado pelo marido.",
+        "Estado geral": "Não consegue sustentar uma história confiável; usar informações do acompanhante."
+      },
+      "respondent": "Marido; paciente confusa, sem inventar respostas autobiográficas confiáveis."
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame neurológico"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Glicemia e eletrólitos",
+      "Líquor com PCR viral"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Ressonância de encéfalo",
+      "Eletroencefalograma"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "Temperatura 38,6 °C; PA 126/78 mmHg; FC 104 bpm; SpO₂ 97%.",
+      "Exame neurológico": "Desorientada no tempo e local, dificuldade de nomeação; discreta rigidez de nuca; sem paralisia sustentada após o episódio."
+    },
+    "auxiliaryLabs": {
+      "Glicemia e eletrólitos": "Glicemia 106 mg/dL; sódio 136 mmol/L; cálcio 9,0 mg/dL.",
+      "Ressonância de encéfalo": "Hipersinal temporal esquerdo, compatível com processo inflamatório no contexto.",
+      "Líquor com PCR viral": "Após avaliação de segurança: 84 leucócitos/mm³, predomínio linfocitário; proteína 78 mg/dL; glicose 62 mg/dL com sangue 106 mg/dL; PCR para HSV-1 positiva.",
+      "Eletroencefalograma": "Atividade epileptiforme temporal esquerda; indicado conforme alteração mental e suspeita de crises."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Meningoencefalite herpética"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Meningite bacteriana"
+        },
+        {
+          "disease": "Encefalite autoimune"
+        },
+        {
+          "disease": "Distúrbio metabólico com crise epiléptica"
+        }
+      ]
+    },
+    "treatments": "Hospitalização, antiviral intravenoso precoce conforme protocolo, monitorização de função renal e manejo de crises/via aérea. Ampliar cobertura e investigação conforme contexto e resultados. URGENTE: febre com alteração mental ou crise epiléptica requer atendimento imediato; não permitir que paciente confusa deixe o serviço desacompanhada.",
+    "referenceReasoning": "Febre e meningismo associados a disfunção cerebral e crise focal sugerem envolvimento encefálico, não apenas meningite. O padrão temporal e PCR apoiam etiologia herpética; tratamento não deve esperar confirmação.\nJustificativa dos exames: Excluir causas metabólicas imediatas; líquor e PCR pesquisam infecção após segurança. RM e EEG ajudam na localização e crises; não são motivo para postergar antiviral quando a suspeita é forte.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Distinguir meningoencefalite de meningite isolada pela disfunção cerebral, como confusão, alteração comportamental ou crises."
+    ],
+    "references": [
+      {
+        "title": "NHS — Encephalitis: diagnosis",
+        "url": "https://www.nhs.uk/conditions/encephalitis/diagnosis/"
+      },
+      {
+        "title": "NHS — Encephalitis: treatment",
+        "url": "https://www.nhs.uk/conditions/encephalitis/treatment/"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Obter relato de acompanhante sobre consciência, comportamento, fala e crises.",
+          "Estabelecer cronologia, imunossupressão, medicamentos e exposições sem atribuir confusão a ansiedade."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Exame neurológico.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Excluir causas metabólicas imediatas; líquor e PCR pesquisam infecção após segurança.",
+          "RM e EEG ajudam na localização e crises; não são motivo para postergar antiviral quando a suspeita é forte."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Febre e meningismo associados a disfunção cerebral e crise focal sugerem envolvimento encefálico, não apenas meningite. O padrão temporal e PCR apoiam etiologia herpética; tratamento não deve esperar confirmação.",
+          "Distinguir as alternativas Meningite bacteriana, Encefalite autoimune, Distúrbio metabólico com crise epiléptica, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Hospitalização, antiviral intravenoso precoce conforme protocolo, monitorização de função renal e manejo de crises/via aérea. Ampliar cobertura e investigação conforme contexto e resultados.",
+          "URGENTE: febre com alteração mental ou crise epiléptica requer atendimento imediato; não permitir que paciente confusa deixe o serviço desacompanhada."
+        ],
+        "criticalActions": [
+          "URGENTE: febre com alteração mental ou crise epiléptica requer atendimento imediato; não permitir que paciente confusa deixe o serviço desacompanhada."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-nervous-visao-dupla-palpebra",
+    "caseTitle": "Visão dupla e pálpebra caída",
+    "specialty": "Neurocirurgia",
+    "difficulty": "Intermediário",
+    "summary": "Minha pálpebra caiu e estou vendo tudo dobrado.",
+    "publicPresentation": "Minha pálpebra caiu e estou vendo tudo dobrado.",
+    "learningTrack": "basic",
+    "bodySystem": "nervous",
+    "catalogType": "fictional",
+    "caseType": "Alterações visuais",
+    "patientProfile": {
+      "name": "Raquel Farias",
+      "age_value": 49,
+      "age_unit": "anos",
+      "gender": "Mulher",
+      "occupation": "Contadora",
+      "chief_complaint": "Minha pálpebra caiu e estou vendo tudo dobrado.",
+      "present_illness_history": "Há quatro horas começou dor atrás do olho direito, seguida de visão dupla e queda da pálpebra direita. Não foi a pior dor de cabeça da vida e não houve desmaio ou trauma. A visão dupla melhora ao fechar um dos olhos. Não usou colírio nem teve contato conhecido com produtos químicos.",
+      "past_medical_history": "Tenho hipertensão; não tenho diabetes conhecido ou episódio parecido.",
+      "personal_history": "Não fumo; não uso drogas.",
+      "family_history": "Não conheço aneurisma na família.",
+      "other_medical_history": "Uso anti-hipertensivo; não usei colírios ou remédios novos.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Foi trazida pelo irmão porque não consegue dirigir com visão dupla.",
+      "concern": "Tenho medo de perder a visão.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Minha pálpebra caiu e estou vendo tudo dobrado.",
+        "Características dos sintomas": "Há quatro horas começou dor atrás do olho direito, seguida de visão dupla e queda da pálpebra direita. Não foi a pior dor de cabeça da vida e não houve desmaio ou trauma. A visão dupla melhora ao fechar um dos olhos. Não usou colírio nem teve contato conhecido com produtos químicos.",
+        "Doenças crônicas": "Tenho hipertensão; não tenho diabetes conhecido ou episódio parecido.",
+        "Hábitos de vida": "Não fumo; não uso drogas.",
+        "História familiar": "Não conheço aneurisma na família.",
+        "Medicamentos em uso": "Uso anti-hipertensivo; não usei colírios ou remédios novos.",
+        "Preocupações do paciente": "Tenho medo de perder a visão.",
+        "Início dos sintomas": "Dor e visão dupla começaram há quatro horas.",
+        "Localização dos sintomas": "Atrás do olho direito; pálpebra direita caída.",
+        "Fatores de melhora ou piora": "Fechar um dos olhos elimina a duplicação."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Pupilas e motricidade ocular",
+      "Exame neurológico restante"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [
+      "Angiotomografia cerebral urgente"
+    ],
+    "optionalAuxiliaryLabs": [
+      "Glicemia e função renal"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 152/90 mmHg; FC 82 bpm; temperatura 36,5 °C.",
+      "Pupilas e motricidade ocular": "Ptose direita; olho direito desviado para baixo e para fora; pupila direita de 6 mm pouco reativa e esquerda de 3 mm reativa. Anisocoria mais evidente na luz.",
+      "Exame neurológico restante": "Sem perda de força ou alteração de consciência."
+    },
+    "auxiliaryLabs": {
+      "Angiotomografia cerebral urgente": "Aneurisma da artéria comunicante posterior direita, em relação com o terceiro nervo; sem hemorragia detectada.",
+      "Glicemia e função renal": "Glicemia 104 mg/dL; creatinina 0,8 mg/dL."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Paralisia compressiva do terceiro nervo por aneurisma"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Paralisia microvascular do terceiro nervo"
+        },
+        {
+          "disease": "Midríase farmacológica"
+        },
+        {
+          "disease": "Síndrome de Horner"
+        }
+      ]
+    },
+    "treatments": "Encaminhar imediatamente à neurologia/neurocirurgia, monitorar e definir tratamento do aneurisma pela equipe especializada. Evitar dirigir e explicar incerteza prognóstica. URGENTE: paralisia ocular aguda com pupila acometida precisa de investigação imediata, mesmo sem cefaleia em trovoada.",
+    "referenceReasoning": "Ptose e déficit motor ocular com pupila dilatada e dolorosa exigem excluir compressão aneurismática. Anisocoria é diferença entre pupilas; midríase é dilatação. Miose associada a ptose seria outro padrão, como Horner, não o achado deste caso.\nJustificativa dos exames: Exame pupilar e motilidade orientam urgência; angiografia por TC/RM ou cateter conforme equipe avalia aneurisma. Não esperar controle de pressão ou consulta eletiva para investigar compressão.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Reconhecer anisocoria como diferença de tamanho pupilar e avaliar reação à luz e motilidade.",
+      "Distinguir midríase, dilatação pupilar, de anisocoria e investigar causas neurológicas ou farmacológicas.",
+      "Definir miose como constrição pupilar; contrastar o padrão de Horner com a pupila dilatada deste caso."
+    ],
+    "references": [
+      {
+        "title": "NHS — Brain aneurysm",
+        "url": "https://www.nhs.uk/conditions/brain-aneurysm/"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Determinar início, dor, trauma, colírios, drogas e sintomas neurológicos associados.",
+          "Caracterizar diplopia binocular e não atribuí-la apenas a cansaço ocular."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Pupilas e motricidade ocular, Exame neurológico restante.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Exame pupilar e motilidade orientam urgência; angiografia por TC/RM ou cateter conforme equipe avalia aneurisma.",
+          "Não esperar controle de pressão ou consulta eletiva para investigar compressão."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Ptose e déficit motor ocular com pupila dilatada e dolorosa exigem excluir compressão aneurismática. Anisocoria é diferença entre pupilas; midríase é dilatação. Miose associada a ptose seria outro padrão, como Horner, não o achado deste caso.",
+          "Distinguir as alternativas Paralisia microvascular do terceiro nervo, Midríase farmacológica, Síndrome de Horner, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Encaminhar imediatamente à neurologia/neurocirurgia, monitorar e definir tratamento do aneurisma pela equipe especializada. Evitar dirigir e explicar incerteza prognóstica.",
+          "URGENTE: paralisia ocular aguda com pupila acometida precisa de investigação imediata, mesmo sem cefaleia em trovoada."
+        ],
+        "criticalActions": [
+          "URGENTE: paralisia ocular aguda com pupila acometida precisa de investigação imediata, mesmo sem cefaleia em trovoada."
+        ]
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  },
+  {
+    "caseId": "basic-nervous-perda-olfato",
+    "caseTitle": "Não sente mais o cheiro dos alimentos",
+    "specialty": "Otorrinolaringologia",
+    "difficulty": "Iniciante",
+    "summary": "Depois de uma gripe, deixei de sentir o cheiro da comida.",
+    "publicPresentation": "Depois de uma gripe, deixei de sentir o cheiro da comida.",
+    "learningTrack": "basic",
+    "bodySystem": "nervous",
+    "catalogType": "fictional",
+    "caseType": "Sintomas de ouvido, nariz e garganta",
+    "patientProfile": {
+      "name": "Tiago Leal",
+      "age_value": 35,
+      "age_unit": "anos",
+      "gender": "Homem",
+      "occupation": "Cozinheiro",
+      "chief_complaint": "Depois de uma gripe, deixei de sentir o cheiro da comida.",
+      "present_illness_history": "Há quatro semanas teve coriza e mal-estar. Desde então não sente cheiro de café, sabonete ou temperos, apesar de o nariz não estar entupido agora. Ainda percebe doce e salgado na língua, mas acha a comida sem sabor. Não teve trauma na cabeça, convulsão, fraqueza ou alteração visual.",
+      "past_medical_history": "Sem doença neurológica ou cirurgia nasal.",
+      "personal_history": "Não fuma; trabalha com alimentos e usa gás na cozinha.",
+      "family_history": "Sem perda de olfato familiar conhecida.",
+      "other_medical_history": "Não usa medicamento contínuo nem começou remédio novo.",
+      "allergy_history": "Não conheço alergias a medicamentos.",
+      "social_background": "Mora sozinho e trabalha em cozinha, onde cheiros são parte da rotina.",
+      "concern": "Tenho receio de não perceber comida estragada ou vazamento de gás.",
+      "expectation": "Quero entender o que está acontecendo e quais são os próximos cuidados.",
+      "symptom_details": {
+        "Queixa principal": "Depois de uma gripe, deixei de sentir o cheiro da comida.",
+        "Características dos sintomas": "Não reconheço cheiros, mas sinto doce e salgado.",
+        "Doenças crônicas": "Sem doença neurológica ou cirurgia nasal.",
+        "Hábitos de vida": "Não fuma; trabalha com alimentos e usa gás na cozinha.",
+        "História familiar": "Sem perda de olfato familiar conhecida.",
+        "Medicamentos em uso": "Não usa medicamento contínuo nem começou remédio novo.",
+        "Preocupações do paciente": "Tenho receio de não perceber comida estragada ou vazamento de gás.",
+        "Início dos sintomas": "Percebi durante a gripe há quatro semanas; a obstrução nasal passou.",
+        "História ocupacional": "Trabalho em cozinha e preciso de estratégias de segurança enquanto não sinto os cheiros."
+      }
+    },
+    "mustConsultionItems": [
+      "Queixa principal",
+      "Início dos sintomas",
+      "Características dos sintomas",
+      "Sintomas associados",
+      "Medicamentos em uso",
+      "Alergias"
+    ],
+    "optionalConsultionItems": [
+      "Hábitos de vida",
+      "História familiar",
+      "Estado geral",
+      "Preocupações do paciente"
+    ],
+    "mustPhysicalExams": [
+      "Sinais vitais",
+      "Exame nasal e neurológico",
+      "Avaliação olfatória padronizada"
+    ],
+    "optionalPhysicalExams": [],
+    "mustAuxiliaryLabs": [],
+    "optionalAuxiliaryLabs": [
+      "Endoscopia nasal especializada"
+    ],
+    "physicalExams": {
+      "Sinais vitais": "PA 118/76 mmHg; FC 72 bpm; temperatura 36,4 °C.",
+      "Exame nasal e neurológico": "Sem obstrução nasal evidente, massa ou déficit focal.",
+      "Avaliação olfatória padronizada": "Não identifica odores nos testes não irritantes apresentados; percepção de doce e salgado preservada no teste gustativo."
+    },
+    "auxiliaryLabs": {
+      "Endoscopia nasal especializada": "Opcional se persistência ou dúvida de obstrução: sem pólipo ou massa."
+    },
+    "diagnoses": {
+      "mainDiagnosis": {
+        "disease": "Anosmia pós-viral provável"
+      },
+      "differentialDiagnoses": [
+        {
+          "disease": "Obstrução nasal por pólipos"
+        },
+        {
+          "disease": "Lesão olfatória pós-trauma"
+        },
+        {
+          "disease": "Doença neurológica central"
+        }
+      ]
+    },
+    "treatments": "Orientar acompanhamento otorrinolaringológico, considerar treinamento olfatório conforme avaliação e monitorar evolução. Usar detectores adequados, conferir validade e conservação dos alimentos e evitar depender do cheiro para detectar gás. Reavaliar rapidamente se surgir déficit focal, cefaleia intensa, alteração visual ou sintomas unilaterais progressivos.",
+    "referenceReasoning": "Perda do olfato após infecção com gosto básico preservado favorece anosmia, não ageusia. O contexto ocupacional e doméstico torna a orientação de segurança parte relevante do cuidado.\nJustificativa dos exames: Exame nasal e teste olfatório caracterizam a perda; avaliação especializada é seletiva conforme persistência e sinais. Não exigir TC/RM de rotina sem achado focal, trauma ou evolução atípica.\nExames opcionais não são obrigatórios para obter crédito; adequar investigação ao momento e à evolução.",
+    "learningObjectives": [
+      "Distinguir anosmia, perda do olfato, de ageusia, perda do paladar; discutir segurança em casa e no trabalho."
+    ],
+    "references": [
+      {
+        "title": "NIDCD — Smell disorders",
+        "url": "https://www.nidcd.nih.gov/health/smell-disorders"
+      },
+      {
+        "title": "NIDCD — Taste disorders",
+        "url": "https://www.nidcd.nih.gov/health/taste-disorders"
+      }
+    ],
+    "rubric": {
+      "consultation": {
+        "criteria": [
+          "Distinguir cheiro de gosto básico e perguntar início, obstrução, trauma e exposições.",
+          "Avaliar impacto alimentar, trabalho e riscos domésticos sem prometer recuperação completa."
+        ],
+        "criticalActions": []
+      },
+      "physical": {
+        "criteria": [
+          "Solicitar exame dirigido à queixa, incluindo Sinais vitais, Exame nasal e neurológico, Avaliação olfatória padronizada.",
+          "Relacionar os achados obtidos à estabilidade e à hipótese; apenas pedir o exame não demonstra interpretação."
+        ],
+        "criticalActions": []
+      },
+      "auxiliary": {
+        "criteria": [
+          "Exame nasal e teste olfatório caracterizam a perda; avaliação especializada é seletiva conforme persistência e sinais.",
+          "Não exigir TC/RM de rotina sem achado focal, trauma ou evolução atípica."
+        ],
+        "criticalActions": []
+      },
+      "diagnosis": {
+        "criteria": [
+          "Perda do olfato após infecção com gosto básico preservado favorece anosmia, não ageusia. O contexto ocupacional e doméstico torna a orientação de segurança parte relevante do cuidado.",
+          "Distinguir as alternativas Obstrução nasal por pólipos, Lesão olfatória pós-trauma, Doença neurológica central, usando dados disponíveis. Aceitar hipótese sindrômica pertinente antes de testes confirmatórios; não exigir certeza prematura."
+        ],
+        "criticalActions": []
+      },
+      "treatment": {
+        "criteria": [
+          "Orientar acompanhamento otorrinolaringológico, considerar treinamento olfatório conforme avaliação e monitorar evolução. Usar detectores adequados, conferir validade e conservação dos alimentos e evitar depender do cheiro para detectar gás.",
+          "Reavaliar rapidamente se surgir déficit focal, cefaleia intensa, alteração visual ou sintomas unilaterais progressivos."
+        ],
+        "criticalActions": []
+      },
+      "overall": {
+        "criteria": [
+          "Conectar perguntas, achados solicitados e conclusão sem atribuir ao aluno o que o paciente contou espontaneamente.",
+          "Explicar a hipótese e os próximos passos em linguagem acessível, indicando incertezas e sinais de alarme."
+        ],
+        "criticalActions": []
+      }
+    },
+    "simulationOnly": true,
+    "reviewStatus": "educational_seed",
+    "origin": "basic-educational-synthetic",
+    "reviewNote": "Caso inteiramente fictício, com identidade, contexto, evolução e resultados criados para aprendizagem de semiologia. Não representa paciente ou artigo real. Fontes institucionais embasam conceitos, sem copiar relatos. Revisão clínica humana e calibração avaliativa ainda pendentes. Não há imagens clínicas associadas."
+  }
+]

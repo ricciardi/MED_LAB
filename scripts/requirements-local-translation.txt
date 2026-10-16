@@ -1,0 +1,6 @@
+# Separate local-preparation environment; not installed in cPanel.
+torch==2.10.0
+transformers==4.57.6
+ctranslate2==4.8.3
+sentencepiece==0.2.1
+sacremoses==0.1.1

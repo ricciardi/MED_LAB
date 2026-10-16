@@ -1,0 +1,22 @@
+{% if current_user.is_authenticated and personal_rankings is defined %}
+<section class="personal-rankings" aria-labelledby="personal-ranking-heading">
+  <div class="personal-ranking-heading"><h2 id="personal-ranking-heading">Sua posição</h2><a href="{{ url_for('web.landing') }}#ranking">Ver Top 15 {{ icon('arrow',15) }}</a></div>
+  <div class="personal-ranking-grid">
+    {% for key, title in [('basic', 'Casos Básicos'), ('clinical', 'Casos Clínicos')] %}
+    {% set personal = personal_rankings[key] %}
+    <article class="personal-ranking-card" aria-labelledby="personal-ranking-{{ key }}" data-ranking-personal="{{ key }}">
+      <div class="personal-ranking-label"><h3 id="personal-ranking-{{ key }}">{{ title }}</h3><p data-ranking-personal-count>{{ personal.distinct_cases }} {{ 'caso distinto' if personal.distinct_cases == 1 else 'casos distintos' }} com nota válida</p></div>
+      <div class="personal-ranking-value" data-ranking-personal-value>
+        {% if personal.eligible and personal.rank is not none %}
+        <strong>{{ personal.rank }}º <span>lugar</span></strong>
+        <p>Média {{ ('%.2f'|format(personal.average_score))|replace('.', ',') }}/100</p>
+        {% else %}
+        <strong class="personal-ranking-forming">Em formação</strong>
+        <p>{% if personal.remaining_cases == 1 %}Falta 1 caso distinto{% elif personal.remaining_cases > 1 %}Faltam {{ personal.remaining_cases }} casos distintos{% else %}Aguardando classificação{% endif %}<span> · mínimo {{ personal.minimum_cases }}</span></p>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
