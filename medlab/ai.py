@@ -8,6 +8,7 @@ A patient turn combines intent recognition and coherent simulated dialogue.
 
 import hashlib
 import json
+import logging
 import math
 import os
 import tempfile
@@ -1414,14 +1415,22 @@ class AIService:
                 # Preserve the existing five-dimension contract, but reserve a
                 # bounded part of the same deadline for the new semantic review.
                 final_deadline = self._runtime_deadline
-                self._runtime_deadline = final_deadline - 20
+                self._runtime_deadline = final_deadline - 25
                 try:
                     base = self._evaluate(case, session)
                 finally:
                     self._runtime_deadline = final_deadline
             try:
                 return attach_review(base, build_review(self, case, session))
-            except (AIError, InvalidBasicQuestions):
+            except (AIError, InvalidBasicQuestions) as exc:
+                # Record only server-owned codes, never prompts, provider prose
+                # or the learner's conversation. A resumable result must also be
+                # diagnosable without repeating paid calls just to find the cause.
+                diagnostic = exc.diagnostic if isinstance(exc, InvalidBasicQuestions) else None
+                logging.getLogger(__name__).warning(
+                    "Basic questions review pending: %s",
+                    diagnostic if diagnostic is not None else type(exc).__name__,
+                )
                 raise BasicQuestionsPending({"version": 1, "inputHash": fingerprint, "baseEvaluation": base}) from None
         finally:
             self._runtime_deadline = previous

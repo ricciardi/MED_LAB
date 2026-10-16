@@ -47,6 +47,7 @@ def create_app(config=None):
         ADMIN_PATH=os.getenv("ADMIN_PATH", "/gestao-medlab").rstrip("/"),
         MAX_SESSION_TURNS=40,
         MAX_DAILY_AI_REQUESTS=int(os.getenv("MAX_DAILY_AI_REQUESTS", "120")),
+        RANKING_MINIMUM_CASES=int(os.getenv("RANKING_MINIMUM_CASES", "5")),
         LOCAL_VOICE_ENABLED=env_bool("LOCAL_VOICE_ENABLED", True),
         LOCAL_VOICE_ISOLATION=env_bool("LOCAL_VOICE_ISOLATION", True),
         MAX_CONTENT_LENGTH=128 * 1024,
@@ -96,8 +97,12 @@ def create_app(config=None):
 
     @app.context_processor
     def shared_context():
+        from flask_login import current_user
+        from .ranking import ranking_context
         return {"ai_available": bool(app.config["DEEPSEEK_API_KEY"]) or app.config["DEMO_MODE"],
-                "demo_mode": app.config["DEMO_MODE"], "brand_name": "BayesCore MedRounds"}
+                "demo_mode": app.config["DEMO_MODE"], "brand_name": "BayesCore MedRounds",
+                **ranking_context(current_user.id if current_user.is_authenticated else None,
+                                  include_boards=request.endpoint == "web.landing")}
 
     @app.template_filter("date_br")
     def date_br(value, fmt="%d/%m/%Y"):

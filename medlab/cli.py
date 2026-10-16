@@ -222,6 +222,15 @@ def restore_bundled_drafts(bundle_path=None):
 
 
 def register_commands(app):
+    @app.cli.command("rebuild-rankings")
+    def rebuild_rankings_command():
+        """Recalcula os dois rankings sem alterar notas ou consultas originais."""
+        from .migrations import upgrade_database
+        from .ranking import rebuild_rankings
+        upgrade_database()
+        report = rebuild_rankings()
+        click.echo(f"Rankings atualizados: {report['results']} avaliações válidas; {report['standings']} participações nas categorias.")
+
     @app.cli.command("import-cases")
     @click.option("--source", "sources", multiple=True, type=click.Path(exists=True, dir_okay=False, path_type=Path),
         help="Pacote JSON de Casos Básicos; repita para vários. Sem opção, usa os pacotes incluídos na aplicação.")

@@ -6,6 +6,14 @@ from .extensions import db
 
 
 def upgrade_database():
+    from .models import RankingState
+    from .ranking import BOOTSTRAP_KEY, BOOTSTRAP_VERSION, rebuild_rankings
+    needs_ranking_rebuild = not all(inspect(db.engine).has_table(name) for name in ("ranking_result", "ranking_standing"))
+    if needs_ranking_rebuild and inspect(db.engine).has_table("ranking_state"):
+        state = db.session.get(RankingState, BOOTSTRAP_KEY)
+        if state is not None:
+            db.session.delete(state)
+            db.session.commit()
     db.create_all()
     columns = {column["name"] for column in inspect(db.engine).get_columns("clinical_case")}
     if "case_type" not in columns:
@@ -25,3 +33,6 @@ def upgrade_database():
                 connection.execute(text(f"ALTER TABLE case_discovery ADD COLUMN {name} VARCHAR(30) NOT NULL DEFAULT ''"))
             if f"ix_case_discovery_{name}" not in discovery_indexes:
                 connection.execute(text(f"CREATE INDEX ix_case_discovery_{name} ON case_discovery ({name})"))
+    state = db.session.get(RankingState, BOOTSTRAP_KEY)
+    if needs_ranking_rebuild or state is None or state.version != BOOTSTRAP_VERSION:
+        rebuild_rankings()

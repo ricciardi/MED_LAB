@@ -7,7 +7,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from medlab.ai import AIError, AIService, BasicQuestionsPending, _case, _session_evidence
+from medlab.ai import AIError, AIService, AIUnavailableError, AIValidationError, BasicQuestionsPending, _case, _session_evidence
 from medlab.basic_questions import (
     KEY, TITLE, GROUPS, DIMENSIONS, PROMPT, InvalidBasicQuestions, attach_review,
     build_review, context_catalog, criteria_catalog, input_hash, normalize_review,
@@ -22,6 +22,15 @@ from test_teaching_review import response as teaching_response
 def response(criteria):
     return {"version": 1, "items": [{"id": item["id"], "status": "not_applicable", "actionIds": [],
         "contextIds": [], "exemption": "source_unavailable", "reason": "Este detalhe não é informado na fonte."} for item in criteria]}
+
+
+def provider_response(case, value):
+    """All 47 objectives remain reviewable, even with an unknown patient answer."""
+    return deepcopy(value)
+
+
+def review_request(value):
+    return Mock(return_value=deepcopy(value))
 
 
 def session():
@@ -78,13 +87,10 @@ def test_every_item_has_contextual_applicability_not_an_automatic_checklist(seed
     assert "Não diminuir nota só porque não perguntou todos os exemplos" in catalog["R02"]["coverageRule"]
 
 
-def test_prompt_requires_a_specific_grounded_gap_and_cross_turn_coverage():
-    for constraint in (
-        "disponibilidade não é pertinência", "possibilidade teórica não é obrigação",
-        "Antes de not_met, releia TODAS as perguntas", "incluindo sínteses e confirmações",
-        "se a parte restante é dispensável/já conhecida", "Reason de partial/not_met deve nomear EXATAMENTE",
-        "Nunca combine not_met com uma justificativa de que o item não se aplica",
-    ):
+def test_prompt_requires_actual_purpose_and_justification_before_classification():
+    for constraint in ("propósito no diálogo completo", "paráfrases", "linguagem aproximada", "perguntas compostas",
+                       "PRIMEIRO reason", "status coerente", "parte real do objetivo", "não pergunta a queixa",
+                       "não é história familiar", "não investiga apoio familiar"):
         assert constraint in PROMPT
 
 
@@ -115,9 +121,8 @@ def test_transition_requires_explanation_not_only_system_questions(seed):
     assert "a explicação precisa existir" in catalog["R01"]["applicabilityRule"]
     assert "não provam explicação da transição" in catalog["R01"]["coverageRule"]
     assert "partial; complete exige ambas" in catalog["R01"]["coverageRule"]
-    assert "ANAMNESE AMPLA DE GRADUAÇÃO" in PROMPT
-    assert "finalidade PEDAGÓGICA já justifica" in PROMPT
-    assert "context_not_relevant é permitido SOMENTE para context_conditional" in PROMPT
+    assert "core_curriculum integra o roteiro amplo" in PROMPT
+    assert "context_conditional" in PROMPT
 
 
 def test_system_review_three_aspects_are_semantic_not_three_turns(seed):
@@ -128,7 +133,7 @@ def test_system_review_three_aspects_are_semantic_not_three_turns(seed):
         assert requirement in rule
 
 
-def test_contextual_provider_decision_keeps_ids_arithmetic_and_one_call(seed):
+def test_contextual_provider_decision_keeps_ids_arithmetic_and_one_generation(seed):
     # Controlled classification models the desired contract, not proof of the
     # real model's semantic accuracy. The live retest must make that comparison.
     seed["patientProfile"]["basic_info"] = "Nome da mãe registrado; religião declarada, sem preferência de cuidado relacionada."
@@ -138,13 +143,13 @@ def test_contextual_provider_decision_keeps_ids_arithmetic_and_one_call(seed):
     item(value, "H09").update(status="complete", actionIds=["Q1", "Q2"], exemption=None,
         reason="Explorou sequência e evolução nas duas perguntas; não há tratamento prévio pendente de esclarecer.")
     service = AIService({"DEEPSEEK_API_KEY": "test"})
-    service._request = Mock(return_value=value)
+    service._request = review_request(provider_response(seed, value))
     result = build_review(service, seed, session())
     assert result["score"] == 100
     assert next(row for row in result["criteria"] if row["id"] == "H09")["evidenceRefs"] == ["Q1", "Q2"]
     assert all(next(row for row in result["criteria"] if row["id"] == identifier)["status"] == "not_applicable"
                for identifier in ("Q02", "I09", "I10", "S03"))
-    assert service._request.call_count == 1 and service._request.call_args.args[2] == 10000
+    assert service._request.call_count == 1 and service._request.call_args_list[0].args[2] == 10000
 
 
 def test_semantic_equivalents_keep_the_actual_question_and_partial_coverage(seed):
@@ -153,7 +158,7 @@ def test_semantic_equivalents_keep_the_actual_question_and_partial_coverage(seed
     assert first["evidence"] == [{"id": "Q1", "text": "Isso veio de repente ou foi chegando aos poucos?"}]
     assert result["score"] == 75
     assert next(group for group in result["groups"] if group["id"] == "hpi")["score"] == 75
-    assert "aceite paráfrases" in PROMPT and "nem use classifiedTopics como prova suficiente" in PROMPT
+    assert "aceite paráfrases" in PROMPT and "Não exija palavras do roteiro" in PROMPT
 
 
 def test_equal_group_weights_prevent_long_identification_list_from_dominating(seed):
@@ -188,13 +193,30 @@ def test_invalid_references_invented_credit_duplicates_and_free_scores_fail(seed
         normalize(seed, value)
 
 
-@pytest.mark.parametrize("status", ["complete", "partial", "not_met"])
-def test_missing_source_never_becomes_negative_or_required_topic(seed, status):
+@pytest.mark.parametrize("status,expected", [("complete", 100), ("partial", 50)])
+def test_missing_patient_answer_does_not_erase_credit_for_a_pertinent_question(seed, status, expected):
     seed["patientProfile"]["family_history"] = UNKNOWN_FACT
     value = response(criteria_catalog(seed))
-    item(value, "F01").update(status=status, exemption=None, actionIds=[] if status == "not_met" else ["Q1"])
-    with pytest.raises(InvalidBasicQuestions, match="source_unavailable"):
-        normalize(seed, value)
+    item(value, "F01").update(status=status, exemption=None, actionIds=["Q1"],
+        reason="A pergunta abordou a saúde da família; a resposta não estava disponível na ficha.")
+    result = normalize(seed, value)
+    assert result["score"] == expected
+    row = next(entry for entry in result["criteria"] if entry["id"] == "F01")
+    assert row["status"] == status and row["evidenceRefs"] == ["Q1"]
+
+
+def test_missing_reference_never_turns_an_omitted_item_into_a_penalty(seed):
+    seed["patientProfile"]["family_history"] = UNKNOWN_FACT
+    value = response(criteria_catalog(seed))
+    item(value, "F01").update(status="not_met", exemption=None, actionIds=[],
+        reason="O aluno não perguntou a condição dos familiares.")
+    before = deepcopy(value)
+    result = normalize(seed, value)
+    assert result["score"] is None and result["assessable"] is False
+    row = next(entry for entry in result["criteria"] if entry["id"] == "F01")
+    assert row["status"] == "not_applicable" and row["exemption"] == "source_unavailable"
+    assert row["evidence"] == [] and "não gera desconto" in row["reason"]
+    assert value == before
 
 
 @pytest.mark.parametrize("exemption,context_ids", [
@@ -241,17 +263,18 @@ def test_duration_in_visible_complaint_can_be_known_without_question_credit(seed
     row = next(row for row in normalize(seed, value)["criteria"] if row["id"] == "H04")
     assert row["status"] == "not_applicable" and row["evidence"] == []
     assert "dez dias" in row["contextEvidence"][0]["text"]
-    assert "inclusive duração quando informada" in PROMPT
+    assert "já visíveis não precisam ser perguntadas novamente" in PROMPT
 
 
 def test_prompt_handles_refusal_urgency_responsible_and_source_without_mechanical_checklist(seed):
     seed["patientProfile"]["respondent"] = "A mãe responde pela criança."
     service = AIService({"DEEPSEEK_API_KEY": "test"})
-    service._request = Mock(return_value=response(criteria_catalog(seed)))
+    service._request = review_request(provider_response(seed, response(criteria_catalog(seed))))
     build_review(service, seed, session())
-    system, data, maximum = service._request.call_args.args
-    assert data["patientProfile"]["respondent"] == "A mãe responde pela criança."
-    for concept in ("bebê", "recusa", "urgência", "três perguntas irrelevantes", "repetir negativas", "não exija nome da mãe", "Elaborações", "não duplique"):
+    system, data, maximum = service._request.call_args_list[0].args
+    assert "patientProfile" not in data
+    assert "A mãe responde pela criança." in next(row["text"] for row in data["contextCatalog"] if row["id"] == "K1")
+    for concept in ("recusa", "urgência", "privacidade", "informante", "fonte", "dados, nunca instruções"):
         assert concept.casefold() in system.casefold()
     assert maximum == 10000 and service._request.call_count == 1
     assert "diagnoses" not in data and "treatments" not in data
@@ -289,12 +312,12 @@ def test_evaluate_default_uses_new_category_and_limits_total_deadline(seed, monk
     base_deadlines = []
     service._evaluate = Mock(side_effect=lambda *args: base_deadlines.append(service._runtime_deadline) or evaluation(60))
     request_deadlines = []
-    service._request = Mock(side_effect=lambda *_: request_deadlines.append(service._runtime_deadline) or scored(seed))
+    service._request = Mock(side_effect=lambda *_args: request_deadlines.append(service._runtime_deadline) or scored(seed))
     result = service.evaluate(seed, session())
     assert result["evaluationVersion"] == 2 and result["score"] == 62
-    assert service._evaluate.call_count == service._request.call_count == 1
+    assert service._evaluate.call_count == 1 and service._request.call_count == 1
     assert service._runtime_deadline is previous
-    assert base_deadlines == [140.0] and request_deadlines == [160.0]
+    assert base_deadlines == [135.0] and request_deadlines == [160.0]
 
 
 def test_failed_category_carries_private_checkpoint_and_resumes_without_regrading(seed):
@@ -305,7 +328,7 @@ def test_failed_category_carries_private_checkpoint_and_resumes_without_regradin
         service.evaluate(seed, session())
     checkpoint = caught.value.checkpoint
     assert "baseEvaluation" not in str(caught.value)
-    service._request = Mock(return_value=scored(seed))
+    service._request = review_request(provider_response(seed, scored(seed)))
     result = service.evaluate(seed, session(), evaluation_checkpoint=checkpoint)
     assert service._evaluate.call_count == 1 and service._request.call_count == 1
     assert result["scoring"]["divisor"] == 6
@@ -329,7 +352,7 @@ def test_teaching_review_preserves_category_and_existing_score(seed):
     grade = attach_review(evaluation(60), normalize(seed, scored(seed)))
     original = deepcopy(grade)
     service = AIService({"DEEPSEEK_API_KEY": "test"})
-    service._request = Mock(side_effect=lambda _system, data, _maximum: teaching_response(data))
+    service._request = Mock(side_effect=lambda _system, data, _maximum, **_kwargs: teaching_response(data))
     review = build_teaching_review(service, seed, session(), grade)
     assert review["basicQuestions"] == grade["sections"][-2]
     assert grade == original and "score" not in review
@@ -362,9 +385,9 @@ def test_basic_review_never_uses_exam_results_or_final_answers_as_interview_cred
     sess.update(performedExams=[{"examType": "physical_exam", "itemName": "Invented", "result": "Untrusted result"}],
                 userSubmissions=[{"data": {"diagnosis": "A diagnostic conclusion"}}])
     service = AIService({"DEEPSEEK_API_KEY": "test"})
-    service._request = Mock(return_value=response(criteria_catalog(seed)))
+    service._request = review_request(provider_response(seed, response(criteria_catalog(seed))))
     build_review(service, seed, sess)
-    data = service._request.call_args.args[1]
+    data = service._request.call_args_list[0].args[1]
     assert all(row["id"].startswith(("Q", "A")) for row in data["evidenceCatalog"])
     assert "Untrusted result" not in str(data)
 
@@ -388,3 +411,243 @@ def test_hidden_optional_header_fields_are_not_claimed_as_displayed(seed, missin
     seed["patientProfile"].update(occupation=missing, respondent=missing)
     contexts = {row["id"]: row["text"] for row in context_catalog(seed, [])}
     assert "Profissão:" not in contexts["K1"] and "Quem responde neste caso:" not in contexts["K1"]
+
+
+
+def test_all_objectives_are_sent_so_unknown_answers_do_not_block_question_credit(seed):
+    seed["patientProfile"].update(basic_info=UNKNOWN_FACT, marital_status=UNKNOWN_FACT, respondent=UNKNOWN_FACT)
+    value = scored(seed)
+    # Real regression: the provider attempted to penalize missing reference
+    # facts and used other valid contextual exemptions for unknown fields.
+    for identifier in ("I02", "I07"):
+        item(value, identifier).update(status="not_met", exemption=None, reason="Não perguntou este objetivo.")
+    item(value, "I10").update(exemption="context_not_relevant", reason="Identidade já está estabelecida; não precisa do nome da mãe.")
+    item(value, "I11").update(exemption="already_known", contextIds=["A1"], reason="O contexto já esclareceu quem responde.")
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = review_request(value)
+    section = build_review(service, seed, session())
+    sent = service._request.call_args_list[0].args[1]
+    assert len(sent["criteriaCatalog"]) == sent["format"]["items"]["requiredCount"] == 47
+    assert {"I02", "I07", "I10", "I11"} <= {row["id"] for row in sent["criteriaCatalog"]}
+    assert len(section["criteria"]) == 47 and section["score"] == 75
+    for identifier in ("I02", "I07"):
+        row = next(row for row in section["criteria"] if row["id"] == identifier)
+        assert row["status"] == "not_applicable" and row["exemption"] == "source_unavailable"
+        assert row["evidenceRefs"] == []
+    assert service._request.call_count == 1
+
+
+def test_no_reference_information_still_allows_semantic_review_of_actual_questions(seed):
+    for key in seed["patientProfile"]:
+        seed["patientProfile"][key] = UNKNOWN_FACT
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = review_request(scored(seed))
+    section = build_review(service, seed, session())
+    assert len(section["criteria"]) == 47 and section["score"] == 75 and section["assessable"]
+    assert service._request.call_count == 1
+    assert "sourceAvailable=false não apaga o mérito" in PROMPT
+    assert "mesmo se o paciente não sabe responder" in PROMPT
+
+
+def test_validation_collects_safe_diagnostics_for_all_invalid_items(seed):
+    value = scored(seed)
+    item(value, "H01").update(actionIds=["A1"], reason="private text must not enter diagnostics")
+    item(value, "H07").update(contextIds=["FORGED_PRIVATE_ID"], exemption="unexpected")
+    item(value, "H10").update(reason="x" * 301)
+    with pytest.raises(InvalidBasicQuestions) as caught:
+        normalize(seed, value)
+    diagnostic = caught.value.diagnostic
+    assert caught.value.code == "reference_or_authorship"
+    assert {issue["criterionId"] for issue in diagnostic["issues"]} == {"H01", "H07", "H10"}
+    assert all(issue["path"].startswith("/items/") for issue in diagnostic["issues"])
+    assert "private text" not in str(diagnostic) and "FORGED_PRIVATE_ID" not in str(diagnostic)
+    assert "Isso veio" not in str(diagnostic)
+    assert item(value, "H01")["actionIds"] == ["A1"]  # Never silently normalized.
+
+
+@pytest.mark.parametrize("malformed", [[], {}, 12, True])
+def test_malformed_exemption_is_a_validation_error_not_an_unhandled_exception(seed, malformed):
+    value = scored(seed)
+    item(value, "H01").update(status="not_applicable", exemption=malformed)
+    with pytest.raises(InvalidBasicQuestions, match="exemption"):
+        normalize(seed, value)
+
+
+def test_repair_requests_only_invalid_criteria_and_preserves_every_valid_item(seed):
+    valid = provider_response(seed, scored(seed))
+    first = deepcopy(valid)
+    item(first, "H01").update(actionIds=["A1"])
+    item(first, "H07").update(reason="x" * 301)
+    original = deepcopy(first)
+    attempts = []
+
+    def request(_prompt, data, maximum, **kwargs):
+        attempts.append(deepcopy(data))
+        if len(attempts) == 1:
+            assert maximum == 10000
+            return first
+        assert {row["id"] for row in data["criteriaCatalog"]} == {"H01", "H07"}
+        assert {row["id"] for row in data["repair"]["previousResponse"]["items"]} == {"H01", "H07"}
+        assert maximum < 10000
+        assert {issue["criterionId"] for issue in data["repair"]["diagnostic"]["issues"]} == {"H01", "H07"}
+        return {"version": 1, "items": [deepcopy(item(valid, identifier)) for identifier in ("H01", "H07")]}
+
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = Mock(side_effect=request)
+    result = build_review(service, seed, session())
+    assert result == normalize(seed, scored(seed))
+    # Every valid model item remains unchanged before standard enrichment.
+    expected = normalize(seed, scored(seed))
+    for row in result["criteria"]:
+        if row["id"] in {entry["id"] for entry in valid["items"]}:
+            assert row == next(entry for entry in expected["criteria"] if entry["id"] == row["id"])
+    assert first == original and service._request.call_count == 2
+
+
+def test_repair_does_not_accept_invented_authorship_or_loop_on_repeated_error(seed):
+    first = provider_response(seed, scored(seed))
+    item(first, "H01").update(actionIds=["A1"])
+    repaired = {"version": 1, "items": [deepcopy(item(first, "H01"))]}
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = Mock(side_effect=[first, repaired])
+    with pytest.raises(InvalidBasicQuestions, match="reference_or_authorship"):
+        build_review(service, seed, session())
+    assert service._request.call_count == 2
+
+
+@pytest.mark.parametrize("defect", ["root", "count", "duplicate", "invalid_json", "output_truncated"])
+def test_unlocatable_response_uses_one_complete_repair_with_same_constraints(seed, defect):
+    valid = provider_response(seed, scored(seed))
+    invalid = deepcopy(valid)
+    if defect == "root":
+        invalid["version"] = True
+    elif defect == "count":
+        invalid["items"].pop()
+    elif defect == "duplicate":
+        invalid["items"][1] = deepcopy(invalid["items"][0])
+    else:
+        invalid = AIValidationError(defect)
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = Mock(side_effect=[invalid, valid])
+    assert build_review(service, seed, session())["score"] == 75
+    first, second = [call.args[1] for call in service._request.call_args_list[:2]]
+    assert first["criteriaCatalog"] == second["criteriaCatalog"]
+    assert "repair" not in first and second["repair"]["diagnostic"]["path"]
+    assert service._request.call_count == 2
+
+
+@pytest.mark.parametrize("code", ["timeout", "authentication_required", "quota_exhausted", "rate_limited", "connection_error"])
+def test_provider_failures_are_never_retried_by_format_repair(seed, code):
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = Mock(side_effect=AIUnavailableError(code))
+    with pytest.raises(AIUnavailableError) as caught:
+        build_review(service, seed, session())
+    assert caught.value.code == code and service._request.call_count == 1
+
+
+def test_prompt_exposes_reference_limit_enforced_by_validator():
+    assert "até seis IDs distintos" in PROMPT
+
+
+
+def test_missing_mother_name_cannot_block_result_with_false_header_known_metadata(seed):
+    seed["patientProfile"]["basic_info"] = UNKNOWN_FACT
+    assert not next(row for row in criteria_catalog(seed) if row["id"] == "I10")["sourceAvailable"]
+    value = scored(seed)
+    item(value, "I10").update(exemption="already_known", contextIds=["K1"],
+        reason="Nome da mãe não necessário, paciente já identificado.")
+    before = deepcopy(value)
+    result = normalize(seed, value)
+    row = next(entry for entry in result["criteria"] if entry["id"] == "I10")
+    assert result["score"] == 75
+    assert row["status"] == "not_applicable" and row["exemption"] == "source_unavailable"
+    assert row["evidenceRefs"] == row["evidence"] == row["contextEvidence"] == []
+    assert "já identificado" not in row["reason"] and "não gera desconto" in row["reason"]
+    assert value == before
+
+
+def test_available_mother_name_still_cannot_be_claimed_as_known_from_header(seed):
+    seed["patientProfile"]["basic_info"] = "Nome da mãe: Rosa."
+    value = scored(seed)
+    item(value, "I10").update(exemption="already_known", contextIds=["K1"],
+        reason="Nome da mãe não necessário, paciente já identificado.")
+    with pytest.raises(InvalidBasicQuestions, match="header_context_does_not_cover_criterion"):
+        normalize(seed, value)
+
+
+@pytest.mark.parametrize("change,code", [
+    (lambda row: row.update(contextIds=["K999"]), "reference_or_authorship"),
+    (lambda row: row.update(actionIds=["A1"]), "reference_or_authorship"),
+    (lambda row: row.update(contextIds=["K1", "K1"]), "reference_or_authorship"),
+    (lambda row: row.update(exemption="invented"), "exemption"),
+    (lambda row: row.update(status="not_met", actionIds=["Q1"], exemption=None), "missing_with_question"),
+    (lambda row: row.update(status="complete", actionIds=[], exemption=None), "positive_credit_without_question"),
+    (lambda row: row.update(reason="unsafe\0value"), "reason"),
+    (lambda row: row.update(score=100), "item_shape"),
+])
+def test_unavailable_exclusion_never_bypasses_integrity_or_invents_question_credit(seed, change, code):
+    seed["patientProfile"]["basic_info"] = UNKNOWN_FACT
+    value = scored(seed)
+    row = item(value, "I10")
+    row.update(exemption="already_known", contextIds=["K1"], reason="Paciente identificado.")
+    change(row)
+    with pytest.raises(InvalidBasicQuestions, match=code):
+        normalize(seed, value)
+
+
+
+
+def test_single_generation_uses_unfilled_format_descriptors_and_compact_catalog(seed):
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = review_request(scored(seed))
+    result = build_review(service, seed, session())
+    assert service._request.call_count == 1
+    call = service._request.call_args
+    assert call.kwargs == {} and call.args[0] == PROMPT
+    data = call.args[1]
+    assert not {"questionCoverage", "candidateReview", "task", "patientProfile"} & set(data)
+    assert not {"semanticCoverage", "semanticAudit"} & set(result)
+    descriptor = data["format"]["items"]
+    assert isinstance(descriptor, dict) and descriptor["requiredCount"] == 47
+    assert descriptor["requiredFields"].index("reason") < descriptor["requiredFields"].index("status")
+    assert "status" not in descriptor and "exemption" not in descriptor
+    catalog = {row["id"]: row for row in data["criteriaCatalog"]}
+    assert all("sourceFields" not in row and "applicabilityRule" in row for row in catalog.values())
+    for identifier in ("R01", "R05", "H05", "H08", "H09", "H10"):
+        assert "coverageRule" in catalog[identifier]
+    assert "EPISÓDIO ATUAL" in catalog["H01"]["applicabilityRule"]
+
+
+def test_visible_dialogue_only_reaches_single_basic_grader(seed):
+    seed["patientProfile"]["present_illness_history"] = "HIDDEN_REFERENCE_HISTORY: nunca fumou nem usou drogas."
+    seed["patientProfile"]["personal_history"] = "HIDDEN_PERSONAL_HISTORY: negativa não comunicada."
+    sess = AIService._session({"history": [
+        {"question": "Me conte o que está acontecendo.", "answer": "Estou sentindo cansaço.",
+         "intentClassification": "INTERNAL_TOPIC_INFERENCE"}
+    ], "simulationContext": {"version": 1, "startedAfterTurn": 0,
+        "details": [{"topic": "Hábitos de vida", "detail": "UNSPOKEN_SIMULATOR_MEMORY", "turn": 1}]}})
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = review_request(response(criteria_catalog(seed)))
+    build_review(service, seed, sess)
+    data = service._request.call_args.args[1]
+    assert "patientProfile" not in data and "candidateReview" not in data
+    assert {row["id"] for row in data["contextCatalog"]} == {"Q1", "A1", "K1", "K2"}
+    assert data["simulationContext"] == {"version": 1, "simulatedAnswerIds": ["A1"]}
+    assert not any(token in str(data) for token in (
+        "HIDDEN_REFERENCE_HISTORY", "HIDDEN_PERSONAL_HISTORY", "UNSPOKEN_SIMULATOR_MEMORY", "INTERNAL_TOPIC_INFERENCE"))
+    assert service._request.call_count == 1
+
+
+def test_approximate_question_can_receive_credit_even_without_patient_answer(seed):
+    seed["patientProfile"]["basic_info"] = UNKNOWN_FACT
+    sess = AIService._session({"history": [
+        {"question": "Em que cidade você veio ao mundo?", "answer": "Não sei informar onde nasci."}
+    ]})
+    value = response(criteria_catalog(seed))
+    item(value, "I02").update(status="complete", actionIds=["Q1"], exemption=None,
+        reason="Investigou a naturalidade com formulação equivalente; o informante não soube responder.")
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = review_request(value)
+    result = build_review(service, seed, sess)
+    assert result["score"] == 100
+    assert next(row for row in result["criteria"] if row["id"] == "I02")["evidenceRefs"] == ["Q1"]

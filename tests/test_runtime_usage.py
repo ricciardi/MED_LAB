@@ -53,7 +53,8 @@ def live_ai(app, monkeypatch):
     audit = {"checks": [{"path": field["path"], "claims": []} for field in _evaluation_claim_fields(assessment)]}
     post = Mock(side_effect=[provider_response({"answer": "PRIVATE_RESPONSE_SENTINEL: começou ontem.",
         "intents": ["Início dos sintomas"], "newDetails": []}),
-        provider_response(assessment), provider_response(audit), provider_response({"version": 1, "items": [
+        provider_response(assessment), provider_response(audit),
+        provider_response({"version": 1, "items": [
             {"id": item[0], "status": "not_applicable", "actionIds": [], "contextIds": [],
              "exemption": "source_unavailable", "reason": "Detalhe indisponível no cenário sintético."} for item in _SPECS]})])
     monkeypatch.setattr("medlab.ai.requests.post", post)
@@ -94,6 +95,39 @@ def test_conversation_and_evaluation_persist_real_deltas_without_retry_duplicati
         stored = json.dumps([{column.name: str(getattr(row, column.name)) for column in AIUsage.__table__.columns} for row in rows])
         for forbidden in ("PRIVATE_RESPONSE_SENTINEL", "PRIVATE_QUESTION_SENTINEL", "PRIVATE_DIAGNOSIS_SENTINEL", "private-provider-key-for-tests"):
             assert forbidden not in stored
+
+
+def test_failed_basic_grade_and_exclusive_retry_record_each_request_once(app, client, start_session, live_ai):
+    _, post = live_ai
+    responses = list(post.side_effect)
+    post.side_effect = [*responses[:-1], provider_response({}, usage=None, status=503)]
+    identifier = start_session()
+    assert send_question(client, identifier).status_code == 200
+    assert finish(client, identifier).status_code == 302
+    assert post.call_count == 4
+    with app.app_context():
+        training = db.session.get(Consultation, identifier)
+        assert training.status == "completed" and training.score is None
+        assert training.evaluation["evaluationStatus"] == "pending_basic_questions"
+        row = db.session.scalar(db.select(AIUsage).where(AIUsage.operation == "evaluation"))
+        assert row.requests == row.responses == 3 and row.usage_reports == 2
+        assert row.total_tokens == 24 and row.successful is False
+        assert row.usage_complete is False and row.cache_usage_complete is False
+    # The five original dimensions are reused: only the basic category
+    # consumes one more provider request.
+    post.side_effect = responses[3:]
+    assert client.post(f"/sessao/{identifier}/avaliacao/retomar").status_code == 302
+    assert post.call_count == 5
+    with app.app_context():
+        training = db.session.get(Consultation, identifier)
+        assert training.score is not None and "pendingBasicQuestions" not in training.evaluation
+        rows = db.session.scalars(db.select(AIUsage).order_by(AIUsage.id)).all()
+        assert [row.requests for row in rows] == [1, 3, 1]
+        assert [row.total_tokens for row in rows] == [12, 24, 12]
+        assert [row.successful for row in rows] == [True, False, True]
+        assert usage_summary()["requests"] == 5 and usage_summary()["total_tokens"] == 48
+    client.post(f"/sessao/{identifier}/avaliacao/retomar")
+    assert post.call_count == 5
 
 
 @pytest.mark.parametrize("failure", ["partial_http_failure", "invalid_answer_with_usage", "timeout"])

@@ -162,6 +162,34 @@ class ConsultationSimulation(db.Model):
     updated_at = db.Column(db.DateTime, default=utcnow, onupdate=utcnow, nullable=False)
 
 
+class RankingResult(db.Model):
+    """Rebuildable validated score projection; no conversation or clinical data."""
+    consultation_id = db.Column(db.String(36), db.ForeignKey("consultation.id", ondelete="CASCADE"), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True)
+    case_id = db.Column(db.Integer, db.ForeignKey("clinical_case.id", ondelete="CASCADE"), nullable=False)
+    track = db.Column(db.String(16), nullable=False)
+    score = db.Column(db.Integer, nullable=False)
+    __table_args__ = (db.Index("ix_ranking_result_user_track_case", "user_id", "track", "case_id"),)
+
+
+class RankingStanding(db.Model):
+    """One saved mean of case means per learner and catalogue."""
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), primary_key=True)
+    track = db.Column(db.String(16), primary_key=True)
+    average_score = db.Column(db.Numeric(5, 2), nullable=False)
+    distinct_cases = db.Column(db.Integer, nullable=False)
+    consultations = db.Column(db.Integer, nullable=False)
+    updated_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+    __table_args__ = (db.Index("ix_ranking_standing_track_score", "track", "average_score"),)
+
+
+class RankingState(db.Model):
+    """Completion marker; missing row makes an interrupted initial backfill resumable."""
+    key = db.Column(db.String(40), primary_key=True)
+    version = db.Column(db.Integer, nullable=False)
+    completed_at = db.Column(db.DateTime, default=utcnow, nullable=False)
+
+
 class Turn(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     consultation_id = db.Column(db.String(36), db.ForeignKey("consultation.id"), nullable=False, index=True)

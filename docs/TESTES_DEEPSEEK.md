@@ -315,3 +315,42 @@ A suíte anterior ao último ajuste de informante/R05, já com a guarda de conte
 O ajuste final separa a voz do informante pelo campo explícito `respondent_gender`, preservando o sexo/gênero do paciente; os sete casos respondidos por mães selecionam Dora, sem inferência pelo nome. Passaram **57 testes direcionados** desse contrato, sem nova síntese de áudio ou chamada à DeepSeek. R05 também explicita ao menos três aspectos sintomáticos distintos e pertinentes por órgão/sistema explorado, aceitando perguntas compostas e dados já conhecidos, com exceções contextuais; não exige três turnos nem usa contagem por palavras-chave. Essa redação não foi objeto de nova rodada paga, e o consumo da etapa permanece em 11 requisições.
 
 Com todos os ajustes congelados, a suíte completa final aprovou **1.363 testes Python em 84,08 s** e **93 testes JavaScript/Node em 562 ms**, sem falhas e sem chamadas adicionais à API.
+
+## Retomada da avaliação básica e geração compacta
+
+Em 16/10/2026, uma falha reproduzida na etapa básica impedia a conclusão utilizável da consulta: a resposta do provedor tratava incorretamente objetivos sem informação disponível, e a validação interrompia a etapa. A correção mantém os 47 objetivos na análise, pois uma pergunta pertinente pode merecer crédito mesmo sem resposta na ficha. A omissão de um dado indisponível é convertida em não aplicável; não se atribui crédito nem se inventa uma resposta para suprir a fonte ausente.
+
+O caminho final usa **uma geração semântica compacta e, se necessário, um reparo dirigido**. Cada item apresenta a justificativa antes do status. O contexto contém somente perguntas e respostas reais da conversa e os cartões de identificação e queixa visíveis, além dos objetivos e da disponibilidade de fonte. Não há mapa prévio de propósitos nem auditoria separada dessa categoria. Os 25 segundos finais do orçamento cooperativo de 60 segundos da avaliação ficam reservados à etapa básica. Os testes e limites desta seção correspondem a essa versão, substituindo os experimentos intermediários descritos abaixo.
+
+A leitura independente encontrou créditos sem correspondência entre pergunta e objetivo em saídas anteriores: saudação contada como investigação da queixa, antecedente pessoal contado como familiar e um hábito contado como apoio familiar. Uma tentativa de auditoria introduziu contexto reservado como se fosse conhecido; restringir o contexto ao efetivamente exibido não eliminou todos os créditos indevidos. O mapa de propósitos também produziu falsos bloqueios e acrescentou outra chamada. Experimentos com raciocínio estendido e modelo pro tiveram falhas de conexão ou não concluíram dentro do ensaio. Essas alternativas foram rejeitadas; os artefatos foram preservados, sem reescrever respostas pagas nem escolher uma nota-alvo.
+
+O ensaio final `grade-compact-final.json` concluiu os **47 critérios com 15/100 na categoria em 14,726 segundos e duas requisições**. A primeira resposta trouxe 47 itens; a validação exigiu reparo de dois itens por crédito positivo sem pergunta associada, preservando os demais. A saída final deixou de atribuir os créditos indevidos citados e reconheceu informações já visíveis como contexto, sem creditá-las a uma pergunta diferente. Isso verifica defeitos concretos nesta entrevista; não demonstra calibração clínica geral, estabilidade entre modelos ou ausência de outros erros semânticos. SHA-256 do artefato: `04921779745689709afd431cfb48fe18ef306414bd8d4cfad9d14fcc5479e680`.
+
+Quando a etapa continua inválida ou indisponível, a entrevista fica encerrada, a página mostra as cinco dimensões clínicas já validadas e a **nota final permanece pendente**. A retomada autenticada reaproveita a base privada somente se o hash da ficha e da atividade coincide, sem reabrir a entrevista após revelar a referência. Não há uma nota final de cinco dimensões usada como substituto silencioso. A integração final reproduziu as duas respostas pagas exatas, **sem novas chamadas**, e concluiu com **45/100 global e 15/100 na categoria**. As cinco dimensões anteriores, a conversa e a data de encerramento permaneceram intactas; o resultado respondeu HTTP 200 e o ranking foi atualizado. Evidência privada: `recovery-final.json`, SHA-256 `500297503835a0c903c922b177f339808d0e68f0ee0d0a2d13f01b8503886c3f`.
+
+### Consumo observado desta correção
+
+O levantamento considera uma vez cada JSON distinto com `usage.requests > 0` em `instance/local-preparation/basic-finish-fix/`. A coluna de tokens mostra somente o uso informado pelo provedor; não estima consumo de respostas ausentes.
+
+| Artefato | Requisições / respostas com uso | Tempo (s) | Entrada / saída informadas | Resultado do ensaio |
+| --- | ---: | ---: | ---: | --- |
+| `reproduction.json` | 1 / 1 | 10,060 | 11.804 / 2.603 | Reproduziu a rejeição por fonte indisponível |
+| `recovery-v2.json` | 2 / 2 | 13,916 | 17.897 / 2.984 | Entrevista encerrada, categoria ainda pendente |
+| `recovery-semantic-audited.json` | 1 / 1 | 6,747 | 11.786 / 1.407 | Auditoria intermediária; resultado não concluído |
+| `recovery-semantic-visible.json` | 1 / 1 | 8,553 | 9.494 / 1.939 | Saída aceita estruturalmente, com limites semânticos; estratégia descartada |
+| `audit-thinking-low.json` | 1 / 0 | 20,653 | Desconhecidos | Falha de conexão, sem relatório de uso |
+| `grade-thinking-low.json` | 1 / 0 | 40,700 | Desconhecidos | Falha de conexão, sem relatório de uso |
+| `map-purposes.json` | 1 / 1 | 2,934 | 3.479 / 456 | Mapa intermediário; não é avaliação final |
+| `grade-purpose-mapped.json` | 3 / 3 | 14,457 | 23.197 / 3.101 | Rejeição de correspondência entre mapa e objetivos |
+| `grade-purpose-pro.json` | 2 / 1 | 20,933 | 5.949 / 455, parciais | Uma resposta e uma falha de conexão sem uso informado |
+| `grade-compact-final.json` | 2 / 2 | 14,726 | 10.612 / 2.997 | Categoria final válida com reparo dirigido |
+
+São **15 tentativas HTTP**, com **12 respostas e 12 relatórios de uso**: **94.218 tokens de entrada**, **15.942 de saída**, **110.160 informados no total**, incluindo **15.616 tokens de entrada em cache** e **78.602 fora do cache**. O acerto corresponde a 16,57% da entrada conhecida, não da entrada de todas as tentativas. Há **três tentativas sem uso informado**; os zeros nos contadores locais dessas falhas não significam custo zero. O consumo total efetivamente faturado não pode ser concluído apenas desses registros. O levantamento inclui experimentos rejeitados e correções; não é um orçamento por consulta.
+
+`recovery.json`, `recovery-paid-validated.json` e `recovery-final.json` registram zero chamadas próprias e não duplicam o consumo das respostas reaproveitadas. Backups, reprodução local, migração do ranking e arquivos sem chamadas também não entram no total. Os dados da conversa e os identificadores da conta permanecem nos artefatos privados; este relatório publica somente o método, as contagens e as limitações. As regras da classificação estão em [Ranking de estudantes](RANKING.md): média das tentativas válidas de cada caso, seguida da média entre casos distintos, com mínimo de cinco na categoria.
+
+A suíte anterior à última proteção de persistência aprovou **1.463 testes Python em 108,92 segundos** e **101 testes JavaScript/Node**, sem falhas. A compatibilidade do esquema MySQL foi conferida por compilação do DDL; não houve teste em um servidor MySQL real. Esses testes verificam contratos e regressões do software, sem substituir a revisão clínica dos julgamentos da IA.
+
+A revisão de persistência encontrou que uma falha de gravação do ranking podia deixar a nota salva sem o agregado correspondente. A conclusão agora confirma a propriedade do bloqueio e salva resultado e ranking na mesma transação, com rollback em qualquer falha. Há uma única repetição da gravação com a avaliação já recebida, sem nova chamada à IA. Se o banco continuar falhando, o rascunho permanece salvo, nenhuma nota ou classificação parcial é publicada e a interface informa que a conclusão deve ser tentada novamente.
+
+Após essa proteção de persistência, a suíte completa final aprovou **1.468 testes Python em 122,42 segundos**, sem falhas. Os **101 testes JavaScript/Node** continuam aprovados; a proteção final alterou somente o servidor e testes Python.

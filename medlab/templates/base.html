@@ -20,7 +20,7 @@
   <header class="site-header">
     <div class="container header-inner">
       {{ brand(url_for('web.landing')) }}
-      <nav class="desktop-nav" aria-label="Navegação principal"><a href="{{ url_for('web.landing') }}#como-funciona">Como funciona</a><a href="{{ url_for('web.landing') }}#aprendizado">Seu aprendizado</a></nav>
+      <nav class="desktop-nav" aria-label="Navegação principal"><a href="{{ url_for('web.landing') }}#como-funciona">Como funciona</a><a href="{{ url_for('web.landing') }}#aprendizado">Seu aprendizado</a><a href="{{ url_for('web.landing') }}#ranking">Ranking</a></nav>
       <div class="header-actions">{% if current_user.is_authenticated %}<a class="button button-primary button-small" href="{{ url_for('web.dashboard') }}">Meu painel {{ icon('arrow',16) }}</a>{% else %}<a class="login-link" href="{{ url_for('web.login') }}">Entrar</a><a class="button button-primary button-small" href="{{ url_for('web.register') }}">Começar a praticar {{ icon('arrow',16) }}</a>{% endif %}</div>
     </div>
   </header>
@@ -31,5 +31,6 @@
   <footer class="site-footer"><div class="container footer-inner">{{ brand(url_for('web.landing')) }}<p>Conhecimento em prática. Cuidado em evolução.</p><span class="footer-note">Um ambiente de simulação educacional. <a href="/privacidade">Privacidade</a></span></div></footer>
   {% endblock %}
   {% block scripts %}{% endblock %}
+  {% if leaderboards is defined or personal_rankings is defined %}<script src="{{ url_for('static', filename='ranking.js') }}" data-ranking-url="{{ url_for('web.ranking_snapshot') }}" defer></script>{% endif %}
 </body>
 </html>

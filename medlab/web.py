@@ -48,16 +48,50 @@ def public_case(case):
 
 def public_session(training):
     case = training.case_snapshot
+    pending = basic_evaluation_pending(training)
     return {"id": training.id, "title": public_title(training.case_id),
             "learning_track": case.get("learningTrack", ""),
             "patient_name": case.get("patientProfile", {}).get("name", "Paciente"),
             "specialty": case.get("specialty", "Clínica médica"), "status": training.status,
-            "status_label": "Concluída" if training.status == "completed" else "Em andamento",
+            "status_label": "Avaliação pendente" if pending else "Concluída" if training.status == "completed" else "Em andamento",
+            "evaluation_pending": pending,
             "created_at": training.created_at, "score": training.score,
             "diagnosis": training.diagnosis or "", "differential": training.differential or "",
             "treatment": training.treatment or "",
             "url": url_for("web.consultation", session_id=training.id),
             "result_url": url_for("web.result", session_id=training.id)}
+
+
+def basic_evaluation_pending(training):
+    return (training.status == "completed" and isinstance(training.evaluation, dict)
+            and training.evaluation.get("evaluationStatus") == "pending_basic_questions")
+
+
+def evaluation_session(training):
+    """The immutable submitted encounter, shared by finish and category retry."""
+    data = {"sessionId": training.id, "caseId": training.case_snapshot.get("caseId"),
+        "history": [{"question": t.question, "answer": t.answer, "intentClassification": t.intent} for t in training.turns],
+        "performedExams": [{"itemName": e.name, "result": e.result, "examType": e.exam_type} for e in training.exams],
+        "userSubmissions": [{"data": {"mainDiagnoses": [{"diagnosisName": training.diagnosis}],
+            "differentialDiagnoses": [{"diagnosisName": training.differential}] if training.differential else []}}],
+        "userTreatments": [{"data": {"treatmentPlan": training.treatment}}]}
+    context = simulation_context(training)
+    if context is not None:
+        data["simulationContext"] = context
+    return data
+
+
+def pending_evaluation_display(training):
+    """Expose validated dimension feedback, never the checkpoint or a subtotal."""
+    checkpoint = training.evaluation.get("pendingBasicQuestions", {})
+    base = checkpoint.get("baseEvaluation", {}) if isinstance(checkpoint, dict) else {}
+    result = {key: copy.deepcopy(base[key]) for key in
+              ("strengths", "improvements", "next_steps", "simulationNotice", "verification") if key in base}
+    result.update(score=None,
+        summary="Sua entrevista e sua conclusão foram salvas. As dimensões abaixo já têm resultado; falta validar as Perguntas Básicas de Graduação para calcular a nota final.",
+        sections=[copy.deepcopy(row) for row in base.get("sections", [])
+                  if isinstance(row, dict) and row.get("key") in SECTION_TITLES and row["key"] != "overall"])
+    return result
 
 
 def simulation_context(training):
@@ -169,6 +203,15 @@ def ai_quota():
 @bp.get("/")
 def landing():
     return render_template("landing.html")
+
+
+@bp.get("/api/ranking")
+def ranking_snapshot():
+    """Read only stored aggregates; an open page may refresh without regrading."""
+    from .ranking import ranking_context
+    response = jsonify(ranking_context(current_user.id if current_user.is_authenticated else None, include_boards=True))
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 @bp.route("/cadastro", methods=["GET", "POST"])
@@ -526,50 +569,127 @@ def finish(session_id):
             flash("Seu limite diário foi atingido. Sua consulta está salva; você pode concluí-la amanhã.", "info")
             return redirect(url_for("web.consultation", session_id=session_id))
         db.session.refresh(training)
-        history = [{"question": t.question, "answer": t.answer, "intentClassification": t.intent} for t in training.turns]
-        session_data = {"sessionId": training.id, "caseId": training.case_snapshot.get("caseId"), "history": history,
-            "performedExams": [{"itemName": e.name, "result": e.result, "examType": e.exam_type} for e in training.exams],
-            "userSubmissions": [{"data": {"mainDiagnoses": [{"diagnosisName": diagnosis}],
-                "differentialDiagnoses": [{"diagnosisName": differential}] if differential else []}}],
-            "userTreatments": [{"data": {"treatmentPlan": treatment}}]}
-        context = simulation_context(training)
-        if context is not None:
-            session_data["simulationContext"] = context
         case_data = copy.deepcopy(training.case_snapshot)
         # Save the learner's draft before an external request so a failed evaluation loses no reasoning.
         training.diagnosis, training.differential, training.treatment = diagnosis, differential, treatment
+        session_data = evaluation_session(training)
         db.session.commit()
         service = get_ai_service()
-        with capture_usage(service, "evaluation", user_id=current_user.id, consultation_id=session_id):
-            checkpoint = training.evaluation.get("pendingBasicQuestions") if isinstance(training.evaluation, dict) else None
-            if checkpoint is None:
-                evaluation = service.evaluate(case_data, session_data)
-            else:
-                evaluation = service.evaluate(case_data, session_data, evaluation_checkpoint=checkpoint)
-        if not lock_is_owned(session_id, token):
+        pending = False
+        try:
+            with capture_usage(service, "evaluation", user_id=current_user.id, consultation_id=session_id):
+                checkpoint = training.evaluation.get("pendingBasicQuestions") if isinstance(training.evaluation, dict) else None
+                if checkpoint is None:
+                    evaluation = service.evaluate(case_data, session_data)
+                else:
+                    evaluation = service.evaluate(case_data, session_data, evaluation_checkpoint=checkpoint)
+        except BasicQuestionsPending as exc:
             db.session.rollback()
-            flash("A avaliação expirou. Sua consulta permanece salva; tente novamente.", "error")
-            return redirect(url_for("web.consultation", session_id=session_id))
-        training = db.session.get(Consultation, session_id)
-        training.evaluation, training.score = evaluation, evaluation["score"]
-        training.status, training.completed_at = "completed", utcnow()
-        db.session.commit()
-        return redirect(url_for("web.result", session_id=session_id))
-    except BasicQuestionsPending as exc:
-        db.session.rollback()
-        if lock_is_owned(session_id, token):
-            training = db.session.get(Consultation, session_id)
-            training.evaluation = {"pendingBasicQuestions": exc.checkpoint}
-            training.score = None
-            db.session.commit()
-        flash(str(exc) + " Sua consulta ainda não foi concluída.", "error")
-        return redirect(url_for("web.consultation", session_id=session_id))
+            pending = True
+            evaluation = {"evaluationStatus": "pending_basic_questions", "pendingBasicQuestions": exc.checkpoint}
+        if not pending:
+            evaluation["evaluationMode"] = "demo" if service.is_demo else "ai"
+        # Retry only persistence once: a transient database error must not
+        # trigger another paid evaluation or commit a partial ranking.
+        for attempt in range(2):
+            try:
+                if not lock_is_owned(session_id, token):
+                    db.session.rollback()
+                    flash("A avaliação expirou. Sua consulta permanece salva; tente novamente.", "error")
+                    return redirect(url_for("web.consultation", session_id=session_id))
+                training = db.session.get(Consultation, session_id)
+                db.session.refresh(training)
+                training.evaluation, training.score = evaluation, None if pending else evaluation["score"]
+                # Freeze submitted encounters, including pending feedback,
+                # before exposing any reference or validated dimension.
+                training.status, training.completed_at = "completed", utcnow()
+                if not pending:
+                    from .ranking import sync_consultation_ranking
+                    sync_consultation_ranking(training)
+                db.session.commit()
+                return redirect(url_for("web.result", session_id=session_id))
+            except SQLAlchemyError:
+                db.session.rollback()
+                if attempt:
+                    raise
     except AIError as exc:
         db.session.rollback()
         flash(str(exc) + " Sua consulta foi preservada para tentar novamente.", "error")
         return redirect(url_for("web.consultation", session_id=session_id))
+    except SQLAlchemyError:
+        db.session.rollback()
+        current_app.logger.warning("Não foi possível salvar a conclusão da consulta e seu ranking.")
+        flash("Não foi possível salvar a avaliação. Sua conversa, hipótese e conduta foram preservadas; tente concluir novamente.", "error")
+        return redirect(url_for("web.consultation", session_id=session_id))
     finally:
-        release_lock(session_id, token)
+        try:
+            release_lock(session_id, token)
+        except SQLAlchemyError:
+            db.session.rollback()
+            current_app.logger.warning("Não foi possível liberar o bloqueio da conclusão da consulta.")
+
+
+@bp.post("/sessao/<session_id>/avaliacao/retomar")
+@login_required
+def retry_basic_evaluation(session_id):
+    """Retry only the pending category against the already submitted encounter."""
+    from .ai import AIError, BasicQuestionsPending, _case
+    from .basic_questions import input_hash
+
+    training = own_session(session_id)
+    destination = url_for("web.result" if training.status == "completed" else "web.consultation", session_id=session_id)
+    if not basic_evaluation_pending(training):
+        return redirect(destination)
+    token = acquire_lock(training, status="completed")
+    if not token:
+        flash("A avaliação está sendo retomada. Aguarde e atualize esta página.", "info")
+        return redirect(destination)
+    try:
+        db.session.refresh(training)
+        if not basic_evaluation_pending(training):
+            return redirect(destination)
+        if not consume_limit("basic-review-retry", f"{current_user.id}:{session_id}", 4, 3600) or not ai_quota():
+            flash("O limite de solicitações foi atingido. Os resultados já disponíveis continuam salvos; retome mais tarde.", "info")
+            return redirect(destination)
+        checkpoint = copy.deepcopy(training.evaluation.get("pendingBasicQuestions"))
+        case_data, session_data = copy.deepcopy(training.case_snapshot), evaluation_session(training)
+        service = get_ai_service()
+        # evaluate() can restart a changed active encounter. A frozen result
+        # must never silently regrade those five dimensions after showing them.
+        if (not isinstance(checkpoint, dict)
+                or checkpoint.get("inputHash") != input_hash(_case(case_data), service._session(session_data))):
+            raise AIError("Não foi possível conferir a etapa salva. Os resultados existentes foram preservados; solicite suporte à equipe.")
+        db.session.commit()
+        with capture_usage(service, "evaluation", user_id=current_user.id, consultation_id=session_id):
+            evaluation = service.evaluate(case_data, session_data, evaluation_checkpoint=checkpoint)
+        if not lock_is_owned(session_id, token, status="completed"):
+            db.session.rollback()
+            flash("A retomada expirou. Os resultados existentes foram preservados; tente novamente.", "error")
+            return redirect(destination)
+        db.session.refresh(training)
+        evaluation["evaluationMode"] = "demo" if service.is_demo else "ai"
+        training.evaluation, training.score = evaluation, evaluation["score"]
+        from .ranking import sync_consultation_ranking
+        sync_consultation_ranking(training)
+        db.session.commit()
+        flash("Avaliação concluída. As Perguntas Básicas de Graduação e a nota final estão disponíveis.", "success")
+    except BasicQuestionsPending:
+        db.session.rollback()
+        # The original checkpoint and all accepted dimensions remain immutable.
+        flash("As Perguntas Básicas de Graduação ainda não puderam ser validadas. Os demais resultados continuam disponíveis; retome esta etapa novamente.", "info")
+    except AIError as exc:
+        db.session.rollback()
+        flash(str(exc), "error")
+    except SQLAlchemyError:
+        db.session.rollback()
+        flash("Não foi possível salvar a avaliação. Os resultados existentes foram preservados; tente novamente.", "error")
+    finally:
+        try:
+            release_lock(session_id, token)
+        except SQLAlchemyError:
+            db.session.rollback()
+            current_app.logger.warning("Não foi possível liberar o bloqueio da avaliação de graduação.")
+    return redirect(destination)
 
 
 @bp.post("/api/sessoes/<session_id>/parecer")
@@ -585,6 +705,8 @@ def teaching_review(session_id):
         return jsonify(error="O parecer usa somente os registros salvos desta consulta."), 400
     if training.status != "completed" or not isinstance(training.evaluation, dict):
         return jsonify(error="Conclua a consulta para receber o parecer pedagógico."), 409
+    if basic_evaluation_pending(training):
+        return jsonify(error="Retome as Perguntas Básicas de Graduação para liberar o parecer completo. Os resultados já validados continuam disponíveis."), 409
     existing = training.evaluation.get("learningReview")
     if isinstance(existing, dict) and existing.get("version") == 1:
         return jsonify(learningReview=existing)
@@ -648,8 +770,11 @@ def result(session_id):
     training = own_session(session_id)
     if training.status != "completed":
         return redirect(url_for("web.consultation", session_id=session_id))
-    return render_template("result.html", training=public_session(training), evaluation=training.evaluation,
-        score_breakdown=score_breakdown(training.evaluation, training.score),
+    pending = basic_evaluation_pending(training)
+    return render_template("result.html", training=public_session(training),
+        evaluation=pending_evaluation_display(training) if pending else training.evaluation,
+        evaluation_pending=pending,
+        score_breakdown=None if pending else score_breakdown(training.evaluation, training.score),
         reference=training.case_snapshot, turns=training.turns, simulation_context=simulation_context(training),
         case_images=exam_media_items(training, include_all=True),
         submission={"diagnosis": training.diagnosis, "differential": training.differential, "treatment": training.treatment},

@@ -100,3 +100,54 @@
 .catalog-track-nav{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 22px}.catalog-track-nav>a{display:inline-flex;align-items:center;gap:9px;padding:11px 16px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--muted);font-size:12px}.catalog-track-nav>a.active{border-color:var(--blue);color:var(--blue);box-shadow:inset 0 -2px var(--blue)}.catalog-track-nav>a:hover{color:var(--blue);border-color:var(--blue)}.basic-system-filter{padding:0 0 22px;margin-bottom:22px;border-bottom:1px solid var(--line)}.basic-system-filter>label{display:block;margin-bottom:9px;color:var(--ink);font-size:12px;font-weight:550}.basic-system-filter>select{display:block;width:100%;max-width:480px;min-height:45px;border:1px solid var(--line);border-radius:6px;padding:10px 13px;background:#fff;color:var(--ink)}.basic-system-filter>p{font-size:11px;line-height:1.8;color:var(--muted);margin-top:9px}.case-basic-label{display:flex;align-items:flex-start;gap:6px;font-size:10px;line-height:1.7;color:var(--blue);margin-bottom:13px}.case-basic-label>svg{margin-top:2px}.basic-track-callout{display:flex;align-items:center;gap:19px;padding:24px;margin:0 0 25px;border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:10px;background:#fff}.basic-track-icon{color:var(--blue)}.basic-track-callout h2{font-size:27px;margin:5px 0 8px}.basic-track-callout p{font-size:12px;line-height:1.8;color:var(--muted)}.basic-track-action{display:flex;align-items:center;gap:9px;margin-left:auto;font-size:12px;color:var(--blue);white-space:nowrap}.basic-track-callout:hover{border-color:var(--blue)}
 .basic-question-review{margin-top:18px}.basic-question-review>p{font-size:11px;color:var(--muted);line-height:1.8;margin-bottom:16px}.basic-question-group{border-top:1px solid var(--line)}.basic-question-group>summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 0;cursor:pointer;font-size:12px;color:var(--blue)}.basic-question-group>summary strong{font-size:14px;white-space:nowrap}.basic-question-group>summary small{font-size:9px;font-weight:400}.basic-question-group>ol{list-style:none;padding:0 0 15px}.basic-question-group>ol>li{padding:15px 0;border-top:1px solid var(--line)}.basic-criterion-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.basic-criterion-heading>h4{font-size:12px;line-height:1.7;margin:0}.basic-criterion-status{padding:3px 7px;border:1px solid var(--line);border-radius:4px;color:var(--blue);font-size:9px;white-space:nowrap}.basic-criterion-status[data-status=not_met]{color:#96374c}.basic-criterion-status[data-status=not_applicable]{color:var(--muted)}.basic-question-group li>p,.basic-criterion-context p{font-size:11px;color:var(--muted);line-height:1.8;margin-top:9px}.basic-criterion-evidence,.basic-criterion-context{margin-top:13px}.basic-criterion-evidence blockquote{margin:6px 0 0;padding-left:12px;border-left:2px solid var(--blue);font-size:11px;line-height:1.8;color:var(--ink);overflow-wrap:anywhere}
 @media(max-width:640px){.catalog-track-nav{gap:8px}.catalog-track-nav>a{padding:10px 12px;font-size:11px}.basic-track-callout{padding:19px 16px;gap:13px;align-items:flex-start;flex-wrap:wrap}.basic-track-callout>div{flex:1;min-width:0}.basic-track-callout h2{font-size:25px}.basic-track-action{width:100%;margin-left:38px}.basic-criterion-heading{flex-direction:column;gap:7px}.basic-question-group>summary{font-size:11px}}
+
+/* Rankings: white surfaces, independent categories, no script needed. */
+.ranking-section{scroll-margin-top:32px}
+.ranking-heading>p{max-width:340px}
+.ranking-boards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.ranking-board{min-width:0;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;scroll-margin-top:24px}
+.ranking-board-header{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--blue);color:#fff;padding:23px 24px}
+.ranking-board-header h3{margin:5px 0 0;color:#fff;font-size:29px;font-weight:400}
+.ranking-kicker{font-size:10px;font-weight:700;letter-spacing:.16em}
+.ranking-board-symbol{display:grid;place-items:center;flex-shrink:0;width:44px;height:44px;border:1px solid rgba(255,255,255,.65);border-radius:50%}
+.ranking-minimum{font-size:12px;line-height:1.7;padding:15px 24px;border-bottom:1px solid var(--line);color:var(--muted)}
+.ranking-minimum strong{color:var(--ink);font-weight:600}
+.ranking-table{width:calc(100% - 32px);margin:0 16px 16px;border-collapse:collapse;table-layout:fixed;font-size:13px}
+.ranking-table th,.ranking-table td{padding:13px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.ranking-table thead th{font-size:10px;font-weight:600;letter-spacing:.03em;color:var(--muted);text-align:left}
+.ranking-table tbody tr:last-child>*{border-bottom:0}
+.ranking-table .ranking-position{width:65px;text-align:center}
+.ranking-table .ranking-number{width:73px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ranking-table .ranking-case-count{width:52px}
+.ranking-place{display:inline-flex;align-items:center;justify-content:center;min-width:32px;min-height:32px;color:var(--blue);font-weight:700}
+.ranking-place-leading{border:1px solid var(--blue);border-radius:50%}
+.ranking-name{font-weight:500;text-align:left;overflow-wrap:anywhere}
+.ranking-you{display:inline-block;margin-left:7px;font-size:10px;font-weight:600;color:#96374c}
+.ranking-current .ranking-name{font-weight:700;color:var(--blue)}
+.ranking-current .ranking-position{border-left:3px solid #b83953}
+.ranking-empty{padding:38px 28px 42px;min-height:218px;text-align:center}
+.ranking-empty>span{color:var(--blue)}
+.ranking-empty h4{font-size:22px;font-weight:400;margin:14px 0 10px}
+.ranking-empty p{max-width:340px;margin:auto;font-size:12px;line-height:1.8;color:var(--muted)}
+.ranking-rules{margin-top:23px;border:1px solid var(--line);border-radius:9px;padding:0 20px;background:#fff}
+.ranking-rules summary{padding:17px 0;cursor:pointer;color:var(--blue);font-size:13px;font-weight:600}
+.ranking-rules p{font-size:12px;line-height:1.9;color:var(--muted);margin:0 0 14px}
+.ranking-sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.personal-rankings{margin:0 0 30px}
+.personal-ranking-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:11px}
+.personal-ranking-heading h2{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--muted)}
+.personal-ranking-heading>a{display:inline-flex;align-items:center;gap:7px;color:var(--blue);font-size:11px;min-height:32px}
+.personal-ranking-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.personal-ranking-card{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:17px 19px;background:#fff;border:1px solid var(--line);border-top:2px solid var(--blue);border-radius:9px;min-width:0}
+.personal-ranking-card:nth-child(2){border-top-color:#b83953}
+.personal-ranking-label,.personal-ranking-value{min-width:0}
+.personal-ranking-label h3{font-family:var(--sans);font-size:12px;font-weight:600;margin:0 0 6px}
+.personal-ranking-card p{font-size:10px;line-height:1.7;color:var(--muted)}
+.personal-ranking-value{text-align:right}
+.personal-ranking-value>strong{display:block;font-size:24px;line-height:1.2;font-weight:600;color:var(--blue);margin-bottom:5px}
+.personal-ranking-value>strong>span{font-size:11px;font-weight:400}
+.personal-ranking-value>strong.personal-ranking-forming{font-size:13px;line-height:1.5}
+.personal-ranking-value p{font-variant-numeric:tabular-nums}
+@media(max-width:1100px){.personal-ranking-card{align-items:flex-start;flex-direction:column;gap:10px}.personal-ranking-value{text-align:left}}
+@media(max-width:760px){.ranking-boards{grid-template-columns:1fr}.ranking-board-header{padding:21px}.ranking-board-header h3{font-size:28px}.ranking-minimum{padding:14px 21px}.ranking-heading>p{max-width:none}.ranking-table{font-size:12px}.ranking-rules{padding:0 17px}}
+@media(max-width:480px){.ranking-table{width:calc(100% - 20px);margin:0 10px 12px}.ranking-table th,.ranking-table td{padding:12px 5px}.ranking-table .ranking-position{width:50px}.ranking-table .ranking-number{width:64px}.ranking-table .ranking-case-count{width:41px}.ranking-you{display:block;margin:4px 0 0}.personal-ranking-grid{gap:9px}.personal-ranking-card{padding:14px 12px}.personal-ranking-label h3{font-size:11px}.personal-ranking-card p{font-size:10px}.personal-ranking-value p>span{display:block}.personal-ranking-value>strong.personal-ranking-forming{font-size:12px}}

@@ -36,6 +36,12 @@
     button.setAttribute('aria-busy', 'true');
     button.textContent = 'Preparando o rascunho…';
   }));
+  $$('[data-basic-evaluation-retry]').forEach(form => form.addEventListener('submit', () => {
+    const button = $('button[type=submit]', form);
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    $('[data-basic-evaluation-progress]', form).hidden = false;
+  }));
   $$('[data-history-filter]').forEach(button => button.addEventListener('click', () => {
     const status = button.dataset.historyFilter;
     $$('[data-history-filter]').forEach(item => {

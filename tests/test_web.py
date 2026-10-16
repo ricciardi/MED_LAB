@@ -283,7 +283,9 @@ def test_exams_are_case_grounded_and_not_duplicated(app, client, start_session):
         assert len(rows) == 1 and rows[0].result == "Resultado físico de teste."
 
 
-def test_evaluation_saves_and_reopening_does_not_call_ai(app, client, start_session, ai):
+@pytest.mark.parametrize("demo_mode", [True, False])
+def test_evaluation_saves_and_reopening_does_not_call_ai(app, client, start_session, ai, demo_mode):
+    ai.is_demo = demo_mode
     consultation_id = start_session()
     client.post(f"/sessao/{consultation_id}/mensagem", json={"question": "Quando começou?", "request_id": "pre-avaliacao"})
     response = client.post(f"/sessao/{consultation_id}/finalizar", data={
@@ -292,7 +294,8 @@ def test_evaluation_saves_and_reopening_does_not_call_ai(app, client, start_sess
     assert response.status_code in (302, 303)
     consultation = stored(app, Consultation, consultation_id)
     assert consultation.status == "completed" and consultation.completed_at is not None
-    assert consultation.score == 73 and consultation.evaluation == evaluation_payload()
+    expected = {**evaluation_payload(), "evaluationMode": "demo" if demo_mode else "ai"}
+    assert consultation.score == 73 and consultation.evaluation == expected
     assert consultation.diagnosis == "Hipótese fictícia de teste"
     assert consultation.differential == "Alternativa fictícia"
     assert consultation.treatment == "Plano fictício de teste"
