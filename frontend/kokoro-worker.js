@@ -38,9 +38,18 @@ function load() {
     // Browser QA found unintelligible Kokoro q8 output on WebGPU. Waveform
     // validity does not establish speech quality. TTS always uses tested WASM;
     // incoming device preferences cannot override this. Whisper is independent.
-    const initialize = () => createKokoroPt({ loadTransformers, createPhonemizer,
-      phonemizerBaseUrl: new URL("./espeak/", import.meta.url), device: "wasm", onProgress: progress,
-    });
+    const initialize = async () => {
+      const engine = await createKokoroPt({ loadTransformers, createPhonemizer,
+        phonemizerBaseUrl: new URL("./espeak/", import.meta.url), device: "wasm", onProgress: progress,
+      });
+      progress({ stage: "warming_up", message: "Preparando o início da fala neste dispositivo…" });
+      try { await engine.warmup?.(); }
+      catch (error) {
+        try { await engine.dispose?.(); } catch { /* Preserve the synthesis error. */ }
+        throw error;
+      }
+      return engine;
+    };
     enginePromise = initialize().catch(error => {
       if (wasmThreads === 1) throw error;
       // A failed threaded initialization must not poison the single-thread retry.
@@ -65,6 +74,7 @@ self.onmessage = ({ data }) => {
       if (data.type === "load") postMessage({ type: "ready", id: data.id, device: engine.device, threads: wasmThreads });
       else {
         const result = await engine.synthesize(data.text, { voiceId: data.voiceId || "pf_dora", signal: activeController.signal, onProgress: progress,
+          returnSamples: !data.stream,
           onChunk: data.stream ? chunk => postMessage({ type: "chunk", id: data.id, ...chunk }, [chunk.samples.buffer]) : undefined,
         });
         if (data.stream) postMessage({ type: "result", id: data.id, streamed: true, samples: new Float32Array(0), sampleRate: result.sampleRate, device: result.device, threads: wasmThreads });

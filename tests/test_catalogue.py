@@ -69,7 +69,8 @@ def test_search_cannot_be_used_to_probe_private_content_or_sql_wildcards(app, lo
     assert card_ids(client.get("/casos", query_string={"q": secret})) == []
     response = client.post("/casos/iniciar", data={"q": secret})
     assert response.status_code == 302
-    assert response.headers["Location"].endswith("/casos")
+    assert urlparse(response.headers["Location"]).path == "/casos"
+    assert parse_qs(urlparse(response.headers["Location"]).query)["q"] == [secret]
     with app.app_context():
         assert db.session.scalar(db.select(db.func.count(Consultation.id))) == 0
 

@@ -3,7 +3,8 @@
 from sqlalchemy import func, or_, select
 
 from .extensions import db
-from .models import ClinicalCase
+from .models import ClinicalCase, CaseDiscovery
+from .discovery import DIFFICULTIES, available_image_count, folded
 
 
 def case_type_for(data):
@@ -23,30 +24,40 @@ def public_summary(case_type):
 def filtered_cases(values):
     """Identical filters for browsing and random selection. Never search case JSON."""
     from .catalog import CASE_TYPES
-    query = select(ClinicalCase).where(ClinicalCase.is_published.is_(True))
+    query = select(ClinicalCase).outerjoin(CaseDiscovery).where(ClinicalCase.is_published.is_(True))
     specialty = values.get("specialty", "").strip()[:80]
     difficulty = values.get("difficulty", "").strip()[:30]
     case_type = values.get("case_type", "").strip()[:80]
     search = values.get("q", "").strip()[:100]
+    exams = values.get("exams", "all")
+    exams = exams if exams in {"all", "results", "images"} else "all"
     if specialty:
         query = query.where(ClinicalCase.specialty == specialty)
     if difficulty:
-        query = query.where(ClinicalCase.difficulty == difficulty)
+        query = query.where(func.coalesce(CaseDiscovery.difficulty, ClinicalCase.difficulty) == difficulty)
     if case_type:
-        query = query.where(ClinicalCase.case_type == case_type)
+        query = query.where(or_(CaseDiscovery.presentation_tags.contains(f"|{case_type}|", autoescape=True),
+                                (CaseDiscovery.case_id.is_(None)) & (ClinicalCase.case_type == case_type)))
+    if exams == "results":
+        query = query.where(CaseDiscovery.exam_result_count > 0)
+    elif exams == "images":
+        # Recheck the few bound assets: an index must not advertise a removed
+        # file or revoked binding. Pending downloaded figures never qualify.
+        candidates = db.session.execute(select(ClinicalCase.id, ClinicalCase.data).join(CaseDiscovery)
+            .where(ClinicalCase.is_published.is_(True), CaseDiscovery.exam_image_count > 0)).all()
+        available = [identifier for identifier, data in candidates if available_image_count(data)]
+        query = query.where(ClinicalCase.id.in_(available))
     if search:
         # Match only the controlled metadata shown in a card, never title/summary,
         # article metadata, patient history, references or diagnostic answer keys.
-        predicates = [ClinicalCase.specialty.icontains(search, autoescape=True),
-                      ClinicalCase.case_type.icontains(search, autoescape=True),
-                      ClinicalCase.difficulty.icontains(search, autoescape=True)]
+        predicates = [CaseDiscovery.search_text.contains(folded(search), autoescape=True)]
         numeric = search.removeprefix("#")
         if numeric.isdigit() and len(numeric) <= 9:
             predicates.append(ClinicalCase.id == int(numeric))
         query = query.where(or_(*predicates))
     return query, {"selected_specialty": specialty, "selected_difficulty": difficulty,
                    "selected_case_type": case_type, "search_query": search,
-                   "case_types": CASE_TYPES}
+                   "selected_exams": exams, "case_types": CASE_TYPES, "difficulties": DIFFICULTIES}
 
 
 def catalogue_counts(target=300):
@@ -67,3 +78,25 @@ def catalogue_counts(target=300):
             row["published_fictional"] += count
         row["missing"] = max(0, target - row["published_real"])
     return list(report.values())
+
+
+def catalogue_facets(values):
+    """Offer categories that exist with the other filters, with real counts."""
+    from collections import Counter
+    from .catalog import CASE_TYPES
+    type_query, _ = filtered_cases({**dict(values), "case_type": ""})
+    rows = db.session.execute(type_query.with_only_columns(
+        CaseDiscovery.presentation_tags, ClinicalCase.case_type, func.count(ClinicalCase.id))
+        .group_by(CaseDiscovery.presentation_tags, ClinicalCase.case_type)).all()
+    types = Counter()
+    for tags, fallback, count in rows:
+        for kind in tags.strip("|").split("|") if tags else [fallback]:
+            types[kind] += count
+    difficulty_query, _ = filtered_cases({**dict(values), "difficulty": ""})
+    level = func.coalesce(CaseDiscovery.difficulty, ClinicalCase.difficulty)
+    difficulties = dict(db.session.execute(difficulty_query.with_only_columns(level, func.count(ClinicalCase.id))
+                                          .group_by(level)).all())
+    chosen_type, chosen_level = values.get("case_type", ""), values.get("difficulty", "")
+    return {"case_types": [t for t in CASE_TYPES if types[t] or t == chosen_type],
+            "difficulties": [d for d in DIFFICULTIES if difficulties.get(d, 0) or d == chosen_level],
+            "type_counts": dict(types), "difficulty_counts": difficulties}

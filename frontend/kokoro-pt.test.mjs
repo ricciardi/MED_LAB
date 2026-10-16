@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import vm from 'node:vm';
 import { speechChunks, kokoroPhonemes, createKokoroPt, createKokoroModel, selectKokoroDevice, LocalVoiceError } from './kokoro-pt.js';
 
 test('fragmentation preserves every word, punctuation and Brazilian decimal without silent truncation', () => {
@@ -8,6 +10,27 @@ test('fragmentation preserves every word, punctuation and Brazilian decimal with
   assert.equal(parts.join(' '), text);
   assert.ok(parts.length > 1);
   assert.ok(parts.every(part => part.length <= 220));
+});
+
+test('natural opening clauses start earlier and neighboring chunks preserve the entire response', () => {
+  const first = 'Estou com dor na barriga desde ontem.';
+  const text = `${first} Ela vai e volta, piora quando ando e melhora um pouco quando fico quieta. Não tive febre nem vomitei.`;
+  const chunks = speechChunks(text);
+  assert.equal(chunks[0], `${first} Ela vai e volta,`);
+  assert.equal(chunks.join(' '), text);
+  assert.ok(chunks.every(chunk => chunk.length <= 90));
+  const long = 'A dor começou há três dias, bem aqui no peito, e parece um aperto que aparece quando caminho mais rápido. Quando paro e descanso, ela diminui.';
+  const bounded = speechChunks(long);
+  assert.ok(bounded[0].length <= 90);
+  assert.equal(bounded.join(' '), long);
+  assert.ok(!bounded[0].endsWith('rápi'), 'a word must never be split');
+});
+
+test('a very short greeting is not emitted as a tiny separate audio block', () => {
+  const chunks = speechChunks('Olá. A dor começou ontem à tarde e vai e volta. Não tive febre.');
+  assert.ok(chunks[0].startsWith('Olá. A dor começou ontem à tarde e vai e volta.'));
+  assert.equal(chunks.join(' '), 'Olá. A dor começou ontem à tarde e vai e volta. Não tive febre.');
+  assert.equal(speechChunks('Não tive febre nem vômitos.').length, 1);
 });
 
 test('invalid or oversized speech is rejected instead of spoken partially', () => {
@@ -116,4 +139,75 @@ test('WASM failure is surfaced without an infinite retry or a fabricated wavefor
   }) });
   await assert.rejects(model.run(ids, style, 1), /inference failed/);
   assert.deepEqual(calls, ['webgpu', 'wasm']);
+});
+
+// Isolate fake asset digests in a VM: production still verifies the pinned
+// hashes, while these tests exercise buffers/lifecycle without downloading.
+const bridgeSource = (await readFile(new URL('./kokoro-pt.js', import.meta.url), 'utf8'))
+  .replace(/^export /gmu, '') + '; globalThis.bridge = { createKokoroPt, PORTUGUESE_VOICES };';
+function bridgeHarness({ phonemizerReady, onModelLoad } = {}) {
+  const spoken = [], events = [];
+  const scope = { URL, Float32Array, BigInt64Array, Uint8Array, Response, Intl, setTimeout, clearTimeout, fetch,
+    crypto: { subtle: { digest: async (_name, bytes) => {
+      const voice = Object.values(scope.bridge.PORTUGUESE_VOICES)[new Uint8Array(bytes)[0]];
+      return Uint8Array.from(voice.sha256.match(/../g), byte => parseInt(byte, 16)).buffer;
+    } } },
+  };
+  vm.runInNewContext(bridgeSource, scope);
+  const options = {
+    transformers: fakeRuntime({ load: onModelLoad, run: () => events.push('model') }),
+    phonemizerBaseUrl: 'https://example.invalid/espeak/',
+    createPhonemizer: async config => {
+      await phonemizerReady;
+      return { callMain: args => {
+        const text = JSON.parse(args[args.indexOf('--input') + 1])[0].text;
+        spoken.push(text); config.print(JSON.stringify({ phonemes: ['o', 'l', 'a'] }));
+      } };
+    },
+    fetcher: async url => {
+      const id = url.split('/').at(-1).replace('.bin', '');
+      const bytes = new Uint8Array(522240);
+      bytes[0] = Object.keys(scope.bridge.PORTUGUESE_VOICES).indexOf(id);
+      return new Response(bytes);
+    },
+  };
+  return { ready: scope.bridge.createKokoroPt(options), spoken, events };
+}
+
+test('phonemizer initialization does not delay independent model and voice loading', async () => {
+  let release, modelStarted = false;
+  const phonemizerReady = new Promise(resolve => { release = resolve; });
+  const harness = bridgeHarness({ phonemizerReady, onModelLoad: () => { modelStarted = true; } });
+  await new Promise(setImmediate);
+  assert.equal(modelStarted, true);
+  release();
+  const engine = await harness.ready;
+  await engine.dispose();
+});
+
+test('streaming transfers every sample once without constructing an unused full waveform', async () => {
+  const harness = bridgeHarness(), engine = await harness.ready;
+  const text = 'Estou com dor na barriga desde ontem. Ela vai e volta, piora quando ando e melhora um pouco quando fico quieta. Não tive febre nem vomitei.';
+  const chunks = [];
+  const streamed = await engine.synthesize(text, { returnSamples: false, onChunk: chunk => {
+    chunks.push(structuredClone(chunk, { transfer: [chunk.samples.buffer] }));
+  } });
+  assert.equal(streamed.samples.length, 0);
+  assert.equal(harness.spoken.join(' '), text);
+  assert.deepEqual(chunks.map(chunk => chunk.index), [0, 1, 2]);
+  assert.ok(chunks.every(chunk => chunk.total === chunks.length));
+  const collected = await engine.synthesize(text);
+  const flattened = chunks.flatMap(chunk => [...chunk.samples]);
+  assert.deepEqual(flattened, [...collected.samples]);
+  assert.equal(collected.samples.length, 3 * 3 + 2 * 1920);
+});
+
+test('warmup executes only fixed text silently and leaves the next real response intact', async () => {
+  const harness = bridgeHarness(), engine = await harness.ready;
+  await engine.warmup();
+  assert.deepEqual(harness.spoken, ['Olá.']);
+  const result = await engine.synthesize('Não tive febre.');
+  assert.deepEqual(harness.spoken, ['Olá.', 'Não tive febre.']);
+  assert.equal(result.samples.length, 3);
+  assert.equal(harness.events.length, 2);
 });

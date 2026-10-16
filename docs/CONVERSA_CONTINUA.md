@@ -15,9 +15,17 @@ O áudio é processado no navegador. Somente o texto reconhecido segue para a co
 
 A alternância automática não elimina o tempo de processamento: há uma pausa para reconhecer a fala, obter a resposta e gerar a voz. A velocidade depende do dispositivo, do navegador e da extensão da resposta. Os testes em computador não demonstram o desempenho no Galaxy Tab S10 FE+.
 
+A ativação agora inclui um aquecimento silencioso da síntese, e as respostas começam por trechos menores. O texto acompanha o instante agendado para iniciar a reprodução. Um pequeno buffer pode adiar esse início para reduzir interrupções entre trechos; não elimina o tempo de geração. Em um benchmark local no Mac, o primeiro trecho ficou pronto em 3,42 s com Dora e 3,01 s com Alex, ante 5,41 e 5,30 s. O início com o buffer final foi estimado por replay em 3,46 e 3,71 s; não houve nova gravação dessa reprodução nem teste em tablet. Respostas curtas continuaram próximas de dois segundos, e o tempo total de síntese não melhorou uniformemente.
+
 As vozes disponíveis, os tamanhos dos modelos e os resultados de áudio estão documentados em [Créditos e limites da voz local](CREDITOS_VOZ.md). Os testes reais da IA estão em [Testes DeepSeek](TESTES_DEEPSEEK.md).
 
 O conteúdo da fala usa o [paciente simulado com memória](PACIENTE_SIMULADO.md): respostas podem desenvolver experiências plausíveis relacionadas ao caso, preservando fatos documentados e detalhes já estabelecidos na consulta. A mesma memória é usada por texto e por voz; trocar o modo de entrada não reinicia o personagem.
+
+## Encontrar e solicitar exames
+
+Na biblioteca, **Com resultados complementares** seleciona casos com achados textuais utilizáveis; **Com imagens disponíveis** seleciona apenas imagens vinculadas e liberadas para exibição. Os filtros também valem para o sorteio, e as contagens de tipo/dificuldade acompanham as demais escolhas. Dificuldade **estimada** descreve a extensão do roteiro, não a gravidade da doença ou sua competência.
+
+Durante a consulta, abra a aba **Exames**, que informa a quantidade disponível, e clique em **Solicitar**. O resultado aparece logo abaixo, com imagem quando houver. Pedir um exame ao paciente por voz ou texto não aciona esse botão. Alguns resultados estão agrupados sob nomes gerais; uma ficha pode não documentar o exame procurado. No snapshot local conferido, 13.985 casos têm complementares úteis e sete têm 15 imagens disponíveis; imagens em preparação não entram nessa contagem.
 
 ## Verificação integrada em 15/10/2026
 

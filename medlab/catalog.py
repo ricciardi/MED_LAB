@@ -80,6 +80,13 @@ CASE_TYPES = [
     "Acompanhamento e prevenção",
     "Sintomas ginecológicos",
     "Queixa pediátrica",
+    "Alterações visuais",
+    "Sintomas de ouvido, nariz e garganta",
+    "Palpitações e desmaios",
+    "Edema e alterações circulatórias",
+    "Nódulos e massas",
+    "Sede, fome e alterações de peso",
+    "Trauma e lesões",
     "Outros sintomas",
 ]
 

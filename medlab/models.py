@@ -48,6 +48,24 @@ class ClinicalCase(db.Model):
     is_generated = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=utcnow, nullable=False)
     updated_at = db.Column(db.DateTime, default=utcnow, onupdate=utcnow, nullable=False)
+    discovery = db.relationship("CaseDiscovery", uselist=False, lazy="selectin",
+                                cascade="all, delete-orphan", passive_deletes=True)
+
+
+class CaseDiscovery(db.Model):
+    """Rebuildable public metadata, separate from source facts and saved consultations."""
+    case_id = db.Column(db.Integer, db.ForeignKey("clinical_case.id", ondelete="CASCADE"), primary_key=True)
+    version = db.Column(db.String(40), nullable=False)
+    source_digest = db.Column(db.String(64), nullable=False)
+    case_type = db.Column(db.String(80), nullable=False, index=True)
+    presentation_tags = db.Column(db.String(1024), nullable=False)
+    difficulty = db.Column(db.String(30), nullable=False, index=True)
+    difficulty_estimated = db.Column(db.Boolean, nullable=False)
+    classification_note = db.Column(db.String(500), nullable=False)
+    search_text = db.Column(db.String(1600), nullable=False)
+    exam_result_count = db.Column(db.Integer, nullable=False, default=0, index=True)
+    physical_result_count = db.Column(db.Integer, nullable=False, default=0)
+    exam_image_count = db.Column(db.Integer, nullable=False, default=0, index=True)
 
 
 class SourceRecord(db.Model):

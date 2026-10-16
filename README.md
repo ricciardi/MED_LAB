@@ -11,7 +11,7 @@ O projeto transforma o núcleo de pesquisa EasyMED deste repositório em um prod
 - Landing page, cadastro, login, logout e painel do estudante.
 - Biblioteca com oito casos fictícios em português, filtros e escolha aleatória que prioriza casos diferentes dos cinco mais recentes.
 - Fichas de relatos reais preparadas em português por Codex e por DeepSeek, com evidência da fonte, checkpoints e revisão obrigatória antes da publicação.
-- Catálogo de estudo com as 55 especialidades reconhecidas pelo CFM e 15 tipos de queixa; a disponibilidade depende dos casos efetivamente publicados.
+- Catálogo de estudo com as 55 especialidades reconhecidas pelo CFM e 22 categorias de apresentação; filtros com contagens reais, busca com ou sem acentos e seleção de casos com resultados complementares ou imagens disponíveis.
 - Consulta com diálogo, exame físico, exames complementares, hipótese diagnóstica, diferenciais e plano terapêutico.
 - Avaliação com nota, evidências, acertos, oportunidades de melhoria e próximos passos nas dimensões de anamnese, exame físico, exames complementares, raciocínio diagnóstico, plano terapêutico e desempenho global.
 - Resultado com memória de cálculo da nota e parecer educacional complementar salvo, com exemplos de perguntas, orientações de raciocínio e conduta e justificativas para os exames.
@@ -50,6 +50,16 @@ flask --app app run --host 127.0.0.1 --port 5055
 Acesse `http://127.0.0.1:5055`. A administração padrão fica em `/gestao-medlab/login`; personalize `ADMIN_PATH` no ambiente. O endereço discreto complementa a autenticação e a verificação de permissão. Não existe senha administrativa padrão.
 
 `init-db` importa os oito casos iniciais uma única vez, sem sobrescrever edições existentes. Quando o ZIP inclui `medlab/data/source_registry.jsonl` e o diretório fragmentado `medlab/data/real_case_drafts/` (ou uma lista JSON menor), `init-db` e `upgrade-db` também restauram o inventário, os bloqueios de reimportação e as fichas reais compatíveis com a política configurada. Fichas novas com autorização provisória explícita válida (`useAuthorization`) já exportada ficam disponíveis na biblioteca, mantendo `review_required`; rascunhos sem essa autorização continuam privados. A restauração é idempotente e preserva edições, revisões e suspensões deliberadas existentes. Pode disponibilizar um rascunho anterior sem autorização somente quando seu conteúdo coincide integralmente com o exportado, exceto pela nova autorização. Metadados portáteis não comprovam verificação do XML na instalação de destino: fontes restauradas começam com verificação pendente, mesmo quando a ficha está disponível provisoriamente. Não são transferidos usuários, conversas ou bancos. Os cinquenta perfis originais do SPBench permanecem como material de pesquisa: não são publicados automaticamente, pois não contêm todos os gabaritos exigidos pela aplicação.
+
+## Escolher casos e encontrar exames
+
+Os filtros de apresentação, dificuldade e exames também valem para o sorteio. As opções de tipo e dificuldade mostram quantos casos correspondem aos demais filtros; a busca aceita, por exemplo, `clinica` ou `Clínica`. Ela consulta somente os metadados públicos do catálogo, sem pesquisar o diagnóstico reservado. Um caso pode ter mais de uma apresentação.
+
+O índice separado `CaseDiscovery` organiza essas informações sem reescrever as fichas ou os snapshots das consultas. Nos casos preparados localmente, **dificuldade estimada** significa extensão do roteiro — campos de entrevista disponíveis e grupos de exames complementares —, sem medir gravidade, raridade da doença ou competência clínica. Dados insuficientes ficam como **Não classificada**. Apresentações autorais específicas e dificuldades autorais são preservadas; apresentações genéricas como Primeira consulta e Outros sintomas podem ser refinadas também nos casos não locais.
+
+No snapshot conferido desta etapa, **13.985 dos 14.367 casos publicados têm resultados complementares úteis** e **sete casos têm 15 imagens disponíveis**. Arquivos de imagem baixados e propostas pendentes não contam como imagens prontas. Na consulta, abra **Exames** e clique em **Solicitar**: o resultado aparece abaixo do exame, acompanhado da imagem quando houver. Uma pergunta sobre exame no chat não executa essa solicitação.
+
+Em instalações existentes, faça backup e execute `flask --app app upgrade-db`. Para reconstruir somente o índice após atualizar as regras ou a disponibilidade de mídia, use `flask --app app reindex-catalogue`. A operação não chama a DeepSeek nem recalcula notas; veja o [procedimento no cPanel](docs/CPANEL.md#catálogo-filtros-e-disponibilidade).
 
 ## Publicar no cPanel
 
@@ -99,6 +109,8 @@ O estudante ativa a voz e autoriza o download inicial: aproximadamente **175 MB 
 As vozes neurais brasileiras são Dora (`pf_dora`), Alex (`pm_alex`) e Santa (`pm_santa`); as opções seguem o gênero documentado no perfil. Perguntas podem ter até 45 segundos, com conversão local para mono a 16 kHz. O áudio não é enviado ao Flask nem ao serviço de modelos. No modo manual, a transcrição pode ser corrigida antes do envio; na [conversa contínua](docs/CONVERSA_CONTINUA.md), cerca de 1,6 segundo de silêncio ao terminar de falar inicia a transcrição e o envio automático. Se a gravação estiver muito baixa ou saturada, o modo contínuo pausa e abre o texto para revisão ou nova gravação; isso avalia o sinal de áudio, não a correção das palavras. O microfone fica desligado enquanto o paciente responde e volta a escutar após a reprodução. A síntese lê respostas já registradas; o texto aparece junto com o primeiro trecho de áudio nesse modo. HTTPS e permissão de microfone são necessários no domínio publicado.
 
 `DEMO_MODE=true` continua desativando a DeepSeek, mas a voz local pode transcrever e ler respostas demonstrativas. A voz é sintética: sotaque, nomes, números e termos clínicos podem apresentar erros. A validação em um Samsung real ainda está pendente; não se garante desempenho uniforme entre celulares. Consulte [créditos, licenças e limites da voz](docs/CREDITOS_VOZ.md).
+
+Uma comparação local no Mac reduziu a geração do primeiro trecho de Dora de **5,41 para 3,42 s** e de Alex de **5,30 para 3,01 s**, com trechos iniciais menores e preparação durante a ativação da voz. Isso não é tempo total da resposta nem promessa de fluidez em tablet. O agendamento final, incluindo buffer, foi conferido por replay dos tempos medidos, sem uma nova gravação da reprodução. Veja [método e limites da medição](docs/TESTES_DEEPSEEK.md#catálogo-e-latência-local-de-voz-sem-novas-chamadas-deepseek).
 
 ## Acervo de casos reais
 

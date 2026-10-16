@@ -1,4 +1,4 @@
-# MED_LAB — instalação e operação no cPanel
+# BayesCore MedRounds — instalação e operação no cPanel
 
 O pacote contém a aplicação Flask e os arquivos para publicação por Passenger. A instalação no servidor exige acesso ao cPanel/Terminal, domínio com HTTPS e uma chave DeepSeek configurada no próprio servidor. A voz é processada no navegador, sem chave de serviço de fala. Preparar e testar o pacote localmente não equivale a publicar a aplicação.
 
@@ -128,6 +128,8 @@ Confira no domínio publicado se `.js`, `.mjs`, `.wasm` e dados auxiliares em `/
 
 A voz não usa chave nem créditos de um provedor de fala; a conversa e a adaptação de casos continuam usando a DeepSeek paga. `DEMO_MODE=true` desativa DeepSeek, mas permite voz local sobre respostas demonstrativas. Voz sintética pode errar pronúncia, números e termos médicos; a transcrição pode conter erros; o modo manual permite conferência antes de enviar e o modo contínuo permite interromper a alternância automática. O teste em Samsung real ainda está pendente, e o desempenho deve ser verificado nos aparelhos da instituição. Consulte [créditos, fontes e licenças](CREDITOS_VOZ.md).
 
+A síntese prepara um pequeno aquecimento silencioso durante a ativação explícita e divide a resposta em trechos menores, preservando palavras e pontuação. Há um buffer inicial limitado quando necessário para reduzir pausas entre trechos. No benchmark local de Mac, o primeiro trecho de Dora passou de 5,41 para 3,42 s e o de Alex de 5,30 para 3,01 s. O replay do agendamento final indicou início em 3,46 e 3,71 s, respectivamente, já com buffer; não foi uma nova gravação da reprodução nem um teste em tablet. A síntese total não melhorou em todos os exemplos. Ao atualizar os workers estáticos, recarregue a página ou desative e reative a voz; um worker já aberto conserva o código anterior. Detalhes em [Catálogo e latência local de voz](TESTES_DEEPSEEK.md#catálogo-e-latência-local-de-voz-sem-novas-chamadas-deepseek).
+
 ### Banco de dados
 
 SQLite é a opção inicial para uso pequeno. A pasta do arquivo deve ser gravável pelo usuário da aplicação e não deve ser pública. Para volume maior de escritas simultâneas, use o MySQL/MariaDB fornecido pela hospedagem.
@@ -156,6 +158,22 @@ O primeiro comando cria o esquema inicial, importa os oito casos fictícios e re
 O segundo comando solicita os dados da nova conta e a senha de forma interativa. Não existe conta administrativa com senha pública. Use uma conta nova desta instalação. Os dois relatórios seguintes permitem conferir fontes e disponibilidade real do catálogo. Em uma instalação existente, use `upgrade-db` após o backup, como descrito na seção de atualização; a mesma regra de autorização se aplica, sem necessidade de recriar o administrador.
 
 A restauração dos metadados não substitui a conferência do XML: no servidor novo, a fonte começa com verificação pendente, mesmo quando a ficha em português já está vinculada e disponível provisoriamente. As contagens de fontes verificadas da máquina de preparação não são uma verificação feita no destino. A autorização de uso não afirma revisão clínica concluída nem verificação local da fonte; confira esses estados separadamente nos relatórios.
+
+### Catálogo, filtros e disponibilidade
+
+O catálogo usa a tabela derivada `case_discovery` (`CaseDiscovery`), separada do JSON clínico e dos snapshots das consultas. Ela registra apresentações, texto de busca sem acentos, dificuldade estimada e contagens de resultados e imagens. A apresentação local prioriza a queixa atual e ignora negativas reconhecidas; as regras continuam heurísticas. A dificuldade estimada considera campos utilizáveis de entrevista e grupos de exames complementares, com continuações agrupadas. Não mede gravidade, raridade nem competência clínica; falta de dados pode produzir **Não classificada**.
+
+O filtro `exams=results` significa **Com resultados complementares**, excluindo campos indisponíveis e listas de menções sem vínculo confirmado. `exams=images` significa **Com imagens disponíveis**: exige vínculo ao caso/exame, licença e revisão de privacidade aceitas e arquivo conferido. O filtro verifica novamente as imagens candidatas, para não anunciar um arquivo removido ou um vínculo revogado. Os tipos e níveis mostram contagens conforme os demais filtros; a busca aceita termos com ou sem acentos e o sorteio aplica o mesmo recorte. Diagnóstico, título do artigo e gabarito não entram na busca pública.
+
+Na conferência local desta entrega, 13.985 dos 14.367 casos publicados têm resultados complementares úteis; sete casos têm 15 imagens servíveis. A instalação de destino só terá essas imagens depois de restaurar o pacote privado de mídia e conferir seus vínculos. Milhares de originais baixados ou propostas pendentes não equivalem a imagens liberadas. Na consulta, o estudante abre **Exames** e usa **Solicitar** para revelar o resultado; perguntar no chat não substitui esse botão.
+
+Após backup, `upgrade-db` cria e preenche o índice na atualização. Para reconstruí-lo depois de mudar regras de descoberta ou restaurar/atualizar mídias, execute no Terminal da aplicação:
+
+```bash
+flask --app app reindex-catalogue
+```
+
+O comando processa lotes de 100 casos e pode ser repetido após interrupção. Não usa API, não altera fichas ou consultas nem recalcula avaliações. A reconstrução local foi acompanhada por hashes que confirmaram a preservação dos dados preexistentes. Reserve a janela de manutenção para evitar exibir um índice parcialmente reconstruído.
 
 O endereço administrativo padrão é `https://SEU_DOMINIO/gestao-medlab/login`; se `ADMIN_PATH` mudar, ajuste esse endereço. Não há link administrativo na navegação pública. O caminho discreto reduz sua exposição, mas a proteção efetiva continua sendo autenticação e permissão de administrador no servidor.
 
@@ -232,7 +250,7 @@ Antes de atualizar: faça backup, reserve uma janela de manutenção e confira a
 flask --app app upgrade-db
 ```
 
-Essa atualização cria também a tabela `consultation_simulation`, que guarda detalhes elaborados pelo paciente separadamente da ficha original. É necessária antes de usar a nova conversa em uma instalação existente. O comando acrescenta o tipo de apresentação ao catálogo e ajusta nomes de especialidade existentes, preservando os snapshots, diálogos e avaliações das consultas. É idempotente. `init-db` também aplica a atualização necessária ao inicializar uma instalação; não executa uma migração geral de qualquer esquema futuro. Reinicie Passenger após a atualização e valide o histórico antes de reabrir o acesso.
+Essa atualização cria também `consultation_simulation`, que guarda detalhes elaborados pelo paciente, e `case_discovery`, o índice derivado de classificação e disponibilidade. É necessária antes de usar esses recursos em uma instalação existente. O comando aplica os ajustes legados de apresentação/especialidade e atualiza o índice, preservando os snapshots, diálogos e avaliações das consultas. É idempotente. Para atualizar apenas os metadados derivados, use `reindex-catalogue`, conforme a seção do catálogo. `init-db` também aplica a atualização necessária ao inicializar uma instalação; não executa uma migração geral de qualquer esquema futuro. Reinicie Passenger após a atualização e valide o histórico antes de reabrir o acesso.
 
 Para restaurar: suspenda escritas, restaure o banco e o código compatíveis, recoloque o `.env` privado, confira permissões e reinicie. Valide login, casos e consultas antes de reabrir. Não use o ZIP de entrega como se fosse um backup de produção.
 

@@ -230,6 +230,7 @@ def register_commands(app):
         from .migrations import upgrade_database
         from .catalog import SEED_CASE_TYPES, SPECIALTY_ALIASES
         from .catalogue import case_type_for
+        from .discovery import refresh_discovery
         upgrade_database()
         last_id = 0
         final_id = db.session.scalar(select(ClinicalCase.id).order_by(ClinicalCase.id.desc()).limit(1)) or 0
@@ -248,12 +249,22 @@ def register_commands(app):
                 if data != case.data:
                     case.data = data
                 case.specialty, case.case_type = data["specialty"], case_type_for(data)
+                refresh_discovery(case)
             last_id = batch[-1].id
             db.session.flush()
         db.session.commit()
         restore_bundled_inventory()
         restore_bundled_drafts()
         click.echo("Banco atualizado. Consultas e notas anteriores preservadas.")
+
+    @app.cli.command("reindex-catalogue")
+    def reindex_catalogue():
+        """Reconstrói classificação e disponibilidade sem alterar fichas ou consultas."""
+        from .migrations import upgrade_database
+        from .discovery import rebuild_discovery
+        upgrade_database()
+        count = rebuild_discovery()
+        click.echo(f"Catálogo atualizado: {count} casos. Fichas e históricos preservados.")
 
     @app.cli.command("catalog-report")
     def catalog_report():

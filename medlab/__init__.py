@@ -76,6 +76,7 @@ def create_app(config=None):
     login_manager.login_message = "Entre na sua conta para continuar."
     login_manager.login_message_category = "info"
     from .models import User
+    from . import discovery  # Register maintenance of derived public catalogue metadata.
 
     @login_manager.user_loader
     def load_user(user_id):

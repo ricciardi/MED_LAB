@@ -420,6 +420,7 @@
       if (typeof data.text !== 'string' || !data.text.trim() || data.voice_id !== voice.id) throw new Error('A resposta de voz não pôde ser validada. Tente novamente.');
       synthesizing = true;
       const streamed = Boolean(playbackContext);
+      const synthesisStarted = playbackContext?.currentTime;
       const result = await tts.request('synthesize',{text:data.text,voiceId:data.voice_id,stream:streamed},[],progress => {
         if (generation === playbackGeneration && !playbackChunks) $('#voice-player-label').textContent = progress.message || 'Gerando a voz neste dispositivo…';
       },chunk => {
@@ -447,7 +448,13 @@
             else $('#voice-player-label').textContent = 'Gerando o próximo trecho neste dispositivo…';
           }
         },{once:true});
-        const start = Math.max(playbackContext.currentTime + 0.04,playbackCursor);
+        // If the first block takes longer to generate than to speak, leave a
+        // small, bounded head start for the next inference. Fast devices and
+        // single-block replies retain the immediate 40 ms schedule. The text
+        // reveal below follows this actual start time, not chunk arrival.
+        const needsLead = playbackChunks === 0 && chunk.total > 1 &&
+          playbackContext.currentTime - synthesisStarted >= buffer.duration;
+        const start = Math.max(playbackContext.currentTime + (needsLead ? 0.7 : 0.04),playbackCursor);
         source.start(start);
         playbackCursor = start + buffer.duration;
         playbackChunks++;

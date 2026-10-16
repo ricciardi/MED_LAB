@@ -21,7 +21,7 @@ class Element {
 const defaults={provider:'local',available:true,supported:true,gender:'male',gender_locked:true,default_voice:'pm_alex',
   voices:[{id:'pf_dora',label:'Dora',gender:'female'},{id:'pm_alex',label:'Alex',gender:'male'},{id:'pm_santa',label:'Santa',gender:'male'}],
   models_asr:{download_mb:100},models_tts:{download_mb:120},max_recording_seconds:45};
-async function harness(configuration={}, {workerLoads=true,micDenies=false,streamChunks=1,streamFinishes=true,withApp=false,micDeferred=false,messageFails=false,messageDeferred=false,asrFails=false,asrNeedsReview=false,autoplayBlocked=false,bodyDeferred=false}={}) {
+async function harness(configuration={}, {workerLoads=true,micDenies=false,streamChunks=1,streamFinishes=true,synthesisDelay=0,withApp=false,micDeferred=false,messageFails=false,messageDeferred=false,asrFails=false,asrNeedsReview=false,autoplayBlocked=false,bodyDeferred=false}={}) {
   const nodes=new Map(),workers=[],requests=[],audioContexts=[],streams=[],recorders=[];let micCalls=0,energy=0,now=0,nextTimer=0,resolveMic,resolveMessage; const timers=new Map();
   const schedule=(fn,delay,repeat=false)=>{const id=++nextTimer;timers.set(id,{fn,at:now+delay,delay,repeat});return id;};
   const advance=async(ms)=>{const end=now+ms;while(true){const entry=[...timers].filter(([,t])=>t.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!entry)break;const[id,t]=entry;now=t.at;if(t.repeat)t.at+=t.delay;else timers.delete(id);t.fn();await settle();}now=end;await settle();};
@@ -35,7 +35,7 @@ async function harness(configuration={}, {workerLoads=true,micDenies=false,strea
     constructor(url,options){super();this.url=url;this.options=options;this.messages=[];workers.push(this);}
     postMessage(data,transfer){this.messages.push({data,transfer});if(data.type==='load'&&workerLoads)queueMicrotask(()=>this.dispatchEvent({type:'message',data:{type:'ready',id:data.id,device:'wasm'}}));
       if(data.type==='transcribe')queueMicrotask(()=>this.dispatchEvent({type:'message',data:asrFails?{type:'error',id:data.id,message:'Transcrição falhou.'}:{type:'result',id:data.id,text:'Estou com dor há três dias.',needsReview:asrNeedsReview}}));
-      if(data.type==='synthesize')queueMicrotask(()=>{
+      if(data.type==='synthesize')(synthesisDelay ? callback => schedule(callback,synthesisDelay) : queueMicrotask)(()=>{
         for(let index=0;index<streamChunks;index++)this.dispatchEvent({type:'message',data:{type:'chunk',id:data.id,index,total:streamChunks,samples:Float32Array.from({length:2400},()=>.1),sampleRate:24000}});
         if(streamFinishes)this.dispatchEvent({type:'message',data:{type:'result',id:data.id,streamed:true,samples:new Float32Array(0),sampleRate:24000}});
       });}
@@ -124,6 +124,21 @@ test('streamed fragments are scheduled consecutively and the player ends only af
   sources[2].dispatchEvent({type:'ended'});assert.equal(h.get('#voice-player').hidden,true);
   assert.equal(h.get('#tts-model-activate').disabled,true);assert.equal(h.audioContexts[0].state,'closed');
 });
+
+for (const [streamChunks,synthesisDelay,lead] of [[3,150,.7],[3,50,.04],[1,150,.04]]) {
+  test(`first-block buffer adapts to generation speed without delaying a short reply (${streamChunks}, ${synthesisDelay}ms)`,async()=>{
+    const h=await harness({}, {streamChunks,synthesisDelay});h.get('#tts-model-activate').click();await settle();
+    const node=new Element(),parent=new Element();node.querySelector=selector=>selector==='[data-listen-turn]'?null:{parentElement:parent};
+    h.app.dispatchEvent({type:'medlab:turn-saved',detail:{turnId:42,element:node}});parent.children[0].click();await settle();
+    assert.equal(h.audioContexts[0].sources.length,0);
+    await h.advance(synthesisDelay);
+    const sources=h.audioContexts[0].sources;
+    assert.ok(Math.abs(sources[0].startAt-synthesisDelay/1000-lead)<1e-10);
+    for(let index=1;index<sources.length;index++)assert.ok(Math.abs(sources[index].startAt-sources[index-1].startAt-.1)<1e-10);
+    h.get('#voice-stop-playback').click();await settle();
+    assert.ok(sources.every(source=>source.stopped));
+  });
+}
 test('stopping unfinished synthesis terminates compute and suppresses late audio chunks',async()=>{
   const h=await harness({}, {streamFinishes:false});h.get('#tts-model-activate').click();await settle();
   const node=new Element(),parent=new Element();node.querySelector=selector=>selector==='[data-listen-turn]'?null:{parentElement:parent};
@@ -178,6 +193,19 @@ test('continuous VAD sends once, synchronizes text, and listens again only after
   assert.equal(h.audioContexts[0].state,'running');
   h.get('#voice-continuous-toggle').click();await settle();
   assert.equal(h.streams[1].getTracks()[0].stopped,true);assert.equal(h.audioContexts[0].state,'closed');
+});
+
+test('adaptive first-block buffering keeps text hidden until its scheduled audio start',async()=>{
+  const h=await startContinuous({streamChunks:2,synthesisDelay:150});
+  await speak(h);await h.advance(150);
+  assert.equal(answerBubble(h).textContent,'Preparando voz do paciente…');
+  const sources=h.audioContexts[0].sources;
+  assert.equal(sources.length,2);assert.equal(h.micCalls(),1);
+  await h.advance(699);assert.equal(answerBubble(h).textContent,'Preparando voz do paciente…');
+  await h.advance(1);assert.equal(answerBubble(h).textContent,'Minha resposta salva.');
+  sources[0].dispatchEvent({type:'ended'});await h.advance(400);assert.equal(h.micCalls(),1);
+  sources[1].dispatchEvent({type:'ended'});await h.advance(350);assert.equal(h.micCalls(),2);
+  h.get('#voice-continuous-toggle').click();await settle();
 });
 
 test('steady background noise is calibrated and no-speech timeout never reaches ASR or sends text',async()=>{

@@ -140,13 +140,23 @@ export function speechChunks(text, maximum = 220) {
   for (const sentence of sentences) {
     for (const word of sentence.split(/\s+/u)) {
       if (word.length > maximum) throw new LocalVoiceError("INVALID_TEXT", "A fala contém um trecho que não pode ser pronunciado.");
-      if (current.length + word.length + 1 > maximum) { chunks.push(current); current = ""; }
+      // Keep neighboring blocks comparable: a tiny opening followed by a large
+      // second inference starts early but leaves an audible gap. Commas and
+      // sentence endings offer natural pauses without changing any wording.
+      const limit = Math.min(maximum, 90);
+      if (current && current.length + word.length + 1 > limit) { chunks.push(current); current = ""; }
       current += (current ? " " : "") + word;
+      if (current.length >= 45 && /[,;:]$/u.test(word)) { chunks.push(current); current = ""; }
     }
-    // Keep short related sentences together for more stable Kokoro prosody.
-    if (current.length >= 90) { chunks.push(current); current = ""; }
+    // A short greeting stays with its next phrase, while a meaningful sentence
+    // no longer waits for the previous 90-character minimum.
+    if (current.length >= 45) { chunks.push(current); current = ""; }
   }
-  if (current) chunks.push(current);
+  if (current) {
+    const previous = chunks.at(-1);
+    if (previous && current.length < 25 && previous.length + current.length + 1 <= Math.min(maximum, 90)) chunks[chunks.length - 1] += " " + current;
+    else chunks.push(current);
+  }
   return chunks;
 }
 
@@ -181,22 +191,24 @@ export async function createKokoroPt({ transformers, createPhonemizer, phonemize
     throw new LocalVoiceError("RUNTIME_MISSING", "Os arquivos da voz local precisam ser preparados pelo administrador.");
   }
   let phonemeResult;
-  const phonemizer = await createPhonemizer({
+  const phonemizerReady = createPhonemizer({
     noInitialRun: true,
     locateFile: name => new URL(name, phonemizerBaseUrl).href,
     print: data => { try { phonemeResult = JSON.parse(data); } catch { phonemeResult = null; } },
     printErr: () => {},
   });
   onProgress({ stage: "loading", message: "Preparando a voz em português…" });
-  const [model, loadedVoices] = await Promise.all([
+  const [phonemizer, model, loadedVoices] = await Promise.all([
+    phonemizerReady,
     createKokoroModel({ transformers, loadTransformers, device, onProgress }),
     Promise.all(Object.keys(PORTUGUESE_VOICES).map(async id => [id, await verifiedVoice(id, fetcher)])),
   ]);
   const voices = new Map(loadedVoices);
   let busy = false;
-  return {
+  const engine = {
     get device() { return model.device; },
-    async synthesize(text, { voiceId = "pf_dora", speed = 1, signal, onProgress: progress = onProgress, onChunk } = {}) {
+    async synthesize(text, { voiceId = "pf_dora", speed = 1, signal, onProgress: progress = onProgress, onChunk,
+      returnSamples = true } = {}) {
       if (!PORTUGUESE_VOICES[voiceId]) throw new LocalVoiceError("INVALID_VOICE", "Escolha uma voz de português brasileiro disponível.");
       if (typeof speed !== "number" || !Number.isFinite(speed) || speed < 0.7 || speed > 1.3) {
         throw new LocalVoiceError("INVALID_SPEED", "A velocidade da fala está fora do intervalo permitido.");
@@ -225,12 +237,17 @@ export async function createKokoroPt({ transformers, createPhonemizer, phonemize
           progress({ stage: "running_model", device: model.device, message: "Gerando a fala neste aparelho…", index: i, total: chunks.length, tokenCount: count });
           const samples = await model.run(input_ids, data.slice(offset, offset + 256), speed, { mayRetry: i === 0, cancelled });
           cancelled();
-          if (parts.length) parts.push(new Float32Array(SAMPLE_RATE * 0.08));
-          parts.push(samples);
+          if (returnSamples) {
+            if (parts.length) parts.push(new Float32Array(SAMPLE_RATE * 0.08));
+            parts.push(samples);
+          }
           if (onChunk) {
-            // Transferable copy: the caller can enqueue playback immediately.
-            const chunk = new Float32Array(samples.length + (i ? SAMPLE_RATE * 0.08 : 0));
-            chunk.set(samples, i ? SAMPLE_RATE * 0.08 : 0);
+            // Streaming does not need a second complete copy of the waveform.
+            // The first block can transfer its buffer directly; later blocks
+            // retain only a short inter-block pause, never the whole utterance.
+            const chunk = !returnSamples && i === 0 ? samples
+              : new Float32Array(samples.length + (i ? SAMPLE_RATE * 0.08 : 0));
+            if (chunk !== samples) chunk.set(samples, i ? SAMPLE_RATE * 0.08 : 0);
             onChunk({ samples: chunk, sampleRate: SAMPLE_RATE, index: i, total: chunks.length });
           }
           progress({ stage: "synthesizing", message: "Preparando a fala…", progress: (i + 1) / chunks.length * 100 });
@@ -241,6 +258,12 @@ export async function createKokoroPt({ transformers, createPhonemizer, phonemize
         return { samples, sampleRate: SAMPLE_RATE, device: model.device };
       } finally { busy = false; }
     },
+    async warmup() {
+      // Explicit model activation absorbs the first graph execution. Its short,
+      // fixed utterance is discarded and is never sent as playable audio.
+      await engine.synthesize("Olá.", { onProgress: () => {}, returnSamples: false });
+    },
     async dispose() { voices.clear(); await model.dispose(); },
   };
+  return engine;
 }

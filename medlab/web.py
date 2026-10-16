@@ -13,7 +13,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from .extensions import db
 from .models import ClinicalCase, Consultation, ConsultationSimulation, PerformedExam, Turn, User, utcnow
 from .security import api_login_required, consume_limit, login_rate_allowed, safe_next
-from .catalogue import filtered_cases, public_summary, public_title
+from .catalogue import filtered_cases, catalogue_facets, public_summary, public_title
 from .case_schema import SECTION_TITLES, UNKNOWN_FACT
 from .usage import capture_usage
 from .exam_media import exam_media_items, read_exam_media
@@ -27,9 +27,17 @@ def get_ai_service():
 
 
 def public_case(case):
+    from .discovery import available_image_count
+    metadata = case.discovery
+    kind = metadata.case_type if metadata else case.case_type
     return {"id": case.id, "title": public_title(case.id), "specialty": case.specialty,
-            "difficulty": case.difficulty, "summary": public_summary(case.case_type),
-            "case_type": case.case_type,
+            "difficulty": metadata.difficulty if metadata else case.difficulty,
+            "difficulty_estimated": metadata.difficulty_estimated if metadata else False,
+            "classification_note": metadata.classification_note if metadata else "",
+            "summary": public_summary(kind), "case_type": kind,
+            "case_types": metadata.presentation_tags.strip("|").split("|") if metadata else [kind],
+            "exam_result_count": metadata.exam_result_count if metadata else 0,
+            "exam_image_count": available_image_count(case.data) if metadata and metadata.exam_image_count else 0,
             "estimated_minutes": 15, "generated": case.is_generated}
 
 
@@ -234,6 +242,7 @@ def dashboard():
 @login_required
 def cases():
     query, filters = filtered_cases(request.args)
+    filters.update(catalogue_facets(request.args))
     specialties = db.session.execute(select(ClinicalCase.specialty).where(ClinicalCase.is_published.is_(True)).distinct()).scalars().all()
     pagination = db.paginate(query.order_by(ClinicalCase.id), page=max(1, request.args.get("page", 1, type=int)),
                              per_page=12, error_out=False)
@@ -260,7 +269,9 @@ def start_session():
     available = db.session.execute(query.with_only_columns(ClinicalCase.id)).scalars().all()
     if not available:
         flash("Não há casos disponíveis para estes filtros.", "info")
-        return redirect(url_for("web.cases"))
+        # Keep the actual selection so the student can adjust one filter.
+        return redirect(url_for("web.cases", **{key: request.form[key] for key in
+            ("specialty", "case_type", "difficulty", "exams", "q") if request.form.get(key)}))
     recent_ids = set(db.session.execute(select(Consultation.case_id).where(Consultation.user_id == current_user.id)
                                        .order_by(Consultation.created_at.desc()).limit(5)).scalars().all())
     candidates = [identifier for identifier in available if identifier not in recent_ids] or available
@@ -283,6 +294,7 @@ def history():
 @bp.get("/sessao/<session_id>")
 @login_required
 def consultation(session_id):
+    from .discovery import result_entries
     training = own_session(session_id)
     if training.status == "completed":
         return redirect(url_for("web.result", session_id=training.id))
@@ -297,7 +309,7 @@ def consultation(session_id):
     performed = {(e.exam_type, e.name): e.result for e in training.exams}
     catalog = lambda key, kind: [{"name": name, "type": kind, "result": performed.get((kind, name)),
         "media": exam_media_items(training, exam_name=name, exam_type=kind) if (kind, name) in performed else []}
-        for name in case.get(key, {})]
+        for name in case.get(key, {}) if name in result_entries(case, key) or (kind, name) in performed]
     return render_template("consultation.html", training=public_session(training), patient={
         "name": profile.get("name", "Paciente"), "age": profile.get("age_value", ""),
         "age_unit": profile.get("age_unit", "anos"),
@@ -432,6 +444,7 @@ def synthesize_audio(session_id):
 @bp.post("/sessao/<session_id>/exame")
 @api_login_required
 def exam(session_id):
+    from .discovery import usable_text
     training = own_session(session_id)
     payload = request.get_json(silent=True)
     if not isinstance(payload, dict):
@@ -442,6 +455,8 @@ def exam(session_id):
     catalog = training.case_snapshot.get("physicalExams" if kind == "physical_exam" else "auxiliaryLabs", {})
     if name not in catalog:
         return jsonify(error="Este exame não está disponível neste caso."), 400
+    if not usable_text(catalog[name]):
+        return jsonify(error="A fonte deste caso não oferece um resultado utilizável para este exame."), 400
     if training.status != "active":
         return jsonify(error="Esta consulta já foi concluída."), 409
     token = acquire_lock(training)

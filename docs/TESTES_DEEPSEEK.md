@@ -2,6 +2,8 @@
 
 Este relatório registra, em ordem cronológica, chamadas reais à API DeepSeek, incluindo falhas e versões substituídas. A rodada mais recente está em [Composição da nota e parecer pedagógico](#composição-da-nota-e-parecer-pedagógico). As seções anteriores descrevem o comportamento testado na ocasião; as regras antigas de responder apenas com fatos documentados foram substituídas pela elaboração controlada. Ainda há variabilidade de notas e limites semânticos; não há evidência para declarar calibração clínica nem extrapolar as amostras ao acervo inteiro.
 
+A etapa posterior de [catálogo e latência local de voz](#catálogo-e-latência-local-de-voz-sem-novas-chamadas-deepseek) não fez novas chamadas à DeepSeek; suas medições são independentes das rodadas pagas descritas abaixo.
+
 ## Método e rastreabilidade
 
 O executável `scripts/evaluate_deepseek.py` usa `AIService` diretamente, sem criar usuários, consultas ou casos no banco e sem publicar rascunhos. Chamadas pagas exigem `--live`; sem essa opção, só há apresentação do plano. O limite configurável é de oito tarefas concorrentes; cada conversa mantém a ordem de seus turnos.
@@ -252,3 +254,31 @@ Na integração pelo navegador, uma consulta concluída recebeu o novo parecer e
 A integração confirmou utilidade concreta, mas também as limitações registradas acima: algumas perguntas sugeridas retomam dados já conhecidos, e a fonte cirúrgica ainda influencia a especificidade das orientações. Os exemplos exibidos não equivalem a uma revisão clínica docente. Nenhuma avaliação prévia foi recalculada para selecionar uma nota melhor.
 
 Esta etapa completa somou **34 requisições**, **277.423 tokens de entrada** e **74.115 de saída**, total **351.538**, com cache hit/miss de **126.592/150.831**. Inclui falhas, reparos e a integração final; exclui as rodadas históricas anteriores deste documento. Passaram **1.169 testes Python** antes do último ajuste pontual, seguidos de **82 testes do parecer** com esse ajuste, e **79 testes JavaScript**. A verificação do navegador cobriu geração, apresentação, persistência e reabertura; não repetiu microfone físico, tablet ou implantação no cPanel.
+
+## Catálogo e latência local de voz, sem novas chamadas DeepSeek
+
+Esta etapa investigou a localização de exames, a pouca utilidade dos filtros e a demora para começar a fala. **Não houve chamadas à DeepSeek, alteração do conteúdo clínico nem recálculo de notas.** Os relatórios privados de preservação `catalogue-voice-20261015/db-before-index.json` e `db-after-index.json` comparam hashes das tabelas preexistentes; a reconstrução acrescentou o índice `CaseDiscovery`, mantendo fichas, fontes, bloqueios, contas e registros de consulta intactos.
+
+A leitura anterior encontrou os 14.286 casos preparados localmente com dificuldade fixa em Intermediário, além de tipos definidos pela primeira palavra-chave encontrada, inclusive em negativas. O novo índice mantém a classificação separada do JSON: prioriza a queixa, admite mais de uma apresentação e reconhece negativas e sinônimos delimitados. Uma amostra independente de 30 casos de Outros sintomas identificou quatro famílias corrigidas: dores de cabeça no plural, expressões visuais, massas com localização explícita e diminuição da audição. Não se inferiram sintomas a partir de menções sem vínculo ou antecedentes para reduzir artificialmente a categoria Outros.
+
+A dificuldade local passa a ser uma **estimativa de extensão do roteiro**, usando campos utilizáveis da entrevista e grupos de complementares. As continuações do mesmo exame são agrupadas; campos ausentes e listas de menções ainda não vinculadas não contam como resultados úteis. Essa regra não mede gravidade, raridade diagnóstica ou competência, e não foi calibrada clinicamente. Apresentações autorais específicas e dificuldades autorais permanecem preservadas; apresentações genéricas como Primeira consulta e Outros sintomas podem ser refinadas também nos casos não locais. Na conferência do índice, os níveis foram 2.529 Iniciante, 10.567 Intermediário, 855 Avançado e 416 Não classificada.
+
+Foram conferidos **13.985 casos com complementares úteis** e **sete casos com 15 imagens disponíveis**, entre 14.367 publicados. Originais baixados e propostas pendentes de associação não são imagens disponíveis. Os filtros de resultados/imagens e as contagens de tipos/níveis usam esse índice; a busca com e sem acentos retorna o mesmo recorte e não pesquisa o gabarito. Em SQLite local, os `COUNT` dos filtros amostrados levaram 1,2–4,5 ms; isso não mede o GET completo, a renderização ou o acesso às imagens. A operação de manutenção está em [Catálogo, filtros e disponibilidade](CPANEL.md#catálogo-filtros-e-disponibilidade).
+
+### Tempo para começar a voz
+
+O ensaio usou o mesmo Kokoro q8, Dora e Alex, Transformers.js 3.8/ORT 1.22 em WebAssembly com quatro threads, em navegador isolado no Mac. Foram três enunciados sintéticos por variante, sem novo áudio de microfone, ASR ou conversa com modelos. A comparação não limpou integralmente o cache. Trechos de aproximadamente 45–90 caracteres, aquecimento silencioso durante a ativação e carregamentos sobrepostos reduziram o primeiro trecho; a tentativa inicial de trechos ainda menores foi descartada por criar uma lacuna de 963 ms.
+
+| Amostra | Primeiro trecho anterior / novo | Síntese total anterior / nova | Início no replay final, com buffer |
+| --- | ---: | ---: | ---: |
+| Dora | 5,41 / 3,42 s | 7,10 / 8,53 s | 3,46 s |
+| Alex | 5,30 / 3,01 s | 10,66 / 10,12 s | 3,71 s |
+| Resposta curta | 2,02 / 2,05 s | 2,02 / 2,05 s | 2,09 s |
+
+O primeiro trecho mede síntese e conversão, sem somar ativação, reconhecimento da pergunta ou latência da resposta textual. A ativação com cache observado passou de 0,86 para 1,45 s, incluindo cerca de 0,80 s de aquecimento. A prioridade foi começar antes: a síntese total de Dora ficou mais lenta, e a resposta curta não melhorou. Palavras e pontuação foram preservadas.
+
+O **replay** aplica os tempos reais de chegada/duração dos trechos à regra final de reprodução: 40 ms iniciais normalmente, ou 700 ms para múltiplos trechos quando a geração do primeiro demora pelo menos sua duração. O texto acompanha esse instante agendado. O replay estimou zero lacunas nos três exemplos; **não houve uma segunda gravação audível da política final**. Não é prova de fluidez em tablet, percentil populacional nem garantia contra pausas em um aparelho lento.
+
+Relatório: `instance/evaluations/tts-latency-20261015/report.json`, SHA-256 `da915adb390aa92f0219966b3a6db68881e2d458c6643c06effce85d3ac5835f`. Os testes de UI executam o código real com mensagens atrasadas do worker; a comparação de hashes conferiu fontes, cópias geradas e arquivos servidos. Captura de áudio e modelos não foram trocados nesta etapa.
+
+A suíte final aprovou **1.208 testes Python**, em 80,19 s, e **91 testes JavaScript**, sem falhas. No navegador, selecionar imagens e depois Dor abdominal reduziu o recorte de sete para dois casos; a consulta aberta mostrou 11 exames disponíveis, e a solicitação de radiografias exibiu resultado textual e imagem. Essa verificação criou somente uma consulta de teste e um exame solicitado, sem DeepSeek ou microfone. `catalogue-voice-20261015/final-db-check.json` confirmou por hashes a preservação dos registros preexistentes. O teste não valida desempenho em tablet ou hospedagem cPanel.
