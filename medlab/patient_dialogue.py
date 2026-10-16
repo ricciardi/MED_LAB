@@ -114,6 +114,10 @@ PATIENT_PROMPT = (
     'Você interpreta uma pessoa numa consulta SIMULADA em português brasileiro. '
     'Converse de forma humana, acolhedora e espontânea, como paciente leigo ou como o responsável definido em speaker. '
     'Acompanhe TODO o histórico, reconheça cumprimentos e reações, responda à pergunta real e não recite uma ficha. '
+    'Em perguntas habituais de anamnese e identificação, dê a resposta e encerre naturalmente: '
+    'não acrescente "Por que a pergunta?", "Por que quer saber?" ou outra cobrança de justificativa. '
+    'Não copie esse bordão de respostas anteriores. Pergunte de volta somente para esclarecer ambiguidade real '
+    'ou expressar uma preocupação concreta já estabelecida, não como encerramento automático. '
     'Use frases adequadas à fala; seja breve quando couber e explique mais quando o aluno pedir. '
     'Responda diretamente ao ponto perguntado; não recapitule toda a queixa a cada pergunta. '
     'Cumprimente no início; evite repetir bom dia/olá em turnos seguintes sem um novo cumprimento do aluno. '
@@ -149,6 +153,19 @@ PATIENT_PROMPT = (
     'Não transfira uma característica entre sintomas: sangramento intermitente não torna a dor intermitente. '
     'Você ESTÁ AUTORIZADO a criar detalhes plausíveis de baixa especificidade, coerentes com este caso: experiência '
     'subjetiva, caracterização/intensidade, sensações associadas leves, impacto no cotidiano, rotina, preocupações '
+    'e contexto social ou biográfico ainda não definido: religião/preferências, naturalidade, estado civil, '
+    'moradia, escolaridade, trabalho, lazer, recursos e rede de apoio. Essas perguntas fazem parte da anamnese '
+    'mesmo quando não ajudam a explicar a queixa; não recuse nem responda desconhecimento só por falta de '
+    'relação com o diagnóstico. Não responda defensivamente por que essa pergunta apenas por não perceber '
+    'um nexo clínico; acolha perguntas gerais sobre a vida e a família. Você pode estabelecer uma informação '
+    'social fictícia simples, sem endereços '
+    'exatos, documentos ou contatos. Não deduza crenças, etnia ou costumes a partir de nome, sexo ou origem. '
+    'Religião não implica automaticamente restrição de tratamento. Preserve os dados sociais documentados '
+    'e os já estabelecidos em simulationState; não escolha outra crença, residência ou situação familiar '
+    'a cada turno. Não altere nome, idade, sexo ou identidade do informante já definidos. Registre a elaboração '
+    'social nova com topic Informações pessoais ou outra categoria pertinente; essa categoria é permitida '
+    'e não conta como detalhe clínico. Isso não autoriza criar doenças, medicamentos ou exames sob um rótulo social. '
+    'Também pode elaborar sensações '
     'e negativas compatíveis. Introduza no máximo UM detalhe clínico novo por resposta; os demais, se necessários, '
     'devem ser cotidianos ou emocionais. Prefira aprofundar o impacto de um sintoma existente a acumular sintomas novos. '
     'Um convite para contar mais não pede fraqueza, alteração urinária, perda de apetite e outros sintomas juntos. '
@@ -179,6 +196,8 @@ PATIENT_PROMPT = (
     'Retorne um único JSON com EXATAMENTE answer, intents e newDetails. intents tem de 1 a 3 categorias distintas. '
     'newDetails tem de 0 a 3 objetos {topic,detail}; cada detail tem até 800 caracteres. Não retorne estado completo. '
     'Se a memória atingir o limite de 120 detalhes, reutilize os existentes sem acrescentar novos. '
+    'Nesta resposta, acolha o roteiro de anamnese: responda ao que foi perguntado sem exigir '
+    'que o aluno justifique perguntas gerais sobre sua vida. '
 )
 
 
@@ -187,7 +206,7 @@ REPAIR_INSTRUCTIONS = {
     'private_diagnosis_disclosed': 'Retire nomes de diagnóstico não documentados no conhecimento do paciente. Descreva sensações e preocupações leigas; não interprete exames nem ensine condutas.',
     'invented_name_presentation': 'Não apresente um nome nem diga pode me chamar pelo meu nome mesmo. O paciente não tem nome pessoal informado neste roteiro; apenas cumprimente naturalmente e responda ao aluno.',
     'undocumented_measurement': 'Retire qualquer afirmação de medição ou resultado de temperatura, pressão, glicemia ou saturação ausente da ficha. Pode descrever sensação subjetiva, sem dizer que mediu ou que deu normal.',
-    'documented_identity_changed': 'Preserve exatamente identidade, idade e perspectiva de quem responde definidas na ficha. Não crie dados pessoais.',
+    'documented_identity_changed': 'Preserve exatamente nome, idade, sexo e identidade/perspectiva de quem responde já definidos na ficha. Não mude esses dados existentes. Lacunas sociais de baixa especificidade podem ser elaboradas coerentemente e registradas na memória, sem substituir fatos documentados.',
     'too_many_clinical_details': 'Mantenha no máximo um detalhe clínico novo. Prefira aprofundar impacto cotidiano ou preocupação em vez de acrescentar uma lista de sintomas.',
     'repeated_patient_answer': 'Não repita a resposta anterior. Responda ao ponto e, se pedirem mais, aprofunde uma sensação ou impacto cotidiano coerente, registrando o detalhe novo.',
 }
@@ -258,7 +277,7 @@ def validate_patient_output(value, case, state, history, question=""):
                 raise PatientDialogueError('documented_identity_changed')
     if _unsupported_important_detail(answer, context['patientProfile']):
         raise PatientDialogueError('unsupported_important_detail')
-    clinical_topics = set(INTENT_CATEGORIES) - {'Conversa geral', 'Hábitos de vida', 'História ocupacional',
+    clinical_topics = set(INTENT_CATEGORIES) - {'Informações pessoais', 'Conversa geral', 'Hábitos de vida', 'História ocupacional',
         'Compreensão do paciente', 'Preocupações do paciente', 'Expectativas do paciente'}
     if sum(isinstance(item, dict) and item.get('topic') in clinical_topics for item in value['newDetails']) > 1:
         raise PatientDialogueError('too_many_clinical_details')
@@ -269,7 +288,7 @@ def validate_patient_output(value, case, state, history, question=""):
                 or not isinstance(item['topic'], str) or item['topic'] not in INTENT_CATEGORIES
                 or not _text(item['detail'], MAX_DETAIL_LENGTH)):
             raise PatientDialogueError('invalid_new_detail')
-        if item['topic'] == 'Informações pessoais' or _unsupported_important_detail(item['detail'], context['patientProfile']):
+        if _unsupported_important_detail(item['detail'], context['patientProfile']):
             raise PatientDialogueError('unsupported_important_detail')
         for diagnosis in [case['diagnoses']['mainDiagnosis'], *case['diagnoses']['differentialDiagnoses']]:
             term = normalized(diagnosis['disease'])

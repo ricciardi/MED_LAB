@@ -34,7 +34,7 @@ _SPECS = (
     ("I06", "identification", "Etnia/cor autodeclarada, quando pertinente", "basic_info", "social_background"),
     ("I07", "identification", "Estado civil", "marital_status", "basic_info"),
     ("I08", "identification", "Profissão e locais de trabalho atuais e anteriores", "occupation", "personal_history"),
-    ("I09", "identification", "Religião, respeitando pertinência e preferência", "basic_info", "social_background"),
+    ("I09", "identification", "Religião ou preferência religiosa, respeitando autodeclaração", "basic_info", "social_background"),
     ("I10", "identification", "Nome da mãe, somente se necessário à identificação", "basic_info"),
     ("I11", "identification", "Responsável/informante e sua relação com o paciente", "respondent"),
     ("Q01", "chief", "Motivo da consulta nas palavras do paciente", "chief_complaint", "present_illness_history"),
@@ -77,7 +77,7 @@ _SPECS = (
 STATUSES = {"complete": 100, "partial": 50, "not_met": 0, "not_applicable": None}
 EXEMPTIONS = {"source_unavailable", "already_known", "context_not_relevant", "declined",
               "urgent_priority", "respondent_limitation", "record_uncertain"}
-CONDITIONAL_IDS = {"I06", "I09", "I10", "I11", "Q02", "H03", "R05", "S03", "S07"}
+CONDITIONAL_IDS = {"I06", "I10", "I11", "Q02", "H03", "R05", "S03", "S07"}
 # K1 is rendered by context_catalog from the actual consultation header, not
 # from the full reference profile. It cannot prove other identification facts.
 K1_CRITERIA = {"I01", "I04", "I05", "I08", "I11"}
@@ -93,7 +93,7 @@ _APPLICABILITY = {
     "I06": "Etnia/cor só com finalidade contextual explícita e respeito à autodeclaração; existência na ficha não torna a pergunta obrigatória.",
     "I07": "Estado civil/situação de convivência integra a identificação básica, respeitando privacidade; não confundir rótulo civil com qualidade dos vínculos.",
     "I08": "Profissão exibida já é conhecida; ocupações anteriores/local de trabalho precisam de exploração adicional só diante de exposição ou impacto relevante.",
-    "I09": "Religião só se crença/preferência interfere no cuidado ou o paciente deseja abordá-la; possibilidade teórica não basta para exigir.",
+    "I09": "Religião ou preferência religiosa integra a identificação básica do roteiro amplo, mesmo sem relação com diagnóstico ou cuidado. Aceitar paráfrases respeitosas e ausência de religião; não exigir práticas ou detalhes íntimos. Não repetir informação já conhecida; respeitar recusa e limitação do informante.",
     "I10": "Nome da mãe só se há necessidade real de identificação/segurança ainda não resolvida; paciente já identificado não exige esse dado.",
     "I11": "Responsável quando criança, incapacidade ou fonte complementar exige esclarecer quem informa; relação já exibida dispensa repetição.",
     "Q01": "Ouvir o motivo e a prioridade do paciente, aceitando uma abertura ampla adequada; queixa conhecida pode ser confirmada/aprofundada.",
@@ -129,7 +129,7 @@ _APPLICABILITY = {
     "S04": "Convívio com animais integra ambiente domiciliar básico; vacinação/local de convívio são subitens condicionais à presença de animais e contexto, não exigir após negativa.",
     "S05": "Recursos, trabalho/dependência e acesso ao cuidado integram o roteiro; perguntar de forma respeitosa, sem exigir renda exata nem barreira já comprovada.",
     "S06": "Escolaridade e necessidades de comunicação integram o contexto básico. Conversa fluente não prova escolaridade nem dispensa conhecer esse contexto.",
-    "S07": "Crenças/práticas quando influem em decisões, uso de tratamentos ou preferências; não exigir por pertinência apenas possível, nem duplicar religião.",
+    "S07": "Aprofundar crenças, tradições e práticas específicas quando influem em decisões, tratamentos ou preferências; não exigir por pertinência apenas possível. Perguntar somente religião/preferência religiosa atende I09, sem crédito automático em S07. Uma pergunta composta pode atender ambos se explorar os dois objetivos, sem exigir detalhes íntimos.",
     "S08": "Lazer e viagens recentes integram rotina/contexto básico; aprofundar viagem somente se ocorreu, sem inventar exposição nem exigir lista detalhada.",
     "S09": "Convivência, apoio e bem-estar integram o roteiro geral, mesmo sem crise familiar; respeitar recusa e evitar detalhes íntimos desnecessários.",
 }

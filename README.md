@@ -6,6 +6,8 @@ Esta instalação destina-se a **uso educacional privado e exclusivamente não c
 
 O projeto transforma o núcleo de pesquisa EasyMED deste repositório em um produto web. A conversa identifica os temas abordados e interpreta o paciente na mesma chamada à DeepSeek, seguida da avaliação em seis dimensões pontuadas ao concluir, além de um resumo global sem peso adicional. O paciente acessa seu perfil completo e a memória da consulta, podendo elaborar detalhes plausíveis sem substituir os fatos documentados. Esses detalhes ficam separados da ficha e são identificados no resultado; veja [Paciente simulado e memória da conversa](docs/PACIENTE_SIMULADO.md). O código de pesquisa continua em `EasyMED/` e `SPBench/`; a aplicação utiliza sua própria implementação em português.
 
+O personagem também pode manter um contexto social fictício coerente — como preferência religiosa, escolaridade e moradia — quando a ficha não o define, sem deduzir crenças por estereótipos ou substituir fatos existentes. Perguntas gerais da entrevista não precisam explicar o diagnóstico. No roteiro básico, religião integra a identificação; o aprofundamento de práticas que influem no cuidado permanece contextual. Nenhuma pergunta específica é requisito técnico para finalizar.
+
 ## O que está implementado
 
 - Landing page, cadastro, login, logout e painel do estudante.

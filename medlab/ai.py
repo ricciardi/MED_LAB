@@ -1141,6 +1141,11 @@ class AIService:
                     if exc.code not in {"invalid_json", "output_truncated"}:
                         raise
                     reason = exc.code
+                # Only validator-owned codes: never log the question, generated
+                # answer, case profile or credentials when diagnosing a retry.
+                logging.getLogger(__name__).warning(
+                    "Patient response rejected: attempt=%s reason=%s", attempt + 1, reason,
+                )
                 if attempt:
                     raise AIError("A IA não retornou uma fala válida e coerente do paciente. Tente novamente.") from None
                 # No diagnosis, rubric or private reference value is sent back

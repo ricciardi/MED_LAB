@@ -73,7 +73,7 @@ def test_every_item_has_contextual_applicability_not_an_automatic_checklist(seed
     assert all(isinstance(row["applicabilityRule"], str) and row["applicabilityRule"] for row in catalog.values())
     for identifier, meaningful_rule in {
         "Q02": "Sem esse contexto, não aplicável",
-        "I09": "possibilidade teórica não basta",
+        "I09": "mesmo sem relação com diagnóstico ou cuidado",
         "I10": "necessidade real de identificação",
         "S03": "Baixa pertinência sem necessidade demonstrada",
         "H03": "não exigir localizar anatomicamente todo sintoma difuso",
@@ -94,7 +94,7 @@ def test_prompt_requires_actual_purpose_and_justification_before_classification(
         assert constraint in PROMPT
 
 
-@pytest.mark.parametrize("identifier", ["I02", "I03", "I07", "R01", "R03", "R04", "F01", "V01", "S01", "S02", "S04", "S05", "S06", "S08", "S09"])
+@pytest.mark.parametrize("identifier", ["I02", "I03", "I07", "I09", "R01", "R03", "R04", "F01", "V01", "S01", "S02", "S04", "S05", "S06", "S08", "S09"])
 def test_broad_curriculum_cannot_be_dismissed_just_for_irrelevance_to_diagnosis(seed, identifier):
     seed["patientProfile"]["basic_info"] = "Naturalidade, estado civil e escolaridade informados na ficha de referência."
     criteria = criteria_catalog(seed)
@@ -114,6 +114,88 @@ def test_basic_missing_context_can_be_explained_without_inventing_disease_risk(s
     result = normalize(seed, value)
     assert result["score"] == 0
     assert next(row for row in result["criteria"] if row["id"] == "S06")["evidence"] == []
+
+
+@pytest.mark.parametrize("source_available", [True, False])
+@pytest.mark.parametrize("question", [
+    "Se estiver à vontade, qual é sua religião?",
+    "Você segue alguma fé ou prefere não ter religião?",
+    "Como prefere se identificar em relação à religião?",
+])
+def test_respectful_religion_question_keeps_credit_without_diagnostic_relevance(seed, source_available, question):
+    seed["patientProfile"].update(
+        basic_info="Não segue religião." if source_available else UNKNOWN_FACT,
+        social_background=UNKNOWN_FACT)
+    sess = AIService._session({"history": [{"question": question,
+        "answer": "Não sigo nenhuma religião." if source_available else "Prefiro não responder."}]})
+    value = response(criteria_catalog(seed))
+    item(value, "I09").update(status="complete", exemption=None, actionIds=["Q1"],
+        reason="Perguntou a preferência religiosa com respeito; o objetivo básico foi abordado.")
+    item(value, "S07").update(exemption="context_not_relevant",
+        reason="Não houve contexto que exigisse aprofundar práticas específicas de cuidado.")
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = review_request(value)
+    result = build_review(service, seed, sess)
+    assert result["score"] == 100
+    row = next(row for row in result["criteria"] if row["id"] == "I09")
+    assert row["status"] == "complete" and row["evidence"] == [{"id": "Q1", "text": question}]
+    assert next(row for row in result["criteria"] if row["id"] == "S07")["status"] == "not_applicable"
+    payload = service._request.call_args.args[1]
+    catalog = {row["id"]: row for row in payload["criteriaCatalog"]}
+    assert catalog["I09"]["scope"] == "core_curriculum"
+    assert catalog["S07"]["scope"] == "context_conditional"
+    assert "sem crédito automático em S07" in catalog["S07"]["applicabilityRule"]
+    assert "Nenhuma pergunta é requisito para concluir a consulta" in service._request.call_args.args[0]
+    assert service._request.call_count == 1
+
+
+@pytest.mark.parametrize("source_available,expected_status,expected_score", [
+    (True, "not_met", 0), (False, "not_applicable", None),
+])
+def test_religion_omission_affects_available_rubric_without_blocking_review(seed, source_available, expected_status, expected_score):
+    seed["patientProfile"].update(
+        basic_info="Religião: católica." if source_available else UNKNOWN_FACT,
+        social_background=UNKNOWN_FACT)
+    value = response(criteria_catalog(seed))
+    item(value, "I09").update(status="not_met", exemption=None,
+        reason="A preferência religiosa ainda desconhecida não foi abordada na identificação básica.")
+    result = normalize(seed, value)
+    assert result["score"] == expected_score
+    row = next(row for row in result["criteria"] if row["id"] == "I09")
+    assert row["status"] == expected_status and row["evidence"] == []
+
+
+@pytest.mark.parametrize("exemption,answer", [
+    ("already_known", "Eu sou católica."),
+    ("declined", "Prefiro não falar da minha religião."),
+    ("respondent_limitation", "Sou vizinho e não sei dizer qual é a religião dela."),
+])
+def test_basic_religion_still_respects_known_information_refusal_and_informant_limits(seed, exemption, answer):
+    seed["patientProfile"]["basic_info"] = "Religião registrada na ficha."
+    value = response(criteria_catalog(seed))
+    item(value, "I09").update(exemption=exemption, contextIds=["A1"],
+        reason="O contexto observado dispensa insistir ou repetir a pergunta de religião.")
+    sess = AIService._session({"history": [{"question": "Pode me contar sobre você?", "answer": answer}]})
+    result = normalize(seed, value, sess)
+    row = next(row for row in result["criteria"] if row["id"] == "I09")
+    assert row["status"] == "not_applicable" and row["exemption"] == exemption
+    assert row["contextEvidence"] == [{"id": "A1", "text": answer}]
+    assert row["evidence"] == [] and result["score"] is None
+
+
+def test_compound_question_can_cover_religion_and_specific_care_preferences(seed):
+    question = "Qual é sua religião? Existe alguma preferência ligada à sua fé que gostaria que respeitássemos no cuidado?"
+    sess = AIService._session({"history": [{"question": question,
+        "answer": "Sou testemunha de Jeová e não aceito transfusão de sangue."}]})
+    value = response(criteria_catalog(seed))
+    for identifier, reason in (("I09", "Perguntou a religião respeitando autodeclaração."),
+                               ("S07", "Explorou preferências específicas relacionadas ao cuidado, além da identificação religiosa.")):
+        item(value, identifier).update(status="complete", exemption=None, actionIds=["Q1"], reason=reason)
+    result = normalize(seed, value, sess)
+    assert result["score"] == 100
+    for identifier in ("I09", "S07"):
+        row = next(row for row in result["criteria"] if row["id"] == identifier)
+        assert row["status"] == "complete" and row["evidence"] == [{"id": "Q1", "text": question}]
 
 
 def test_transition_requires_explanation_not_only_system_questions(seed):
@@ -138,7 +220,7 @@ def test_contextual_provider_decision_keeps_ids_arithmetic_and_one_generation(se
     # real model's semantic accuracy. The live retest must make that comparison.
     seed["patientProfile"]["basic_info"] = "Nome da mãe registrado; religião declarada, sem preferência de cuidado relacionada."
     value = response(criteria_catalog(seed))
-    for identifier in ("Q02", "I09", "I10", "S03"):
+    for identifier in ("Q02", "S07", "I10", "S03"):
         item(value, identifier).update(exemption="context_not_relevant", reason="Não há contexto que exija esse dado neste encontro.")
     item(value, "H09").update(status="complete", actionIds=["Q1", "Q2"], exemption=None,
         reason="Explorou sequência e evolução nas duas perguntas; não há tratamento prévio pendente de esclarecer.")
@@ -148,7 +230,7 @@ def test_contextual_provider_decision_keeps_ids_arithmetic_and_one_generation(se
     assert result["score"] == 100
     assert next(row for row in result["criteria"] if row["id"] == "H09")["evidenceRefs"] == ["Q1", "Q2"]
     assert all(next(row for row in result["criteria"] if row["id"] == identifier)["status"] == "not_applicable"
-               for identifier in ("Q02", "I09", "I10", "S03"))
+               for identifier in ("Q02", "S07", "I10", "S03"))
     assert service._request.call_count == 1 and service._request.call_args_list[0].args[2] == 10000
 
 
@@ -232,7 +314,7 @@ def test_contextual_exemptions_are_explicit_and_do_not_add_credit(seed, exemptio
     assert section["score"] is None and section["assessable"] is False
 
 
-@pytest.mark.parametrize("identifier", ["I02", "I03", "I07", "H04", "S06"])
+@pytest.mark.parametrize("identifier", ["I02", "I03", "I07", "I09", "H04", "S06"])
 def test_header_cannot_prove_hidden_reference_facts(seed, identifier):
     seed["patientProfile"].update(basic_info="Naturalidade: Sorocaba; escolaridade: ensino médio.",
         address="Reside em Campinas.", marital_status="Casado.")
