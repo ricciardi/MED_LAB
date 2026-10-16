@@ -657,6 +657,85 @@ def test_available_mother_name_still_cannot_be_claimed_as_known_from_header(seed
         normalize(seed, value)
 
 
+def test_mother_name_repair_distinguishes_known_fact_from_unneeded_identification(seed):
+    seed["patientProfile"]["basic_info"] = "Nome da mãe: Rosa."
+    first = scored(seed)
+    item(first, "I10").update(exemption="already_known", contextIds=["K1"],
+        reason="Paciente já identificado em K1; não há necessidade de identificação pendente.")
+    before = deepcopy(first)
+    repaired = deepcopy(item(first, "I10"))
+    repaired.update(exemption="context_not_relevant",
+        reason="A identificação visível já é suficiente; não há necessidade de pedir o nome da mãe neste encontro.")
+
+    def request(prompt, data, maximum):
+        if "repair" not in data:
+            return first
+        assert [row["id"] for row in data["criteriaCatalog"]] == ["I10"]
+        hints = data["repair"]["validationHints"]
+        assert len(hints) == 1 and hints[0]["criterionId"] == "I10"
+        assert hints[0]["invalidCombination"] == {"exemption": "already_known", "contextIdsContains": "K1"}
+        assert "context_not_relevant" in hints[0]["instruction"]
+        assert "nem substitua K1 por outro ID sem evidência real" in hints[0]["instruction"]
+        assert "isso não significa que o nome da mãe seja already_known" in data["criteriaCatalog"][0]["applicabilityRule"]
+        assert "dado do próprio objetivo está conhecido" in prompt
+        assert maximum < 10000
+        return {"version": 1, "items": [repaired]}
+
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = Mock(side_effect=request)
+    result = build_review(service, seed, session())
+    expected = scored(seed)
+    item(expected, "I10").update(repaired)
+    assert result == normalize(seed, expected) and result["score"] == 75
+    row = next(row for row in result["criteria"] if row["id"] == "I10")
+    assert row["status"] == "not_applicable" and row["evidence"] == []
+    assert first == before and service._request.call_count == 2
+
+
+def test_repeated_false_header_claim_is_rejected_after_context_hint(seed):
+    seed["patientProfile"]["basic_info"] = "Nome da mãe: Rosa."
+    first = scored(seed)
+    item(first, "I10").update(exemption="already_known", contextIds=["K1"],
+        reason="Paciente identificado; o dado não precisa ser perguntado.")
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = Mock(side_effect=[first, {"version": 1, "items": [deepcopy(item(first, "I10"))]}])
+    with pytest.raises(InvalidBasicQuestions, match="header_context_does_not_cover_criterion"):
+        build_review(service, seed, session())
+    assert service._request.call_count == 2
+    assert service._request.call_args.args[1]["repair"]["validationHints"][0]["criterionId"] == "I10"
+
+
+def test_context_hint_never_licenses_diagnostic_exclusion_of_core_religion(seed):
+    seed["patientProfile"]["basic_info"] = "Religião declarada na ficha."
+    first = scored(seed)
+    item(first, "I09").update(exemption="already_known", contextIds=["K1"],
+        reason="Religião supostamente conhecida pela identificação exibida.")
+    repaired = deepcopy(item(first, "I09"))
+    repaired.update(exemption="context_not_relevant", reason="Não muda o diagnóstico.")
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = Mock(side_effect=[first, {"version": 1, "items": [repaired]}])
+    with pytest.raises(InvalidBasicQuestions, match="core_curriculum_cannot_be_excluded"):
+        build_review(service, seed, session())
+    hints = service._request.call_args.args[1]["repair"]["validationHints"]
+    assert hints[0]["criterionId"] == "I09"
+    assert "context_not_relevant não é uma alternativa permitida" in hints[0]["instruction"]
+    assert service._request.call_count == 2
+
+
+def test_mother_name_actually_spoken_can_remain_known_without_question_credit(seed):
+    seed["patientProfile"]["basic_info"] = "Nome da mãe: Rosa."
+    sess = AIService._session({"history": [{"question": "Pode me contar sobre você?",
+        "answer": "Minha mãe se chama Rosa."}]})
+    value = response(criteria_catalog(seed))
+    item(value, "I10").update(exemption="already_known", contextIds=["A1"],
+        reason="O próprio nome da mãe foi informado espontaneamente; não precisa repetir.")
+    result = normalize(seed, value, sess)
+    row = next(row for row in result["criteria"] if row["id"] == "I10")
+    assert row["exemption"] == "already_known" and row["evidence"] == []
+    assert row["contextEvidence"] == [{"id": "A1", "text": "Minha mãe se chama Rosa."}]
+    assert result["score"] is None
+
+
 @pytest.mark.parametrize("change,code", [
     (lambda row: row.update(contextIds=["K999"]), "reference_or_authorship"),
     (lambda row: row.update(actionIds=["A1"]), "reference_or_authorship"),

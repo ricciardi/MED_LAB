@@ -20,6 +20,7 @@ import re
 from urllib.parse import urlparse
 
 import requests
+from urllib3.exceptions import MaxRetryError, ReadTimeoutError
 
 from .case_schema import (
     CaseValidationError, DIFFICULTIES, INTENT_CATEGORIES, SECTION_TITLES,
@@ -207,6 +208,29 @@ class AIUnavailableError(AIError):
 
 class AIInterruptedError(AIUnavailableError):
     """A shared import stop prevented this request from being sent."""
+
+
+def _transport_error_code(error):
+    """Recognize typed nested timeouts without reading exception messages.
+
+    Requests wraps urllib3 read timeouts in ConnectionError while consuming a
+    response. Walk only exception links, with cycle and work limits; never
+    reinterpret a connection failure just because its message says timeout.
+    """
+    pending, seen = [error], set()
+    while pending and len(seen) < 32:
+        current = pending.pop(0)
+        if not isinstance(current, BaseException) or id(current) in seen:
+            continue
+        seen.add(id(current))
+        if isinstance(current, (requests.Timeout, ReadTimeoutError)):
+            return "timeout"
+        links = [current.__cause__, current.__context__]
+        if isinstance(current, MaxRetryError):
+            links.append(current.reason)
+        links.extend(current.args[:8])
+        pending.extend(link for link in links if isinstance(link, BaseException) and id(link) not in seen)
+    return "connection_error"
 
 
 USAGE_KEYS = ("requests", "responses", "usageReports", "cacheUsageReports", "promptTokens",
@@ -1024,10 +1048,12 @@ class AIService:
                 headers={"Authorization": "Bearer " + self.api_key, "Content-Type": "application/json"},
                 timeout=(connect_timeout, read_timeout), allow_redirects=False,
             )
-        except requests.Timeout:
-            self._unavailable("timeout")
-        except requests.RequestException:
-            self._unavailable("connection_error")
+        except requests.RequestException as exc:
+            code = _transport_error_code(exc)
+            exception_class = ("Timeout" if isinstance(exc, requests.Timeout) else
+                               "ConnectionError" if isinstance(exc, requests.ConnectionError) else "RequestException")
+            logging.getLogger(__name__).warning("AI transport failed: code=%s class=%s", code, exception_class)
+            self._unavailable(code)
         self._usage["responses"] += 1
         if response.status_code in (401, 403):
             self._unavailable("authentication_required")

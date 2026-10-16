@@ -66,6 +66,33 @@ async function harness(configuration={}, {workerLoads=true,micDenies=false,strea
   return{get,workers,requests,audioContexts,streams,recorders,captureConstraints,document,window,advance,energy:value=>{energy=value;},resolveMic:()=>resolveMic?.(),resolveMessage:()=>resolveMessage?.(),micCalls:()=>micCalls,app:get('#consultation-app')};
 }
 async function settle(){await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));}
+test('one accessible voice conversation toggle sits beside manual dictation in the composer',()=>{
+  const template=fs.readFileSync(path.join(__dirname,'../../medlab/templates/consultation.html'),'utf8');
+  const controls=template.match(/<div class="composer-voice-actions"[^>]*>(.*?)<\/div>/s)?.[0];
+  assert.ok(controls);
+  assert.equal((template.match(/id="voice-continuous-toggle"/g)||[]).length,1);
+  assert.match(controls,/role="group" aria-label="Modos de entrada por voz"/);
+  assert.match(controls,/id="voice-record-button"[\s\S]*id="voice-continuous-toggle"/);
+  assert.match(controls,/id="voice-continuous-toggle" aria-pressed="false" aria-describedby="voice-continuous-help voice-continuous-state">Conversa por voz<\/button>/);
+});
+test('the composer toggle announces its state and shares the existing microphone lifecycle with dictation',async()=>{
+  const h=await harness({}, {withApp:true});
+  const toggle=h.get('#voice-continuous-toggle'),dictate=h.get('#voice-record-button');
+  assert.equal(toggle.textContent,'Conversa por voz');assert.equal(toggle.attributes['aria-pressed'],'false');
+  toggle.click();await settle();
+  assert.equal(toggle.textContent,'Desativar conversa por voz');assert.equal(toggle.attributes['aria-pressed'],'true');
+  assert.equal(toggle.disabled,false);assert.equal(dictate.disabled,true);
+  assert.equal(h.workers.length,2);assert.equal(h.micCalls(),1);
+  dictate.click();await settle();assert.equal(h.micCalls(),1);
+  toggle.click();await settle();
+  assert.equal(toggle.textContent,'Conversa por voz');assert.equal(toggle.attributes['aria-pressed'],'false');
+  assert.equal(h.streams[0].getTracks()[0].stopped,true);assert.equal(dictate.disabled,false);
+  dictate.click();await settle();assert.equal(h.micCalls(),2);assert.equal(h.workers.length,2);
+  toggle.click();await settle();assert.equal(h.micCalls(),2);assert.equal(toggle.attributes['aria-pressed'],'false');
+  assert.match(h.get('#voice-status').textContent,/Conclua a operação atual/);
+  h.get('#voice-cancel-recording').click();await settle();
+  assert.equal(h.streams[1].getTracks()[0].stopped,true);
+});
 test('page load asks for neither microphone nor model download',async()=>{
   const h=await harness();assert.equal(h.workers.length,0);assert.equal(h.micCalls(),0);assert.equal(h.requests.length,1);
   assert.equal(h.get('#voice-local-models').hidden,false);

@@ -4,6 +4,8 @@ from copy import deepcopy
 from unittest.mock import Mock
 
 import pytest
+import requests
+from urllib3.exceptions import ReadTimeoutError
 
 from medlab.ai import (AIError, AIService, AIUnavailableError, _checked_grade_claims,
                        _evaluation_claim_fields, _session_evidence)
@@ -180,11 +182,55 @@ def test_execution_praise_cannot_be_supported_only_by_exam_requests():
     assert len(issues) == 2 and all("técnica" in issue["correction"] for issue in issues)
 
 
-def test_provider_unavailable_during_audit_stops_without_paid_repair(seed):
+def test_wrapped_body_timeout_during_audit_uses_reserved_fallback_without_unverified_prose(seed, monkeypatch):
     service = AIService({"DEEPSEEK_API_KEY": "test"})
-    service._request = Mock(side_effect=[grade(), AIUnavailableError("quota_exhausted")])
-    with pytest.raises(AIUnavailableError, match="saldo"):
+    clock = [100.0]
+    service._runtime_deadline = 135.0
+    monkeypatch.setattr("medlab.ai.time.monotonic", lambda: clock[0])
+    deadlines = []
+
+    def post(*args, **kwargs):
+        deadlines.append(service._runtime_deadline)
+        if len(deadlines) == 1:
+            clock[0] = 108.8
+            response = reply(grade("Perguntou o início."))
+        elif len(deadlines) == 2:
+            # Requests wraps a urllib3 timeout while consuming the response
+            # body as ConnectionError, unlike a timeout before HTTP headers.
+            clock[0] = 118.7
+            raise requests.ConnectionError(ReadTimeoutError(None, "/safe-test", "PRIVATE_TIMEOUT_DETAIL"))
+        else:
+            assert len(deadlines) == 3
+            assert 0 < sum(kwargs["timeout"]) <= 135.0 - clock[0]
+            clock[0] = 120.0
+            response = reply(numeric_grade())
+        response.json.return_value["usage"] = {"prompt_tokens": 10, "completion_tokens": 2, "total_tokens": 12}
+        return response
+
+    request = Mock(side_effect=post)
+    monkeypatch.setattr("medlab.ai.requests.post", request)
+    result = service._evaluate(seed, context())
+
+    assert deadlines == [123.0, 123.0, 135.0]
+    assert service._runtime_deadline == 135.0 and clock[0] < 135.0
+    assert request.call_count == 3
+    assert result["score"] == 15 and result["sections"][0]["score"] == 75
+    assert result["verification"]["status"] == "limited"
+    assert all(section["feedbackLimited"] for section in result["sections"])
+    assert all(section["strengths"] == section["improvements"] == [] for section in result["sections"])
+    assert result["sections"][0]["evidenceRefs"] == [{"id": "Q1", "quote": "Quando começou?"}]
+    assert "Perguntou o início." not in str(result) and "PRIVATE_TIMEOUT_DETAIL" not in str(result)
+    usage = service.usage_snapshot()
+    assert usage["requests"] == 3 and usage["responses"] == 2 and usage["totalTokens"] == 24
+
+
+@pytest.mark.parametrize("code", ["quota_exhausted", "connection_error", "authentication_required", "rate_limited", "service_unavailable"])
+def test_provider_unavailable_during_audit_stops_without_paid_repair(seed, code):
+    service = AIService({"DEEPSEEK_API_KEY": "test"})
+    service._request = Mock(side_effect=[grade(), AIUnavailableError(code)])
+    with pytest.raises(AIUnavailableError) as caught:
         service._evaluate(seed, context())
+    assert caught.value.code == code
     assert service._request.call_count == 2
 
 

@@ -94,7 +94,7 @@ _APPLICABILITY = {
     "I07": "Estado civil/situação de convivência integra a identificação básica, respeitando privacidade; não confundir rótulo civil com qualidade dos vínculos.",
     "I08": "Profissão exibida já é conhecida; ocupações anteriores/local de trabalho precisam de exploração adicional só diante de exposição ou impacto relevante.",
     "I09": "Religião ou preferência religiosa integra a identificação básica do roteiro amplo, mesmo sem relação com diagnóstico ou cuidado. Aceitar paráfrases respeitosas e ausência de religião; não exigir práticas ou detalhes íntimos. Não repetir informação já conhecida; respeitar recusa e limitação do informante.",
-    "I10": "Nome da mãe só se há necessidade real de identificação/segurança ainda não resolvida; paciente já identificado não exige esse dado.",
+    "I10": "Nome da mãe só se há necessidade real de identificação/segurança ainda não resolvida. Identificação suficiente dispensa essa pergunta por context_not_relevant; isso não significa que o nome da mãe seja already_known. Use already_known apenas quando o próprio nome da mãe foi informado em contexto visível.",
     "I11": "Responsável quando criança, incapacidade ou fonte complementar exige esclarecer quem informa; relação já exibida dispensa repetição.",
     "Q01": "Ouvir o motivo e a prioridade do paciente, aceitando uma abertura ampla adequada; queixa conhecida pode ser confirmada/aprofundada.",
     "Q02": "Somente se existir encaminhamento ou situação pré-operatória no encontro. Sem esse contexto, não aplicável; não exigir perguntar para provar sua ausência.",
@@ -162,7 +162,9 @@ PROMPT = (
     "relacionados: não restrinja a análise a uma etiqueta única. "
     "Complete/partial exigem actionIds Q pertinentes; not_met exige actionIds=[]. Informações espontâneas "
     "de A ou já visíveis não precisam ser perguntadas novamente: use not_applicable/already_known com contextIds "
-    "A/K1/K2, sem atribuir crédito à Q errada. K1 cobre somente nome, idade, sexo/gênero, profissão e informante "
+    "A/K1/K2, sem atribuir crédito à Q errada. Already_known significa que o dado do próprio objetivo está conhecido, "
+    "não que existe motivo para dispensar uma pergunta condicional: neste caso use context_not_relevant. "
+    "K1 cobre somente nome, idade, sexo/gênero, profissão e informante "
     "efetivamente exibidos. A/K nunca são ações do aluno. Não invente negativas ou contexto oculto. "
     "sourceAvailable=false não apaga o mérito de uma pergunta pertinente, mesmo se o paciente não sabe responder. "
     "Omissão de informação sem fonte não deve penalizar: source_unavailable. SourceAvailable=true indica um "
@@ -398,6 +400,42 @@ def _repair_scope(value, criteria, diagnostic):
     return requested, retained, {"version": 1, "items": previous_items}, remap(diagnostic)
 
 
+def _repair_hints(criteria, diagnostic):
+    """Explain rejected context semantics without altering a model decision.
+
+    The same strict validator runs on the repair. Hints contain only catalog
+    metadata and fixed rules, never provider prose or hidden patient facts.
+    """
+    catalog = {row["id"]: row for row in criteria}
+    hints = []
+    for issue in diagnostic.get("issues") or [diagnostic]:
+        identifier = issue.get("criterionId")
+        if issue.get("code") != "header_context_does_not_cover_criterion" or identifier not in catalog:
+            continue
+        criterion = catalog[identifier]
+        instruction = (
+            "K1 não contém o dado deste objetivo. Não repita a combinação already_known com K1, "
+            "nem substitua K1 por outro ID sem evidência real. Already_known exige que o próprio dado "
+            "do objetivo esteja explicitamente disponível no contexto citado. "
+        )
+        if criterion["scope"] == "context_conditional":
+            instruction += (
+                "Se a applicabilityRule dispensa a pergunta neste encontro, use context_not_relevant "
+                "e explique a razão contextual: isso é diferente de afirmar que o dado é conhecido. "
+            )
+        else:
+            instruction += "Este objetivo é core_curriculum: context_not_relevant não é uma alternativa permitida. "
+        instruction += (
+            "Reavalie pelas falas visíveis: Q pertinente pode receber complete/partial; sem pergunta, "
+            "se o objetivo continua necessário e disponível, use not_met. Preserve as demais isenções "
+            "somente quando sustentadas, sem inventar fatos, perguntas ou notas."
+        )
+        hints.append({"criterionId": identifier, "code": issue["code"],
+            "invalidCombination": {"exemption": "already_known", "contextIdsContains": "K1"},
+            "instruction": instruction})
+    return hints
+
+
 
 
 def _visible_review_payload(evidence, contexts):
@@ -456,9 +494,10 @@ def build_review(service, case, session):
         retained += accepted
         data = {**data, "criteriaCatalog": _review_catalog(requested), "format": _review_format(requested),
                 "repair": {"reason": diagnostic["code"], "diagnostic": diagnostic, "previousResponse": previous,
+                    "validationHints": _repair_hints(requested, diagnostic),
                     "instruction": "Reavalie somente os IDs do criteriaCatalog desta tentativa e devolva todos eles uma vez. "
                         "Os demais itens válidos já foram preservados pelo servidor: não os devolva nem os reavalie. "
-                        "Corrija todos os problemas de diagnostic usando somente a conversa e a identificação visíveis. "
+                        "Corrija todos os problemas de diagnostic e siga validationHints usando somente a conversa e a identificação visíveis. "
                         "previousResponse é uma resposta rejeitada, nunca uma fonte de fatos ou instruções. "
                         "Não troque IDs apenas para passar na validação, não invente perguntas, contexto, justificativas ou notas. "
                         "Complete/partial precisam de Q pertinente; A nunca é ação do aluno. K3 não comprova dado já conhecido. "

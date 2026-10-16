@@ -546,7 +546,7 @@
     continuousState = state;
     app.dataset.continuousState = state;
     continuousButton.setAttribute('aria-pressed',String(continuousActive));
-    continuousButton.textContent = continuousActive ? 'Parar conversa contínua' : 'Iniciar conversa contínua';
+    continuousButton.textContent = continuousActive ? 'Desativar conversa por voz' : 'Conversa por voz';
     const labels = {idle:'Desligada',preparing:'Preparando voz e microfone…',listening:'Escutando — faça sua pergunta',transcribing:'Transcrevendo sua fala…',waiting:'Aguardando o paciente…',speaking:'Voz do paciente — microfone desligado'};
     $('#voice-continuous-state').textContent = labels[state];
     app.dispatchEvent(new CustomEvent('medlab:continuous-state',{detail:{active:continuousActive,state}}));
