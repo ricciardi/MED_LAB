@@ -14,6 +14,7 @@ O projeto transforma o núcleo de pesquisa EasyMED deste repositório em um prod
 - Catálogo de estudo com as 55 especialidades reconhecidas pelo CFM e 15 tipos de queixa; a disponibilidade depende dos casos efetivamente publicados.
 - Consulta com diálogo, exame físico, exames complementares, hipótese diagnóstica, diferenciais e plano terapêutico.
 - Avaliação com nota, evidências, acertos, oportunidades de melhoria e próximos passos nas dimensões de anamnese, exame físico, exames complementares, raciocínio diagnóstico, plano terapêutico e desempenho global.
+- Resultado com memória de cálculo da nota e parecer educacional complementar salvo, com exemplos de perguntas, orientações de raciocínio e conduta e justificativas para os exames.
 - Persistência de contas, diálogos, exames solicitados, respostas e avaliações. Cada consulta guarda uma cópia do caso usado, preservando o histórico quando o material é atualizado.
 - Figuras originais do PMC em armazenamento privado, associadas a paciente/exame/momento, com revisão de privacidade e atribuição; [limites e operação das mídias](docs/MIDIAS_CLINICAS.md).
 - Inventário privado de fontes com registro idempotente, progresso de preparação em português, vínculo ao caso, exclusões duráveis e exportação portátil de metadados.
@@ -76,12 +77,18 @@ O comando de empacotamento aceita o diretório com manifesto e arquivos de até 
 | `AI_MODEL` | `deepseek-flash`, configurável |
 | `AI_TIMEOUT` | 40 segundos por chamada, até 45 |
 | `AI_IMPORT_TIMEOUT` | 120 segundos, até 180; somente classificação/adaptação no Terminal |
-| `MAX_DAILY_AI_REQUESTS` | 120 operações de diálogo/avaliação por aluno por dia; um diálogo pode fazer duas chamadas ao provedor |
+| `MAX_DAILY_AI_REQUESTS` | 120 operações de diálogo, avaliação ou parecer por aluno por dia; uma operação pode fazer mais de uma chamada ao provedor |
 | `DEMO_MODE` | `false`; `true` usa somente demonstração local, mesmo com uma chave configurada |
 
 A integração usa [JSON Output da DeepSeek](https://api-docs.deepseek.com/guides/json_mode/) e modelo configurável conforme a [documentação do provedor](https://api-docs.deepseek.com/quick_start/pricing/). A geração envia apenas os dados do caso e a atividade simulada necessária; nome da conta, email e senha não fazem parte dos prompts. As respostas de IA passam por validação estrutural antes de serem salvas. Falhas não são substituídas silenciosamente por avaliações demonstrativas.
 
 Os prompts colocam conteúdo estável antes dos dados variáveis para favorecer o cache automático da DeepSeek. O painel administrativo registra o consumo informado pelo provedor; isso não garante desconto, permanência do cache ou custo zero. Veja [cache e consumo observado](docs/CPANEL.md#9-cache-de-prompts-e-consumo-observado).
+
+## Entender a nota e o parecer
+
+A escala é de **0 a 100**. A nota da consulta inteira é a média simples das cinco dimensões avaliáveis: anamnese, exame físico, exames complementares, raciocínio diagnóstico e plano terapêutico. Dimensões não avaliáveis, com nota `null`, ficam fora da soma e do divisor; **zero continua na média**. O desempenho global resume o resultado e não entra como um sexto peso. A página mostra as parcelas, a soma, o divisor e o arredondamento; por exemplo, `(25 + 0 + 0 + 0 + 0) ÷ 5 = 5/100`. A nota de anamnese aparece separadamente. Notas antigas não são recalculadas: registros inconsistentes são sinalizados, preservando os valores salvos.
+
+Ao abrir um resultado sem parecer salvo, **Para sua próxima consulta** solicita automaticamente uma orientação complementar à IA, em uma requisição separada da avaliação. Ela apresenta exemplos de perguntas, raciocínio diagnóstico, conduta e indicação dos exames, sem mudar a nota. O parecer fica em `evaluation.learningReview`; reabrir um parecer salvo não chama a IA. Se houver falha, a página oferece **Tentar novamente**, sem repetição automática. O modo demonstração não gera esse parecer. São inferências educacionais da IA, sujeitas a erro e sem certificação clínica; os [limites de tempo, cotas e consumo](docs/CPANEL.md#resultado-e-parecer-complementar) estão no guia de operação.
 
 ## Configuração de voz
 

@@ -203,7 +203,8 @@ def test_dashboard_aggregates_all_scores_but_loads_only_five_recent_snapshots(ap
         template_rendered.disconnect(record_context, app)
     assert response.status_code == 200
     assert loaded == [f'dashboard-{index:03d}' for index in range(5)]
-    assert rendered[0]['stats'] == {'completed':12,'active':24,'total':37,'average_score':55}
+    # A qualitative completion still counts, but must not dilute the mean.
+    assert rendered[0]['stats'] == {'completed':13,'active':24,'total':37,'average_score':55}
     assert len(rendered[0]['recent_sessions']) == 5
 
 

@@ -11,7 +11,7 @@ from .models import AIUsage
 
 
 OPERATIONS = {"conversation": "Conversa com o paciente", "evaluation": "Avaliação final",
-              "generation": "Geração de caso"}
+              "generation": "Geração de caso", "teaching": "Parecer pedagógico"}
 COUNTERS = {"requests": "requests", "responses": "responses", "usageReports": "usage_reports",
     "cacheUsageReports": "cache_usage_reports", "promptTokens": "prompt_tokens",
     "completionTokens": "completion_tokens", "totalTokens": "total_tokens",

@@ -55,6 +55,8 @@ O interpretador usado por Passenger precisa ser o mesmo ambiente no qual as depe
 
 O diálogo normalmente responde e classifica os temas em uma única chamada à IA; uma saída inválida ou repetida pode exigir uma tentativa adicional de correção. O perfil completo e a memória da consulta permitem respostas elaboradas relacionadas ao caso, conforme [Paciente simulado e memória](PACIENTE_SIMULADO.md). `AI_TIMEOUT` permanece em 40 segundos por chamada, limitado a 45. Avaliação e geração administrativa têm orçamento cooperativo de 60 segundos por operação: até três chamadas na avaliação (avaliação, auditoria e alternativa factual) e quatro na geração (geração, auditoria, reparo e nova auditoria). O tempo restante reduz os limites das próximas chamadas; a avaliação reserva parte desse orçamento para a alternativa curta. Uma resposta recebida após o prazo não é aceita.
 
+O parecer pedagógico complementar tem orçamento cooperativo próprio de **50 segundos**, em outra requisição HTTP: uma chamada ao provedor e, se necessário, uma correção de formato, no máximo duas chamadas. O tempo restante também limita as chamadas dessa operação. Ele não prolonga a requisição que salva a nota; veja [resultado e parecer complementar](#resultado-e-parecer-complementar).
+
 O timeout de `requests` limita conexão e inatividade de leitura; não é um prazo absoluto contra um fluxo contínuo de bytes. Confira com o provedor os limites HTTP e de Passenger, incluindo margem para processamento e rede; para o diálogo, duas chamadas podem consumir até 90 segundos. As chamadas são síncronas e ocupam um processo Passenger enquanto aguardam. O primeiro uso de voz depende do download e da inicialização dos modelos no dispositivo; o cache do navegador pode reduzir esse trabalho em usos posteriores, sem garantir latência ou disponibilidade offline.
 
 ## 3. Configurar ambiente
@@ -181,11 +183,22 @@ Após reiniciar, faça uma verificação no domínio HTTPS:
 - Login e logout funcionam; uma segunda conta não acessa consultas da primeira.
 - É possível iniciar um caso, enviar perguntas, solicitar exames e concluir uma consulta.
 - A avaliação salva e reaparece no histórico após sair e entrar novamente.
+- O resultado explica a média e carrega o parecer complementar; reabrir um parecer já salvo não gera nova chamada à IA.
 - A área administrativa exige conta administrativa e permite gerenciar casos.
 - A IA responde com `DEMO_MODE=false`; falta de chave/indisponibilidade aparece como erro recuperável, sem apresentar resposta de demonstração como avaliação real.
 - Ao ativar voz local, o download mostra progresso, o microfone grava, a transcrição pode ser corrigida e a resposta pode ser ouvida. Verifique também as vozes masculina e feminina nos dispositivos de destino. Negar a permissão, cancelar ou falhar o download mantém o envio por texto disponível.
 
 Se surgir erro 500/503, confira versão do Python, ambiente virtual, dependências, variáveis, permissões do banco e o log privado indicado pelo painel. Application Manager documenta `stderr.log` na pasta da aplicação para Python. Não exponha logs ou páginas de debug na internet. Nunca copie chaves para um chamado de suporte.
+
+### Resultado e parecer complementar
+
+As notas usam a escala **0–100**. A nota geral é a média simples de anamnese, exame físico, exames complementares, raciocínio diagnóstico e plano terapêutico, considerando somente as dimensões avaliáveis. Nota `null` de dimensão não avaliável fica fora do divisor; nota zero entra normalmente. A dimensão global não é somada novamente. O resultado mostra a anamnese separada da nota da consulta inteira, além de parcelas, soma, divisor e arredondamento. A exibição não recalcula nem substitui notas antigas; divergências no registro são sinalizadas.
+
+Ao abrir um resultado concluído sem parecer salvo, o navegador envia `POST /api/sessoes/<session_id>/parecer`, com JSON vazio `{}` e proteção CSRF. A rota exige o dono da consulta e usa apenas os registros salvos no servidor. A orientação aborda perguntas e exemplos, raciocínio, conduta e pertinência dos exames. É inferência educacional por IA, sem certificação clínica e sem alteração das notas.
+
+Uma resposta válida é salva em `evaluation.learningReview`. Quando já existe, abrir o resultado ou repetir a solicitação retorna o parecer salvo, sem chamadas ao provedor. Se faltar parecer após uma falha, a página oferece **Tentar novamente**; não repete a solicitação em loop. Reabrir o resultado pode retomar essa etapa pendente. A nota e o histórico permanecem disponíveis durante a geração e em caso de erro.
+
+Além da cota diária usual (`MAX_DAILY_AI_REQUESTS`), há limite de **quatro tentativas por hora por consulta**, para o proprietário. Cada tentativa pode conter até duas chamadas ao provedor dentro do orçamento de 50 segundos. O consumo informado aparece em **Uso da IA → Parecer pedagógico**, inclusive quando a operação falha. `DEMO_MODE=true` não gera o parecer complementar. Essa funcionalidade usa o JSON de avaliação existente e não exige nova tabela nem migração adicional ao `upgrade-db` já descrito neste guia.
 
 ## 6. Backup, atualização e restauração
 
@@ -391,7 +404,7 @@ A DeepSeek habilita o cache automaticamente, sem uma flag de ativação. O acert
 
 O BayesCore MedRounds serializa mapas de forma determinística e coloca instruções, formatos e listas estáveis antes do caso, histórico e pergunta variáveis. Isso favorece reaproveitamento sem ampliar os dados clínicos enviados ao paciente. Não há chamadas de aquecimento nem repetição paga automática para criar cache. Os valores `prompt_cache_hit_tokens` e `prompt_cache_miss_tokens` informam o uso observado; armazenamento em cache não elimina a geração da saída nem garante custo zero.
 
-Na administração, **Uso da IA** (`ADMIN_PATH/uso-ia`, por padrão `/gestao-medlab/uso-ia`) mostra conversas, avaliações e geração de casos pelo site, com filtros de 7 dias, 30 dias ou todo o período registrado. Uma operação pode fazer várias solicitações. O painel cobre chamadas desde a ativação deste registro, incluindo operações não concluídas; importações pelo Terminal continuam nos relatórios `aiUsage`/`aiUsageThisRun`.
+Na administração, **Uso da IA** (`ADMIN_PATH/uso-ia`, por padrão `/gestao-medlab/uso-ia`) mostra conversas, avaliações, **Parecer pedagógico** e geração de casos pelo site, com filtros de 7 dias, 30 dias ou todo o período registrado. Uma operação pode fazer várias solicitações. O painel cobre chamadas desde a ativação deste registro, incluindo operações não concluídas; importações pelo Terminal continuam nos relatórios `aiUsage`/`aiUsageThisRun`.
 
 A taxa é `cache hit ÷ (cache hit + cache miss)` e só aparece quando todas as chamadas da seleção informam cache e existe denominador positivo. Sem estatísticas completas, o painel sinaliza dados parciais ou não informados; ausência de dados não significa gasto zero. São armazenados apenas contadores, data, operação e identificadores internos, sem prompts, respostas, diagnóstico ou credenciais nesse registro. Confira a cobrança no provedor: o painel não é uma fatura nem impõe um teto monetário.
 

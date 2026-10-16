@@ -1,6 +1,6 @@
 # Testes reais do paciente e do avaliador — 15/10/2026
 
-Este relatório registra, em ordem cronológica, chamadas reais à API DeepSeek, incluindo falhas e versões substituídas. A rodada mais recente está em [Paciente com elaboração e memória](#paciente-com-elaboração-e-memória). As seções anteriores descrevem o comportamento testado na ocasião; as regras antigas de responder apenas com fatos documentados foram substituídas pela elaboração controlada. Ainda há variabilidade de notas e limites semânticos; não há evidência para declarar calibração clínica nem extrapolar as amostras ao acervo inteiro.
+Este relatório registra, em ordem cronológica, chamadas reais à API DeepSeek, incluindo falhas e versões substituídas. A rodada mais recente está em [Composição da nota e parecer pedagógico](#composição-da-nota-e-parecer-pedagógico). As seções anteriores descrevem o comportamento testado na ocasião; as regras antigas de responder apenas com fatos documentados foram substituídas pela elaboração controlada. Ainda há variabilidade de notas e limites semânticos; não há evidência para declarar calibração clínica nem extrapolar as amostras ao acervo inteiro.
 
 ## Método e rastreabilidade
 
@@ -206,3 +206,49 @@ A versão local foi reiniciada e a consulta original foi recarregada com 12 perg
 Após reforçar os limites da rubrica nos três estágios e acrescentar verificações locais das contradições observadas, duas novas avaliações completas concluíram com feedback factual limitado: referência 45/100 (duas requisições, 9,85 s) e incompatível 35/100 (três requisições, 22,14 s). As saídas finais não cobraram história familiar indisponível, não alegaram ausência do plano existente e esclareceram que o tratamento do relato é histórico, não obrigatório. Uma cobrança intermediária indevida foi descartada. Proveniência e autoria das ações permaneceram preservadas.
 
 Persistem limites: a anamnese idêntica recebeu 75 e 100, portanto o reforço de separação entre dimensões não comprova estabilidade de notas. Complementares recebeu 25 nos dois cenários, mas as quatro citações exibidas pelo fallback eram perguntas genéricas, sem mostrar a proposta de investigação presente em T1. A validação de existência/tipo dos IDs não prova pertinência semântica nem suficiência do conjunto exibido. Não se fizeram novas tentativas para selecionar uma avaliação mais favorável; esses resultados ficam registrados como limites do avaliador.
+
+
+## Composição da nota e parecer pedagógico
+
+A investigação da nota repetida em duas consultas concluídas encontrou a mesma composição salva: anamnese 25, exame físico 0, complementares 0, diagnóstico 0 e conduta 0. A média `(25 + 0 + 0 + 0 + 0) / 5` é **5/100**. Não havia uma constante 5 nem conversão indevida de escala na tela. Isso confirma a aritmética desses registros, não a qualidade clínica de cada nota atribuída pela IA. As notas e as conversas originais foram preservadas.
+
+A tela agora explicita as cinco parcelas, a soma e o divisor. Zero participa da média; dimensão não avaliável fica fora da soma e do divisor. A avaliação global não é somada novamente como uma sexta dimensão. Registros antigos inconsistentes recebem um aviso, sem correção silenciosa. Os prompts de avaliação passaram a admitir qualquer inteiro entre zero e 100, explicar crédito parcial com evidências e distinguir hipótese sindrômica, confirmação e gravidade, sem exigir memorização de diagnóstico raro oculto.
+
+A matriz controlada usou três entrevistas preparadas do **mesmo caso fictício**, com progressão de investigação, pedidos de exames, raciocínio e plano. Foi uma avaliação completa por cenário, sem seleção posterior da maior nota:
+
+| Cenário | Anamnese / físico / complementares / diagnóstico / conduta | Global | Requisições | Tempo (s) |
+|---|---|---:|---:|---:|
+| Investigação fraca | 15 / 0 / 0 / 0 / 10 | 5 | 2 | 15,76 |
+| Investigação intermediária | 55 / 0 / 60 / 65 / 45 | 45 | 3 | 23,75 |
+| Investigação completa | 95 / 95 / 90 / 95 / 90 | 93 | 3 | 23,83 |
+
+A progressão observada demonstra que a nota pode variar nessa matriz; não comprova estabilidade entre execuções nem calibração clínica. Foram oito requisições, 38.161 tokens de entrada, 15.540 de saída, 12.928 de cache hit e 25.233 de miss. Os registros privados estão em `instance/evaluations/scoring-resolution-20261015/live-01/`.
+
+O parecer complementar usa uma requisição web separada da avaliação, prazo cooperativo de 50 segundos e até duas chamadas: geração e, somente em falha de formato, uma correção. Ele não recalcula notas. A saída contém orientações de entrevista com perguntas de exemplo, raciocínio diagnóstico, plano e justificativa dos exames, vinculadas a IDs de critérios e ações existentes. O servidor monta os nomes e as citações; verifica autoria e cobertura dos exames solicitados. Essas verificações estruturais não certificam o raciocínio clínico.
+
+A primeira rodada, `review-live-01`, usou cópias das duas consultas reais, a entrevista completa da matriz e um cenário dirigido de pedido rotineiro de urocultura. Três dos quatro pareceres falharam por formato, inclusive após o reparo: diagnóstico e plano vieram como listas e os exames não usaram os IDs esperados. O único parecer aceito ainda atribuiu achados não solicitados ao contexto já conhecido, cobrou repetição de duração espontaneamente informada e atribuiu truncamentos ao aluno sem ressalvar a possibilidade de erro de transcrição. Esses resultados foram rejeitados na revisão de qualidade e não foram incorporados às consultas.
+
+A rodada consumiu 11 requisições, incluindo três para obter a avaliação inicial do cenário de urocultura: 74.048 tokens de entrada, 18.916 de saída, cache hit/miss de 36.480/37.568. A crítica ao pedido rotineiro apareceu no conteúdo de formato rejeitado, mas isso não foi contado como sucesso. Os arquivos originais foram mantidos; nenhum reteste recalcula as quatro notas usadas como entrada.
+
+
+O reteste `review-live-02` reutilizou as quatro notas existentes. A separação entre resultados obtidos e referência melhorou, mas novamente apenas um parecer foi aceito pelo contrato. Persistiram problemas de autoria e de cobrança de antecedentes indisponíveis. As três falhas de formato incluíram repetição do ID de um critério, resumos acima do limite inicial e uma pergunta de exemplo em diagnóstico/conduta que o contrato anterior não permitia. Houve também uma saída truncada. Nenhum desses pareceres entrou no banco do aluno.
+
+Os ajustes seguintes mantêm duas chamadas e o prazo de 50 segundos: o reparo recebe a saída anterior e o campo exato a corrigir; o resumo admite até 1.600 caracteres; perguntas de exemplo em diagnóstico/conduta são aceitas e exibidas quando válidas. IDs falsos, autoria inválida e exames solicitados omitidos continuam causando erro explícito. O orçamento de saída considera os exames discutíveis e os itens da entrevista, com teto de 12.000 tokens. O perfil completo não ouvido pelo aluno foi retirado dos dados enviados ao tutor; queixa e demografia visíveis, falas registradas e exames obtidos permanecem separados da referência. As notas numéricas são validadas localmente, mas não enviadas para ancorar a orientação. Categorias gerais sinalizam critérios cujo conteúdo não está disponível na fonte, exigindo incerteza em vez de uma omissão atribuída ao estudante. Esses sinais são parciais e não uma compreensão automática completa da ficha.
+
+
+A rodada `review-live-03` gerou três pareceres aceitos pela rede: primeira consulta copiada em 14,25 s (uma chamada), segunda em 34,01 s (duas) e cenário de urocultura em 13,81 s (uma). O quarto, entrevista completa, foi bloqueado em 15,35 s por um falso positivo local: a frase “sem transformar a hipótese inicial em certeza” foi confundida com ausência de hipótese registrada. Os resultados pagos foram preservados para revalidação após corrigir esse reconhecimento específico.
+
+No cenário dirigido, a urocultura solicitada de rotina foi classificada como desnecessária para o contexto apresentado, com explicação e situações que mudariam a indicação. O resultado positivo do exame não foi usado para justificar o pedido retrospectivamente. Os três exames físicos solicitados também foram contemplados, e exames opcionais não solicitados tiveram justificativas próprias. Trata-se de um cenário fictício com rubrica explícita; o resultado não demonstra julgamento correto de todos os exames do acervo.
+
+A rodada somou cinco requisições, 56.593 tokens de entrada e 14.180 de saída, cache hit/miss de 19.200/37.393. O reteste anterior somou oito requisições, 73.951 tokens de entrada e 18.022 de saída, cache hit/miss de 41.472/32.479. Os inputs das quatro consultas permaneceram intactos em todas as rodadas privadas.
+
+Persistem limites semânticos: algumas orientações sugerem confirmar negativas já relatadas; a interpretação de uma pergunta ampla que produziu informação espontânea ainda pode receber crédito maior do que sua formulação literal sustenta. A referência de um relato cirúrgico também pode influenciar o grau de especificidade cobrado para o plano inicial. Esses pareceres são orientações geradas por IA, distintas da validação de IDs e da nota já salva, e precisam de conferência docente. Não se continuaram ciclos de geração para selecionar somente respostas favoráveis.
+
+
+O falso positivo da entrevista completa foi corrigido e a resposta já paga foi aceita na revalidação local, sem nova chamada à API. Os testes distinguem ausência literal de hipótese/plano de construções como “sem transformar a hipótese inicial em certeza”. O resultado original foi preservado, e a revalidação está em `review-live-03/complete-offline-revalidated.json`.
+
+Na integração pelo navegador, uma consulta concluída recebeu o novo parecer em português, com oito orientações de entrevista, exemplos também para diagnóstico/conduta e justificativas para os exames. A geração consumiu duas requisições: 34.670 tokens de entrada, 7.457 de saída, cache hit/miss 16.512/18.158. A reabertura carregou o parecer salvo sem nova requisição. A comparação de hashes confirmou que casos, usuários, turnos, exames, memória da simulação e campos antigos das consultas permaneceram iguais; somente o parecer complementar, os contadores de uso e controles operacionais foram adicionados. A nota original de 5/100 foi preservada e sua fórmula ficou visível.
+
+A integração confirmou utilidade concreta, mas também as limitações registradas acima: algumas perguntas sugeridas retomam dados já conhecidos, e a fonte cirúrgica ainda influencia a especificidade das orientações. Os exemplos exibidos não equivalem a uma revisão clínica docente. Nenhuma avaliação prévia foi recalculada para selecionar uma nota melhor.
+
+Esta etapa completa somou **34 requisições**, **277.423 tokens de entrada** e **74.115 de saída**, total **351.538**, com cache hit/miss de **126.592/150.831**. Inclui falhas, reparos e a integração final; exclui as rodadas históricas anteriores deste documento. Passaram **1.169 testes Python** antes do último ajuste pontual, seguidos de **82 testes do parecer** com esse ajuste, e **79 testes JavaScript**. A verificação do navegador cobriu geração, apresentação, persistência e reabertura; não repetiu microfone físico, tablet ou implantação no cPanel.

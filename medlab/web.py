@@ -1,4 +1,5 @@
 import copy
+import math
 import re
 import secrets
 from datetime import timedelta
@@ -13,7 +14,7 @@ from .extensions import db
 from .models import ClinicalCase, Consultation, ConsultationSimulation, PerformedExam, Turn, User, utcnow
 from .security import api_login_required, consume_limit, login_rate_allowed, safe_next
 from .catalogue import filtered_cases, public_summary, public_title
-from .case_schema import UNKNOWN_FACT
+from .case_schema import SECTION_TITLES, UNKNOWN_FACT
 from .usage import capture_usage
 from .exam_media import exam_media_items, read_exam_media
 
@@ -50,6 +51,62 @@ def simulation_context(training):
     return copy.deepcopy(record.payload) if record is not None else None
 
 
+def score_breakdown(evaluation, persisted_score):
+    """Explain saved scores without changing or repairing a historical result."""
+    def valid_score(value):
+        return type(value) in (int, float) and 0 <= value <= 100 and math.isfinite(value)
+
+    def display(value):
+        return format(value, ".12g").replace(".", ",") if valid_score(value) else None
+
+    evaluation = evaluation if isinstance(evaluation, dict) else {}
+    sections = evaluation.get("sections")
+    sections = sections if isinstance(sections, list) else []
+    known = {key: [] for key in SECTION_TITLES}
+    malformed = False
+    for section in sections:
+        if not isinstance(section, dict) or not isinstance(section.get("key"), str) or section["key"] not in known:
+            malformed = True
+            continue
+        known[section["key"]].append(section)
+    dimensions, scores = [], []
+    for key, title in SECTION_TITLES.items():
+        if key == "overall":
+            continue
+        row = {"key": key, "title": title, "status": "unavailable", "score": None, "score_display": None}
+        if len(known[key]) == 1:
+            section = known[key][0]
+            assessable, value = section.get("assessable", True), section.get("score")
+            if assessable is False and value is None:
+                row["status"] = "excluded"
+            elif assessable is True and valid_score(value):
+                row.update(status="included", score=value, score_display=display(value))
+                scores.append(value)
+        dimensions.append(row)
+    complete = all(row["status"] != "unavailable" for row in dimensions)
+    total = sum(scores) if complete and scores else None
+    average = total / len(scores) if total is not None else None
+    calculated = round(average) if average is not None else None
+    saved, recorded = evaluation.get("score"), persisted_score
+    overall = known["overall"][0] if len(known["overall"]) == 1 else None
+    # Legacy records may lack keys, repeat dimensions or disagree with the
+    # history column. Display the discrepancy; never silently choose a score.
+    consistent = (complete and not malformed and overall is not None
+        and calculated is not None and valid_score(saved) and valid_score(recorded)
+        and valid_score(overall.get("score"))
+        and saved == recorded == overall["score"] == calculated)
+    unscored = (complete and not scores and not malformed and saved is None and recorded is None
+        and overall is not None and overall.get("score") is None)
+    return {"dimensions": dimensions, "anamnese": dimensions[0],
+        "divisor": len(scores) if complete else None, "sum": total,
+        "sum_display": format(total, ".12g").replace(".", ",") if total is not None else None,
+        "terms": " + ".join(row["score_display"] for row in dimensions if row["status"] == "included"),
+        "calculated_score": calculated, "rounded": average is not None and average != calculated,
+        "saved_score_display": display(saved), "history_score_display": display(recorded),
+        "consistent": consistent, "unscored": unscored,
+        "warning": not consistent and not unscored}
+
+
 def own_session(session_id):
     training = db.session.execute(select(Consultation).where(
         Consultation.id == session_id, Consultation.user_id == current_user.id
@@ -59,11 +116,11 @@ def own_session(session_id):
     return training
 
 
-def acquire_lock(training):
+def acquire_lock(training, *, status="active"):
     token = str(uuid4())
     stale = utcnow() - timedelta(minutes=3)
     result = db.session.execute(update(Consultation).where(
-        Consultation.id == training.id, Consultation.status == "active",
+        Consultation.id == training.id, Consultation.status == status,
         or_(Consultation.busy_since.is_(None), Consultation.busy_since < stale)
     ).values(busy_since=utcnow(), lock_token=token))
     db.session.commit()
@@ -77,9 +134,9 @@ def release_lock(session_id, token):
     db.session.commit()
 
 
-def lock_is_owned(session_id, token):
+def lock_is_owned(session_id, token, *, status="active"):
     result = db.session.execute(update(Consultation).where(
-        Consultation.id == session_id, Consultation.lock_token == token, Consultation.status == "active"
+        Consultation.id == session_id, Consultation.lock_token == token, Consultation.status == status
     ).values(busy_since=utcnow()))
     return bool(result.rowcount)
 
@@ -160,7 +217,7 @@ def logout():
 def dashboard():
     scored = (Consultation.status == "completed") & Consultation.score.is_not(None)
     total, completed, active, average = db.session.execute(select(
-        func.count(Consultation.id), func.sum(sql_case((scored, 1), else_=0)),
+        func.count(Consultation.id), func.sum(sql_case((Consultation.status == "completed", 1), else_=0)),
         func.sum(sql_case((Consultation.status == "active", 1), else_=0)),
         func.avg(sql_case((scored, Consultation.score), else_=None))
     ).where(Consultation.user_id == current_user.id)).one()
@@ -474,6 +531,76 @@ def finish(session_id):
         release_lock(session_id, token)
 
 
+@bp.post("/api/sessoes/<session_id>/parecer")
+@api_login_required
+def teaching_review(session_id):
+    """Generate one saved debrief in a separate request; grades are immutable."""
+    from .ai import AIError
+    from .teaching_review import build_teaching_review
+
+    training = own_session(session_id)
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict) or payload:
+        return jsonify(error="O parecer usa somente os registros salvos desta consulta."), 400
+    if training.status != "completed" or not isinstance(training.evaluation, dict):
+        return jsonify(error="Conclua a consulta para receber o parecer pedagógico."), 409
+    existing = training.evaluation.get("learningReview")
+    if isinstance(existing, dict) and existing.get("version") == 1:
+        return jsonify(learningReview=existing)
+    if current_app.config["DEMO_MODE"]:
+        return jsonify(error="O parecer detalhado precisa da DeepSeek. O modo demonstrativo não realiza análise clínica."), 503
+    token = acquire_lock(training, status="completed")
+    if not token:
+        return jsonify(error="O parecer desta consulta está sendo preparado. Aguarde e tente novamente."), 409
+    try:
+        db.session.refresh(training)
+        existing = training.evaluation.get("learningReview")
+        if isinstance(existing, dict) and existing.get("version") == 1:
+            return jsonify(learningReview=existing)
+        if not consume_limit("teaching-review", f"{current_user.id}:{session_id}", 4, 3600) or not ai_quota():
+            return jsonify(error="O limite de solicitações foi atingido. Suas notas e sua consulta continuam salvas."), 429
+        case_data = copy.deepcopy(training.case_snapshot)
+        evaluation = copy.deepcopy(training.evaluation)
+        session_data = {
+            "history": [{"question": turn.question, "answer": turn.answer,
+                         "intentClassification": turn.intent} for turn in training.turns],
+            "performedExams": [{"itemName": exam.name, "result": exam.result,
+                                "examType": exam.exam_type} for exam in training.exams],
+            "userSubmissions": [{"data": {
+                "mainDiagnoses": [{"diagnosisName": training.diagnosis or ""}],
+                "differentialDiagnoses": [{"diagnosisName": training.differential}] if training.differential else []}}],
+            "userTreatments": [{"data": {"treatmentPlan": training.treatment or ""}}],
+        }
+        context = simulation_context(training)
+        if context is not None:
+            session_data["simulationContext"] = context
+        db.session.commit()
+        service = get_ai_service()
+        with capture_usage(service, "teaching", user_id=current_user.id, consultation_id=session_id):
+            review = build_teaching_review(service, case_data, session_data, evaluation)
+        if not lock_is_owned(session_id, token, status="completed"):
+            db.session.rollback()
+            return jsonify(error="A preparação do parecer expirou. Suas notas foram preservadas; tente novamente."), 409
+        db.session.refresh(training)
+        updated = copy.deepcopy(training.evaluation)
+        updated["learningReview"] = review
+        training.evaluation = updated
+        db.session.commit()
+        return jsonify(learningReview=review)
+    except AIError as exc:
+        db.session.rollback()
+        return jsonify(error=str(exc) + " Suas notas continuam salvas."), 503
+    except SQLAlchemyError:
+        db.session.rollback()
+        return jsonify(error="Não foi possível salvar o parecer. Suas notas foram preservadas; tente novamente."), 503
+    finally:
+        try:
+            release_lock(session_id, token)
+        except SQLAlchemyError:
+            db.session.rollback()
+            current_app.logger.warning("Não foi possível liberar o bloqueio do parecer pedagógico.")
+
+
 @bp.get("/sessao/<session_id>/resultado")
 @login_required
 def result(session_id):
@@ -481,6 +608,7 @@ def result(session_id):
     if training.status != "completed":
         return redirect(url_for("web.consultation", session_id=session_id))
     return render_template("result.html", training=public_session(training), evaluation=training.evaluation,
+        score_breakdown=score_breakdown(training.evaluation, training.score),
         reference=training.case_snapshot, turns=training.turns, simulation_context=simulation_context(training),
         case_images=exam_media_items(training, include_all=True),
         submission={"diagnosis": training.diagnosis, "differential": training.differential, "treatment": training.treatment},
